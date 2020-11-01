@@ -40,12 +40,12 @@ void dat2txt(char* srcFilename, char* destFilename) {
 
 	// Get number of total strings
 	// number of total strings is specified in the first 4 bytes
-	unsigned char o1, o2, o3, o4;
-	o1 = getc(srcFileDesc);
-	o2 = getc(srcFileDesc);
-	o3 = getc(srcFileDesc);
-	o4 = getc(srcFileDesc);
-	int totalStrings = o1 * pow(BYTE_CAP, 3) + o2 * pow(BYTE_CAP, 2) + o3 * BYTE_CAP + o4;
+	unsigned char c1, c2, c3, c4;
+	c1 = getc(srcFileDesc);
+	c2 = getc(srcFileDesc);
+	c3 = getc(srcFileDesc);
+	c4 = getc(srcFileDesc);
+	int totalStrings = c1 * pow(BYTE_CAP, 3) + c2 * pow(BYTE_CAP, 2) + c3 * BYTE_CAP + c4;
 	printf("Number of total strings: %d\n", totalStrings);
 	if (totalStrings < 1) {
 		// incorrect format
@@ -69,9 +69,9 @@ void dat2txt(char* srcFilename, char* destFilename) {
 	// process all strings
 	for (int strIdx = 0; strIdx < totalStrings; ++strIdx) {
 		// first check string validity
-		o3 = getc(srcFileDesc);
-		o4 = getc(srcFileDesc);
-		int textLen = o3 * BYTE_CAP + o4;
+		c3 = getc(srcFileDesc);
+		c4 = getc(srcFileDesc);
+		int textLen = c3 * BYTE_CAP + c4;
 		if ((textLen < 1) && (textLen != 0)) {
 			long int currentPos = ftell(srcFileDesc);
 			printf("Error when getting length for text no. %d at offset : %ld\n", strIdx, currentPos);
@@ -83,10 +83,10 @@ void dat2txt(char* srcFilename, char* destFilename) {
 		// then process each character of the string
 		int charIdx = 0;
 		for (; charIdx < textLen; ++charIdx) {
-			o1 = getc(srcFileDesc);
+			c1 = getc(srcFileDesc);
 			// Use '|' character to designate '\n' in each text field
-			if (o1 == LF) {
-				o1 = VERT;
+			if (c1 == LF) {
+				c1 = VERT;
 			}
 
 			// check if reached the end of file unexpectedly
@@ -99,7 +99,7 @@ void dat2txt(char* srcFilename, char* destFilename) {
 			}
 
 			// put string in buffer
-			sdata[charIdx] = o1;
+			sdata[charIdx] = c1;
 		}
 		sdata[charIdx] = '\0'; // NULL byte
 
@@ -142,13 +142,13 @@ void txt2dat(char* srcFilename, char* destFilename) {
 		putc(0xff, destFileDesc);
 	}
 
-	unsigned char o1, o2, o3, o4;
+	unsigned char c1, c2, c3, c4;
 
 	// Detect and avoid EFBB BF bytes
-	o1 = getc(srcFileDesc);
-	o2 = getc(srcFileDesc);
-	o3 = getc(srcFileDesc);
-	if ((o1==0xEF) && (o2==0xBB) && (o3==0xBF)) {
+	c1 = getc(srcFileDesc);
+	c2 = getc(srcFileDesc);
+	c3 = getc(srcFileDesc);
+	if ((c1==0xEF) && (c2==0xBB) && (c3==0xBF)) {
 		printf("Detected and avoided the header EFBB BF from the text file.\n");
 	}
 	else {
@@ -164,29 +164,29 @@ void txt2dat(char* srcFilename, char* destFilename) {
 
 	// read and process the TXT file
 	while (!feof(srcFileDesc)) {
-		unsigned char o1 = getc(srcFileDesc);
-		if ((l == 0) && (o1 == 0x5E)) {
+		unsigned char c1 = getc(srcFileDesc);
+		if ((l == 0) && (c1 == 0x5E)) {
 			ignoreLine = 1;
 		}
 		// restore the "|" in 0x0a
-		if (o1 == VERT) {
-			o1 = 0x0a;
+		if (c1 == VERT) {
+			c1 = 0x0a;
 		}
-		if (o1 == CR) {
-			o1 = getc(srcFileDesc);
-			if (o1 == VERT) {
-				o1 = 0x0a;
+		if (c1 == CR) {
+			c1 = getc(srcFileDesc);
+			if (c1 == VERT) {
+				c1 = 0x0a;
 			}
-			if (o1 == LF) {
+			if (c1 == LF) {
 				sdata[l] = 0;
 				int k = strlen(sdata);
-				unsigned char o3 = k / BYTE_CAP;
-				int j = o3 * BYTE_CAP;
+				unsigned char c3 = k / BYTE_CAP;
+				int j = c3 * BYTE_CAP;
 				k = k - j;
-				unsigned char o4 = k;
+				unsigned char c4 = k;
 				if (ignoreLine != 1) {
-					putc(o3, destFileDesc);
-					putc(o4, destFileDesc);
+					putc(c3, destFileDesc);
+					putc(c4, destFileDesc);
 					fputs(sdata, destFileDesc);
 					totalStringsCount++;
 				}
@@ -194,12 +194,12 @@ void txt2dat(char* srcFilename, char* destFilename) {
 				ignoreLine = 0;
 			}
 			else {
-				sdata[l] = o1;
+				sdata[l] = c1;
 				++l;
 			}
 		}
 		else {
-			sdata[l] = o1;
+			sdata[l] = c1;
 			++l;
 		}
 	}
@@ -216,10 +216,10 @@ void txt2dat(char* srcFilename, char* destFilename) {
 	putc(0x0,destFileDesc);
 
 	// 3rd and 4th bytes
-	o3 = totalStringsCount / BYTE_CAP;
-	o4 = totalStringsCount % BYTE_CAP;
-	putc(o3,destFileDesc);
-	putc(o4,destFileDesc);
+	c3 = totalStringsCount / BYTE_CAP;
+	c4 = totalStringsCount % BYTE_CAP;
+	putc(c3,destFileDesc);
+	putc(c4,destFileDesc);
 
 	// finish
 	printf(" Uh yeah, its done! %d (strings count)\n",totalStringsCount);
