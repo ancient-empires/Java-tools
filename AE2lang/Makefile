@@ -1,9 +1,9 @@
-target := AE2lang
+TARGET := AE2lang
 
 .PHONY: all
-all: $(target).out
+all: $(TARGET).out
 
-$(target).out: $(target).o
+$(TARGET).out: $(TARGET).o
 	$(CC) $^ -o "$@"
 
 %.o: %.c
@@ -15,8 +15,8 @@ clean:
 
 .PHONY: dat2txt
 dat2txt: all
-	./$(target).out lang.dat lang.txt
+	./$(TARGET).out lang.dat lang.txt
 
 .PHONY: dat2txt
 txt2dat: all
-	./$(target).out lang.txt lang.dat
+	./$(TARGET).out lang.txt lang.dat
