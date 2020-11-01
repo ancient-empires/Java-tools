@@ -64,7 +64,7 @@ void dat2txt(char* srcFilename, char* destFilename) {
 
 	// Inits
 	int totalStringsCount = 0;
-	char sdata[LARGE_SPACE_SIZE];
+	char text_buffer[LARGE_SPACE_SIZE];
 
 	// process all strings
 	for (int strIdx = 0; strIdx < totalStrings; ++strIdx) {
@@ -99,12 +99,12 @@ void dat2txt(char* srcFilename, char* destFilename) {
 			}
 
 			// put string in buffer
-			sdata[charIdx] = c1;
+			text_buffer[charIdx] = c1;
 		}
-		sdata[charIdx] = '\0'; // NULL byte
+		text_buffer[charIdx] = '\0'; // NULL byte
 
 		// put CRLF at the end of each line, for each string
-		fputs(sdata, destFileDesc);
+		fputs(text_buffer, destFileDesc);
 		putc(CR, destFileDesc);
 		putc(LF, destFileDesc);
 		totalStringsCount++;
@@ -156,8 +156,8 @@ void txt2dat(char* srcFilename, char* destFilename) {
 	}
 
 	// inits
-	char sdata[LARGE_SPACE_SIZE];
-	sdata[0] = 0;
+	char text_buffer[LARGE_SPACE_SIZE];
+	text_buffer[0] = 0;
 	int l = 0;
 	int totalStringsCount = 0;
 	unsigned char ignoreLine = 0;
@@ -170,16 +170,16 @@ void txt2dat(char* srcFilename, char* destFilename) {
 		}
 		// restore the "|" in 0x0a
 		if (c1 == VERT) {
-			c1 = 0x0a;
+			c1 = LF;
 		}
 		if (c1 == CR) {
 			c1 = getc(srcFileDesc);
 			if (c1 == VERT) {
-				c1 = 0x0a;
+				c1 = LF;
 			}
 			if (c1 == LF) {
-				sdata[l] = 0;
-				int k = strlen(sdata);
+				text_buffer[l] = 0;
+				int k = strlen(text_buffer);
 				unsigned char c3 = k / BYTE_CAP;
 				int j = c3 * BYTE_CAP;
 				k = k - j;
@@ -187,19 +187,19 @@ void txt2dat(char* srcFilename, char* destFilename) {
 				if (ignoreLine != 1) {
 					putc(c3, destFileDesc);
 					putc(c4, destFileDesc);
-					fputs(sdata, destFileDesc);
+					fputs(text_buffer, destFileDesc);
 					totalStringsCount++;
 				}
 				l = 0;
 				ignoreLine = 0;
 			}
 			else {
-				sdata[l] = c1;
+				text_buffer[l] = c1;
 				++l;
 			}
 		}
 		else {
-			sdata[l] = c1;
+			text_buffer[l] = c1;
 			++l;
 		}
 	}
