@@ -38,9 +38,10 @@ void dat2txt(char* srcFilename, char* destFilename) {
 		exit(0);
 	}
 
-	// Get number of total strings
-	// number of total strings is specified in the first 4 bytes
 	unsigned char c1, c2, c3, c4;
+
+	// Get number of total strings.
+	// Number of total strings is specified in the first 4 bytes.
 	c1 = getc(srcFileDesc);
 	c2 = getc(srcFileDesc);
 	c3 = getc(srcFileDesc);
@@ -105,7 +106,8 @@ void dat2txt(char* srcFilename, char* destFilename) {
 		text_buffer[charIdx] = '\0'; // NULL byte
 
 		// Put CRLF at the end of each line, for each string.
-		// This is Windows convention.
+		// CRLF is Windows convention.
+		// CRLF is used, as this program was initially written for Windows.
 		fputs(text_buffer, destFileDesc);
 		putc(CR, destFileDesc);
 		putc(LF, destFileDesc);
@@ -273,8 +275,7 @@ int main(int argc, char *argv[]) {
 		return 0;
 	}
 
-	// If we get invalid arguments
-	// then just show help, and return 0
+	// If we got invalid arguments, then just show help, and return 0
 	help();
 	return 0;
 }
