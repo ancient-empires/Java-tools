@@ -212,14 +212,14 @@ void txt2dat(char* srcFilename, char* destFilename) {
 	// put number of total strings in the first 4 bytes
 
 	// first 2 bytes
-	putc(0x0,destFileDesc);
-	putc(0x0,destFileDesc);
+	putc(0x0, destFileDesc);
+	putc(0x0, destFileDesc);
 
 	// 3rd and 4th bytes
 	c3 = totalStringsCount / BYTE_CAP;
 	c4 = totalStringsCount % BYTE_CAP;
-	putc(c3,destFileDesc);
-	putc(c4,destFileDesc);
+	putc(c3, destFileDesc);
+	putc(c4, destFileDesc);
 
 	// finish
 	printf(" Uh yeah, its done! %d (strings count)\n",totalStringsCount);
