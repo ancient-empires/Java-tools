@@ -15,7 +15,6 @@ $(AE1MAP): AE1map20090913.rar
 $(AE2MAP): AE2map081111.zip
 	unzip -o $^
 
-.PHONY: $(AE2LANG)
 $(AE2LANG):
 	$(MAKE) -C $@/
 
