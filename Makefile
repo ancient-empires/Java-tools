@@ -1,16 +1,22 @@
-targets := AE1map AE2map
+# This Makefile extracts the map editors for AE1 and AE2.
+
+TARGETS = $(AE1MAP) $(AE2MAP)
+AE1MAP := AE1map
+AE2MAP := AE2map
+AE2LANG := AE2lang
+AE2PAK := AE2pak
 
 .PHONY: all
-all: $(targets)
+all: $(TARGETS)
 
-.PHONY: AE1map
-AE1map: AE1map20090913.rar
+.PHONY: $(AE1MAP)
+$(AE1MAP): AE1map20090913.rar
 	unrar x -yo $^
-	
-.PHONY: AE2map
-AE2map: AE2map081111.zip
+
+.PHONY: $(AE2MAP)
+$(AE2MAP): AE2map081111.zip
 	unzip -o $^
-	
+
 .PHONY: clean
 clean:
-	-rm -rfv $(targets)
+	-rm -rfv $(TARGETS)
