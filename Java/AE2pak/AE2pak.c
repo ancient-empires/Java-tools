@@ -1,14 +1,16 @@
 #include <stdio.h>
+#include <string.h>
 
-strrev(char* sdata){
- int i, k;
- char sdata2[512];
- strcpy(sdata2,sdata);
- k = strlen(sdata2);
- for (i=0;i<k;i++){
-	sdata2[k-i-1]=sdata[i];
- }
- strcpy(sdata,sdata2);
+char* strrev(char* str){
+	// Reverse the input string in-place
+	char buffer[512];
+	strcpy(buffer, str);
+	int temp_buffer_len = strlen(buffer);
+	for (int i = 0; i < temp_buffer_len; ++i) {
+		buffer[temp_buffer_len - 1 - i] = str[i];
+	}
+	strcpy(str, buffer);
+	return str;
 }
 
 void GetFilename(char* sdata){
@@ -18,10 +20,10 @@ void GetFilename(char* sdata){
  strrev(sdata2);
  k = strlen(sdata2);
  for (i=0;i<k;i++){
- 	if (sdata2[i]=='\\'){
- 		sdata2[i]=0;
- 		break;
- 	}
+	if (sdata2[i]=='\\'){
+		sdata2[i]=0;
+		break;
+	}
  }
  strrev(sdata2);
  strcpy(sdata,sdata2);
