@@ -66,9 +66,10 @@ void dat2txt(char* srcFilename, char* destFilename) {
 	int totalStringsCount = 0;
 	char text_buffer[LARGE_SPACE_SIZE];
 
-	// process all strings
+	// Process all strings
 	for (int strIdx = 0; strIdx < totalStrings; ++strIdx) {
-		// first check string validity
+		// First check string validity.
+		// For each text field in the .dat file, the first two bytes indicate string length in bytes.
 		c3 = getc(srcFileDesc);
 		c4 = getc(srcFileDesc);
 		int textLen = c3 * BYTE_CAP + c4;
@@ -80,11 +81,11 @@ void dat2txt(char* srcFilename, char* destFilename) {
 			exit(0);
 		}
 
-		// then process each character of the string
+		// Then process each character of the string, one by one.
 		int charIdx = 0;
 		for (; charIdx < textLen; ++charIdx) {
 			c1 = getc(srcFileDesc);
-			// Use '|' character to designate '\n' in each text field
+			// In the extracted txt file, use '|' character to designate '\n' in each text field in the UI.
 			if (c1 == LF) {
 				c1 = VERT;
 			}
@@ -98,12 +99,13 @@ void dat2txt(char* srcFilename, char* destFilename) {
 				exit(0);
 			}
 
-			// put string in buffer
+			// Put extracted string in buffer, in order to write into TXT.
 			text_buffer[charIdx] = c1;
 		}
 		text_buffer[charIdx] = '\0'; // NULL byte
 
-		// put CRLF at the end of each line, for each string
+		// Put CRLF at the end of each line, for each string.
+		// This is Windows convention.
 		fputs(text_buffer, destFileDesc);
 		putc(CR, destFileDesc);
 		putc(LF, destFileDesc);
