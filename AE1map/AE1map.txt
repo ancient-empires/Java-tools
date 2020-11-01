@@ -1,0 +1,68 @@
+      
+      ------------------------------
+      Map Editor for Ancient Empires
+      ------------------------------
+
+
+Sorry I'm still too lazy to write -_-
+So, briefly:
+
+
+IMPORTANT note:
+--------------
+  It seems that AE1 handle automatically the "grass borders" around the water and road zones.
+  So you don't have to worry about it:
+  Just use the plain grass texture (texture #03), and don't bother with the others (grass textures #04 to #17), it will be only a waste of time.
+
+
+Buttons:
+-------
+
+[Load] load a map
+
+[Save] save a map
+
+[New] create a new map (size between 10x1 to 22x22)
+
+[Run] Send the actual map shown in the editor (no need to be saved) to a batch file to test it quickly with a emulator.
+      (You could need the pack: testmap.zip, normally can be found at http://byblo.proboards.com/index.cgi#ae1)
+      Note: if the map's name is not m+numeric (m0, m7, m12,...), it will be send to the batch ALWAYS as: s0 (first skirmish map in the list)
+
+
+
+Mouse click list:
+----------------
+{left click on the map} paste the selected tiles/unit shown on the selection box.
+{right click on the map} set the selected tile to the selection box on the world edition mode, remove an unit for the unit edition mode.
+
+{left click on selection box} backward rotation color/2d rotation (and by type if world edition mode)
+{right click on selection box} forward rotation color/2d rotation (and by type if world edition mode)
+
+And so on...
+
+
+
+Note:
+----
+* Do not forget to associate the extension .ae1 to the map editor.
+This will permit you to open a map by simply clicking on its file and also allowing multi editions.
+
+* Please share your creations (after checking it), do not keep your work isolated : http://byblo.proboards.com/index.cgi#ae1
+  You can also send them to me at byblo@hotmail.com (with a explicit object line, AE1 MAPS or something...),
+
+
+
+Changelog (from before to after, or something like that...):
+---------
+* This version is from the AE2map project, which have been adapted for AE1
+* Removed the "Basic water draw" functions and button
+* Removed "Basic road draw" functions and button
+* removed "Check" button and the log writing. (now you MUST know what you are doing. no error check for AE1 !)
+* ect...
+
+
+
+enjoy!
+
+	
+	200x - byblo@hotmail.com - http://go.to/byblo - http://byblo.proboards.com/index.cgi#ae2
