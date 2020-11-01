@@ -15,12 +15,12 @@ all: $(TARGETS)
 .PHONY: $(AE1MAP)
 $(AE1MAP): AE1map20090913.rar
 	unrar x -yo $^
-	ln -rs $^ $@/
+	ln -rsf $^ $@/
 
 .PHONY: $(AE2MAP)
 $(AE2MAP): AE2map081111.zip
 	unzip -o $^
-	ln -rs $^ $@/
+	ln -rsf $^ $@/
 
 .PHONY: $(AE2LANG)
 $(AE2LANG):
