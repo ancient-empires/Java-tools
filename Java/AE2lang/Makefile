@@ -13,6 +13,7 @@ $(TARGET).out: $(TARGET).o
 clean:
 	-rm -rf *.o *.out
 
+# Check variables "DAT" and "TXT" before making conversions
 ERROR_MSG := "ERROR: Invalid DAT and/or TXT file"
 define CHECK_ARGS =
 $(if $(DAT),,$(error $(ERROR_MSG)))
