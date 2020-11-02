@@ -65,7 +65,7 @@ void dat2txt(char* srcFilename, char* destFilename) {
 
 	// Inits
 	int totalStringsCount = 0;
-	char text_buffer[LARGE_SPACE_SIZE];
+	char buffer[LARGE_SPACE_SIZE];
 
 	// Process all strings
 	for (int strIdx = 0; strIdx < totalStrings; ++strIdx) {
@@ -101,14 +101,14 @@ void dat2txt(char* srcFilename, char* destFilename) {
 			}
 
 			// Put extracted string in buffer, in order to write into TXT.
-			text_buffer[charIdx] = c1;
+			buffer[charIdx] = c1;
 		}
-		text_buffer[charIdx] = '\0'; // NULL byte
+		buffer[charIdx] = '\0'; // NULL byte
 
 		// Put CRLF at the end of each line, for each string.
 		// CRLF is Windows convention.
 		// CRLF is used, as this program was initially written for Windows.
-		fputs(text_buffer, destFileDesc);
+		fputs(buffer, destFileDesc);
 		putc(CR, destFileDesc);
 		putc(LF, destFileDesc);
 		totalStringsCount++;
@@ -160,8 +160,8 @@ void txt2dat(char* srcFilename, char* destFilename) {
 	}
 
 	// inits
-	char text_buffer[LARGE_SPACE_SIZE];
-	text_buffer[0] = 0;
+	char buffer[LARGE_SPACE_SIZE];
+	buffer[0] = 0;
 	int l = 0;
 	int totalStringsCount = 0;
 	unsigned char ignoreLine = 0;
@@ -182,8 +182,8 @@ void txt2dat(char* srcFilename, char* destFilename) {
 				c1 = LF;
 			}
 			if (c1 == LF) {
-				text_buffer[l] = 0;
-				int k = strlen(text_buffer);
+				buffer[l] = 0;
+				int k = strlen(buffer);
 				unsigned char c3 = k / BYTE_CAP;
 				int j = c3 * BYTE_CAP;
 				k = k - j;
@@ -191,19 +191,19 @@ void txt2dat(char* srcFilename, char* destFilename) {
 				if (ignoreLine != 1) {
 					putc(c3, destFileDesc);
 					putc(c4, destFileDesc);
-					fputs(text_buffer, destFileDesc);
+					fputs(buffer, destFileDesc);
 					totalStringsCount++;
 				}
 				l = 0;
 				ignoreLine = 0;
 			}
 			else {
-				text_buffer[l] = c1;
+				buffer[l] = c1;
 				++l;
 			}
 		}
 		else {
-			text_buffer[l] = c1;
+			buffer[l] = c1;
 			++l;
 		}
 	}
