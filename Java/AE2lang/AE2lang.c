@@ -41,6 +41,7 @@ void intToFourBytes(int i, unsigned char* c1, unsigned char* c2, unsigned char* 
 	*c4 = (i >> (CHAR_BIT * 0)) & 0xFF;
 }
 
+// Concatenate four bytes into an integer
 int fourBytesToInt(unsigned char c1, unsigned char c2, unsigned char c3, unsigned char c4) {
 	int i = c1;
 	i = (i << CHAR_BIT) + c2;
