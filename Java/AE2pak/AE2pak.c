@@ -49,39 +49,39 @@ void help(void) {
 }
 
 char extract(char* fo2s,char* fn2s,unsigned long int filepos,unsigned long int filesize) {
- FILE *fo2, *fn2;
- unsigned int i,j;
- unsigned char o1;
+	FILE *fo2, *fn2;
+	unsigned int i,j;
+	unsigned char o1;
 
- fo2 = fopen(fo2s,"rb");
- if (!fo2)
-	{
-	printf(" Error, could not open %s for extraction !\n",fo2s);
-	return 0;
+	fo2 = fopen(fo2s,"rb");
+	if (!fo2) {
+		printf("Error, could not open \"%s\" for extraction!\n", fo2s);
+		return 0;
 	}
- rewind(fo2);
- fseek(fo2, filepos, 0);
+	rewind(fo2);
+	fseek(fo2, filepos, 0);
 
- fn2 = fopen(fn2s,"wb");
+	fn2 = fopen(fn2s,"wb");
 	if (!fn2) {
-		printf(" Error, could not open %s for writing !\n",fn2s);
+		printf(" Error, could not open \"%s\" for writing !\n", fn2s);
 		fclose(fo2);
 		return 0;
 	}
- for (i=0;i<filesize;i++) {
-	o1 = getc(fo2);
-	if (feof(fo2)) {
-		printf(" Error, eof reached when extracting!\n Check your file !");
-		fclose(fo2);
-		fclose(fn2);
-		return 0;
-	}
-	putc(o1,fn2);
- }
 
- fclose(fo2);
- fclose(fn2);
- return 1;
+	for (i = 0; i < filesize; ++i) {
+		o1 = getc(fo2);
+		if (feof(fo2)) {
+			printf(" Error, eof reached when extracting!\n Check your file !");
+			fclose(fo2);
+			fclose(fn2);
+			return 0;
+		}
+		putc(o1,fn2);
+	}
+
+	fclose(fo2);
+	fclose(fn2);
+	return 1;
 }
 
 
