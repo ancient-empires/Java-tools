@@ -184,11 +184,13 @@ void txt2dat(char* srcFilename, char* destFilename) {
 		if ((l == 0) && (c1 == CARET)) {
 			ignoreLine = true;
 		}
-		// restore the "|" in 0x0a
+
 		if (c1 == VERT) {
+			// Convert '|' in TXT to '\n' in DAT
 			c1 = LF;
 		}
 		if (c1 == CR) {
+			// Process line endings in TXT
 			c1 = getc(srcFileDesc);
 			if (c1 == VERT) {
 				c1 = LF;
