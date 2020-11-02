@@ -10,8 +10,8 @@
 #define DBQUOTE '"' // 0x22
 #define BACKSLASH '\\' // 0x5C
 
+// Reverse the input string in-place
 char* strrev(char* str) {
-	// reverse the input string in-place
 	char buffer[LARGE_SPACE_SIZE];
 	strcpy(buffer, str);
 	int buffer_len = strlen(buffer);
@@ -22,8 +22,8 @@ char* strrev(char* str) {
 	return str;
 }
 
+// Get filename from str, and save it in-place.
 char* GetFilename(char* str) {
-	// get filename from str, and save it in-place
 	char buffer[LARGE_SPACE_SIZE];
 	strcpy(buffer, str);
 	strrev(buffer);
