@@ -7,6 +7,9 @@
 #define LARGE_SPACE_SIZE 2048
 #define BYTE_CAP 256
 
+#define ERROR_RW -1
+#define ERROR_ARGS 1
+
 #define VERT '|' // 0x7C
 #define CR '\r' // 0x0D
 #define LF '\n' // 0x0A
@@ -26,8 +29,11 @@ void help(void) {
 	printf(" AE2lang lang.txt lang.dat (txt2dat)\n\n");
 	printf(" Note that the appropriate function is selected\n");
 	printf("  looking at the files extensions (minuscule only)\n\n");
-	exit(0);
 }
+
+// void intToFourBytes(int i, char* c1, char* c2, char* c3, char* c4) {
+//
+// }
 
 // Convert DAT to TXT
 void dat2txt(char* srcFilename, char* destFilename) {
@@ -37,7 +43,7 @@ void dat2txt(char* srcFilename, char* destFilename) {
 	FILE* srcFileDesc = fopen(srcFilename,"rb");
 	if (!srcFileDesc) {
 		printf(" Error, could not open %s for reading !\n", srcFilename);
-		exit(0);
+		exit(ERROR_RW);
 	}
 
 	unsigned char c1, c2, c3, c4;
@@ -54,7 +60,7 @@ void dat2txt(char* srcFilename, char* destFilename) {
 		// incorrect format
 		fclose(srcFileDesc);
 		printf("\nError, incorrect format ? : %d (totalStrings announced in 4 first bytes)\n\n", totalStrings);
-		exit(0);
+		exit(ERROR_RW);
 	}
 
 	// Check destination file (.txt)
@@ -62,7 +68,7 @@ void dat2txt(char* srcFilename, char* destFilename) {
 	if (!destFileDesc) {
 		fclose(srcFileDesc);
 		printf("Error, could not open %s for writing !\n", destFilename);
-		exit(0);
+		exit(ERROR_RW);
 	}
 
 	// Inits
@@ -81,7 +87,7 @@ void dat2txt(char* srcFilename, char* destFilename) {
 			printf("Error when getting length for text no. %d at offset : %ld\n", strIdx, currentPos);
 			fclose(srcFileDesc);
 			fclose(destFileDesc);
-			exit(0);
+			exit(ERROR_RW);
 		}
 
 		// Then process each character of the string, one by one.
@@ -99,7 +105,7 @@ void dat2txt(char* srcFilename, char* destFilename) {
 				printf("Reached end of file unexpected when reading text no. %d at offset : %ld\n", strIdx, currentPos);
 				fclose(srcFileDesc);
 				fclose(destFileDesc);
-				exit(0);
+				exit(ERROR_RW);
 			}
 
 			// Put extracted string in buffer, in order to write into TXT.
@@ -120,7 +126,6 @@ void dat2txt(char* srcFilename, char* destFilename) {
 	printf(" Uh yeah, its done! %d/%d (anounced/extracted)\n", totalStrings, totalStringsCount);
 	fclose(srcFileDesc);
 	fclose(destFileDesc);
-	exit(0);
 }
 
 void str2dat(void) {
@@ -135,7 +140,7 @@ void txt2dat(char* srcFilename, char* destFilename) {
 	FILE* srcFileDesc = fopen(srcFilename, "rb");
 	if (!srcFileDesc) {
 		printf("Error, could not open \"%s\" for reading !\n", srcFilename);
-		exit(0);
+		exit(ERROR_RW);
 	}
 
 	// Check destination file (.dat)
@@ -143,7 +148,7 @@ void txt2dat(char* srcFilename, char* destFilename) {
 	if (!destFileDesc) {
 		printf("Error, could not open \"%s\" for writing !\n", destFilename);
 		fclose(srcFileDesc);
-		exit(0);
+		exit(ERROR_RW);
 	}
 
 	// Put placeholder characters (not valid in UTF-8) in the first 4 bytes
@@ -234,7 +239,6 @@ void txt2dat(char* srcFilename, char* destFilename) {
 	printf(" Uh yeah, its done! %d (strings count)\n",totalStringsCount);
 	fclose(srcFileDesc);
 	fclose(destFileDesc);
-	exit(0);
 }
 
 int main(int argc, char *argv[]) {
@@ -246,7 +250,7 @@ int main(int argc, char *argv[]) {
 	// Check if the user has entered 3 parameters
 	if (argc < 3) {
 		help();
-		exit(0);
+		return ERROR_ARGS;
 	}
 
 	// Check source and destination file names
@@ -256,9 +260,11 @@ int main(int argc, char *argv[]) {
 	int destFilenameLen = strlen(destFilename);
 	if (srcFilenameLen < 1) {
 		help();
+		return ERROR_ARGS;
 	}
-	if (destFilenameLen < 1) {
+	else if (destFilenameLen < 1) {
 		help();
+		return ERROR_ARGS;
 	}
 
 	// DAT to TXT conversion
@@ -277,5 +283,5 @@ int main(int argc, char *argv[]) {
 
 	// If we got invalid arguments, then just show help, and return 0
 	help();
-	return 0;
+	return ERROR_ARGS;
 }
