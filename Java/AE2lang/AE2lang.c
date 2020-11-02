@@ -64,7 +64,7 @@ void dat2txt(char* srcFilename, char* destFilename) {
 	}
 
 	// Check destination file (.txt)
-	FILE* destFileDesc = fopen(destFilename, "wb");
+	FILE* destFileDesc = fopen(destFilename, "w");
 	if (!destFileDesc) {
 		fclose(srcFileDesc);
 		printf("Error, could not open %s for writing !\n", destFilename);
@@ -137,7 +137,7 @@ void txt2dat(char* srcFilename, char* destFilename) {
 	printf("\n Converting TXT to DAT...\n\n");
 
 	// Check source file (.txt)
-	FILE* srcFileDesc = fopen(srcFilename, "rb");
+	FILE* srcFileDesc = fopen(srcFilename, "r");
 	if (!srcFileDesc) {
 		printf("Error, could not open \"%s\" for reading !\n", srcFilename);
 		exit(ERROR_RW);
