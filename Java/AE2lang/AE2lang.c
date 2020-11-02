@@ -122,6 +122,10 @@ void dat2txt(char* srcFilename, char* destFilename) {
 	exit(0);
 }
 
+void str2dat(void) {
+	printf("\n Inserting string to dat...\n\n");
+}
+
 // Convert TXT back to DAT
 void txt2dat(char* srcFilename, char* destFilename) {
 	printf("\n Converting TXT to DAT...\n\n");
@@ -168,6 +172,7 @@ void txt2dat(char* srcFilename, char* destFilename) {
 	bool ignoreLine = false;
 
 	// read and process the TXT file
+	str2dat();
 	while (!feof(srcFileDesc)) {
 		unsigned char c1 = getc(srcFileDesc);
 		if ((l == 0) && (c1 == 0x5E)) {
@@ -228,11 +233,6 @@ void txt2dat(char* srcFilename, char* destFilename) {
 	printf(" Uh yeah, its done! %d (strings count)\n",totalStringsCount);
 	fclose(srcFileDesc);
 	fclose(destFileDesc);
-	exit(0);
-}
-
-void str2dat(void) {
-	printf("\n Inserting string to dat... TODO\n\n");
 	exit(0);
 }
 
