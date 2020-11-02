@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
-#include <math.h>
 #include <limits.h>
 
 #define LARGE_SPACE_SIZE 2048
