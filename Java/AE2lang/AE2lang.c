@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include <string.h>
 #include <math.h>
 
@@ -164,13 +165,13 @@ void txt2dat(char* srcFilename, char* destFilename) {
 	buffer[0] = 0;
 	int l = 0;
 	int totalStringsCount = 0;
-	unsigned char ignoreLine = 0;
+	bool ignoreLine = false;
 
 	// read and process the TXT file
 	while (!feof(srcFileDesc)) {
 		unsigned char c1 = getc(srcFileDesc);
 		if ((l == 0) && (c1 == 0x5E)) {
-			ignoreLine = 1;
+			ignoreLine = true;
 		}
 		// restore the "|" in 0x0a
 		if (c1 == VERT) {
@@ -183,19 +184,17 @@ void txt2dat(char* srcFilename, char* destFilename) {
 			}
 			if (c1 == LF) {
 				buffer[l] = 0;
-				int k = strlen(buffer);
-				unsigned char c3 = k / BYTE_CAP;
-				int j = c3 * BYTE_CAP;
-				k = k - j;
-				unsigned char c4 = k;
-				if (ignoreLine != 1) {
+				int buffer_len = strlen(buffer);
+				unsigned char c3 = buffer_len / BYTE_CAP;
+				unsigned char c4 = buffer_len % BYTE_CAP;
+				if (!ignoreLine) {
 					putc(c3, destFileDesc);
 					putc(c4, destFileDesc);
 					fputs(buffer, destFileDesc);
 					totalStringsCount++;
 				}
 				l = 0;
-				ignoreLine = 0;
+				ignoreLine = false;
 			}
 			else {
 				buffer[l] = c1;
