@@ -7,9 +7,10 @@
 #define LARGE_SPACE_SIZE 2048
 #define BYTE_CAP 256
 
-#define VERT 0x7C
-#define CR 0x0D
-#define LF 0x0A
+#define VERT '|' // 0x7C
+#define CR '\r' // 0x0D
+#define LF '\n' // 0x0A
+#define CARET '^' // 0x5E
 
 #define DAT ".dat"
 #define DAT_LEN strlen(DAT)
@@ -175,7 +176,7 @@ void txt2dat(char* srcFilename, char* destFilename) {
 	str2dat();
 	while (!feof(srcFileDesc)) {
 		unsigned char c1 = getc(srcFileDesc);
-		if ((l == 0) && (c1 == 0x5E)) {
+		if ((l == 0) && (c1 == CARET)) {
 			ignoreLine = true;
 		}
 		// restore the "|" in 0x0a
