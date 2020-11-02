@@ -35,10 +35,11 @@ void help(void) {
 // Represent an integer with four bytes
 // Modify the four bytes in-place
 void intToFourBytes(int i, unsigned char* c1, unsigned char* c2, unsigned char* c3, unsigned char* c4) {
-	*c1 = (i >> (CHAR_BIT * 3)) & 0xFF;
-	*c2 = (i >> (CHAR_BIT * 2)) & 0xFF;
-	*c3 = (i >> (CHAR_BIT * 1)) & 0xFF;
-	*c4 = (i >> (CHAR_BIT * 0)) & 0xFF;
+	unsigned int j = *(unsigned int*)&i;
+	*c4 = j & 0xFF;
+	*c3 = (j >>= CHAR_BIT) & 0xFF;
+	*c2 = (j >>= CHAR_BIT) & 0xFF;
+	*c1 = (j >>= CHAR_BIT) & 0xFF;
 }
 
 // Concatenate four bytes into an integer
