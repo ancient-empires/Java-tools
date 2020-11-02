@@ -152,7 +152,7 @@ void txt2dat(char* srcFilename, char* destFilename) {
 	c1 = getc(srcFileDesc);
 	c2 = getc(srcFileDesc);
 	c3 = getc(srcFileDesc);
-	if ((c1==0xEF) && (c2==0xBB) && (c3==0xBF)) {
+	if ((c1 == 0xEF) && (c2 == 0xBB) && (c3 == 0xBF)) {
 		printf("Detected and avoided the header EFBB BF from the text file.\n");
 	}
 	else {
