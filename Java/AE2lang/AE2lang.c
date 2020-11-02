@@ -42,7 +42,10 @@ void intToFourBytes(int i, unsigned char* c1, unsigned char* c2, unsigned char* 
 }
 
 int fourBytesToInt(unsigned char c1, unsigned char c2, unsigned char c3, unsigned char c4) {
-	int i = c1 * pow(BYTE_CAP, 3) + c2 * pow(BYTE_CAP, 2) + c3 * BYTE_CAP + c4;
+	int i = c1;
+	i = (i << CHAR_BIT) + c2;
+	i = (i << CHAR_BIT) + c3;
+	i = (i << CHAR_BIT) + c4;
 	return i;
 }
 
