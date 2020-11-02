@@ -4,6 +4,8 @@
 
 #define LARGE_SPACE_SIZE 2048
 
+#define BACKSLASH '\\'
+
 char* strrev(char* str) {
 	// reverse the input string in-place
 	char buffer[LARGE_SPACE_SIZE];
@@ -23,7 +25,7 @@ char* GetFilename(char* str) {
 	strrev(buffer);
 	int buffer_len = strlen(buffer);
 	for (int i = 0; i < buffer_len; ++i) {
-		if (buffer[i] == '\\') {
+		if (buffer[i] == BACKSLASH) {
 			buffer[i] = 0;
 			break;
 		}
