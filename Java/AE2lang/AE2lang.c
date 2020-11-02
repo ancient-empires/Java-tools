@@ -100,7 +100,7 @@ void dat2txt(char* srcFilename, char* destFilename) {
 		int textLen = fourBytesToInt(0, 0, c3, c4);
 		if ((textLen < 1) && (textLen != 0)) {
 			long int currentPos = ftell(srcFileDesc);
-			printf("ERROR when getting length for text no. %d at offset : %ld\n", strIdx, currentPos);
+			printf("ERROR when getting length for text no. %d at offset: %ld\n", strIdx, currentPos);
 			fclose(srcFileDesc);
 			fclose(destFileDesc);
 			exit(ERROR_RW);
