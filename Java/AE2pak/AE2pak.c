@@ -280,13 +280,13 @@ pack:
 	putc(o4,fn);
 
 
-	for (i=0;i<totalfiles;i++) {
-		strcpy(sdata,sdata2[i]);
+	for (i = 0; i < totalfiles; ++i) {
+		strcpy(sdata, sdata2[i]);
 		GetFilename(sdata);
 		k = strlen(sdata);
-		o3 = (k/256);
-		j = (o3*256);
-		k = (k-j);
+		o3 = k / 256;
+		j = o3 * 256;
+		k = k-j;
 		o4 = k;
 
 		putc(o3,fn);
@@ -332,7 +332,8 @@ pack:
 		putc(o4,fn);
 
 	}
-	//�criture du header de la position de fin du header
+
+	// Writing the header of the end position of the header
 	fseek (fn, 0, SEEK_END);
 	filepos = ftell(fn);
 	k = filepos;
@@ -347,7 +348,7 @@ pack:
 	putc(o3,fn);
 	putc(o4,fn);
 
-	//paquetage des fichiers
+	// package files
 	rewind(fn);
 	fseek (fn, filepos, 0);
 
