@@ -177,39 +177,32 @@ void txt2dat(char* srcFilename, char* destFilename) {
 	// read and process the TXT file
 	str2dat();
 	while (!feof(srcFileDesc)) {
-		unsigned char c1 = getc(srcFileDesc);
+		c1 = getc(srcFileDesc);
+
 		if ((l == 0) && (c1 == CARET)) {
+			// ignore lines starting with ^ character
 			ignoreLine = true;
 		}
 
 		if (c1 == VERT) {
 			// Convert '|' in TXT to '\n' in DAT
-			c1 = LF;
+			buffer[l] = LF;
+			++l;
 		}
-		if (c1 == CR) {
+		else if (c1 == LF) {
 			// Process line endings in TXT
-			c1 = getc(srcFileDesc);
-			if (c1 == VERT) {
-				c1 = LF;
+			buffer[l] = 0;
+			int buffer_len = strlen(buffer);
+			unsigned char c3 = buffer_len / BYTE_CAP;
+			unsigned char c4 = buffer_len % BYTE_CAP;
+			if (!ignoreLine) {
+				putc(c3, destFileDesc);
+				putc(c4, destFileDesc);
+				fputs(buffer, destFileDesc);
+				totalStringsCount++;
 			}
-			if (c1 == LF) {
-				buffer[l] = 0;
-				int buffer_len = strlen(buffer);
-				unsigned char c3 = buffer_len / BYTE_CAP;
-				unsigned char c4 = buffer_len % BYTE_CAP;
-				if (!ignoreLine) {
-					putc(c3, destFileDesc);
-					putc(c4, destFileDesc);
-					fputs(buffer, destFileDesc);
-					totalStringsCount++;
-				}
-				l = 0;
-				ignoreLine = false;
-			}
-			else {
-				buffer[l] = c1;
-				++l;
-			}
+			l = 0;
+			ignoreLine = false;
 		}
 		else {
 			buffer[l] = c1;
