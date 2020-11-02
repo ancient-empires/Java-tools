@@ -42,7 +42,15 @@ void dat2txt(char* srcFilename, char* destFilename) {
 	// Check source file (.dat)
 	FILE* srcFileDesc = fopen(srcFilename,"rb");
 	if (!srcFileDesc) {
-		printf(" Error, could not open %s for reading !\n", srcFilename);
+		printf(" Error, could not open \"%s\" for reading !\n", srcFilename);
+		exit(ERROR_RW);
+	}
+
+	// Check destination file (.txt)
+	FILE* destFileDesc = fopen(destFilename, "w");
+	if (!destFileDesc) {
+		fclose(srcFileDesc);
+		printf("Error, could not open \"%s\" for writing !\n", destFilename);
 		exit(ERROR_RW);
 	}
 
@@ -60,14 +68,6 @@ void dat2txt(char* srcFilename, char* destFilename) {
 		// incorrect format
 		fclose(srcFileDesc);
 		printf("\nError, incorrect format ? : %d (totalStrings announced in 4 first bytes)\n\n", totalStrings);
-		exit(ERROR_RW);
-	}
-
-	// Check destination file (.txt)
-	FILE* destFileDesc = fopen(destFilename, "w");
-	if (!destFileDesc) {
-		fclose(srcFileDesc);
-		printf("Error, could not open %s for writing !\n", destFilename);
 		exit(ERROR_RW);
 	}
 
