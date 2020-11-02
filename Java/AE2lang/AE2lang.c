@@ -53,7 +53,7 @@ void dat2txt(char* srcFilename, char* destFilename) {
 	// Check source file (.dat)
 	FILE* srcFileDesc = fopen(srcFilename,"rb");
 	if (!srcFileDesc) {
-		printf(" Error, could not open \"%s\" for reading !\n", srcFilename);
+		printf(" ERROR: could not open \"%s\" for reading !\n", srcFilename);
 		exit(ERROR_RW);
 	}
 
@@ -61,7 +61,7 @@ void dat2txt(char* srcFilename, char* destFilename) {
 	FILE* destFileDesc = fopen(destFilename, "w");
 	if (!destFileDesc) {
 		fclose(srcFileDesc);
-		printf("Error, could not open \"%s\" for writing !\n", destFilename);
+		printf("ERROR: could not open \"%s\" for writing !\n", destFilename);
 		exit(ERROR_RW);
 	}
 
@@ -78,7 +78,7 @@ void dat2txt(char* srcFilename, char* destFilename) {
 	if (totalStrings < 1) {
 		// incorrect format
 		fclose(srcFileDesc);
-		printf("\nError, incorrect format ? : %d (totalStrings announced in 4 first bytes)\n\n", totalStrings);
+		printf("\nERROR: incorrect format: %d (totalStrings announced in 4 first bytes)\n\n", totalStrings);
 		exit(ERROR_RW);
 	}
 
@@ -95,7 +95,7 @@ void dat2txt(char* srcFilename, char* destFilename) {
 		int textLen = fourBytesToInt(0, 0, c3, c4);
 		if ((textLen < 1) && (textLen != 0)) {
 			long int currentPos = ftell(srcFileDesc);
-			printf("Error when getting length for text no. %d at offset : %ld\n", strIdx, currentPos);
+			printf("ERROR when getting length for text no. %d at offset : %ld\n", strIdx, currentPos);
 			fclose(srcFileDesc);
 			fclose(destFileDesc);
 			exit(ERROR_RW);
@@ -113,7 +113,7 @@ void dat2txt(char* srcFilename, char* destFilename) {
 			// check if reached the end of file unexpectedly
 			if (feof(srcFileDesc) && ((textLen + 1) != totalStrings)) {
 				long int currentPos = ftell(srcFileDesc);
-				printf("Reached end of file unexpected when reading text no. %d at offset : %ld\n", strIdx, currentPos);
+				printf("ERROR: Reached end of file unexpected when reading text no. %d at offset %ld\n", strIdx, currentPos);
 				fclose(srcFileDesc);
 				fclose(destFileDesc);
 				exit(ERROR_RW);
@@ -147,14 +147,14 @@ void txt2dat(char* srcFilename, char* destFilename) {
 	// Check source file (.txt)
 	FILE* srcFileDesc = fopen(srcFilename, "r");
 	if (!srcFileDesc) {
-		printf("Error, could not open \"%s\" for reading !\n", srcFilename);
+		printf("ERROR: could not open \"%s\" for reading !\n", srcFilename);
 		exit(ERROR_RW);
 	}
 
 	// Check destination file (.dat)
 	FILE* destFileDesc = fopen(destFilename, "wb");
 	if (!destFileDesc) {
-		printf("Error, could not open \"%s\" for writing !\n", destFilename);
+		printf("ERROR: could not open \"%s\" for writing !\n", destFilename);
 		fclose(srcFileDesc);
 		exit(ERROR_RW);
 	}
@@ -199,8 +199,10 @@ void txt2dat(char* srcFilename, char* destFilename) {
 			// process line endings in TXT
 			buffer[l] = 0;
 			int buffer_len = strlen(buffer);
-			unsigned char c3 = buffer_len / BYTE_CAP;
-			unsigned char c4 = buffer_len % BYTE_CAP;
+			intToFourBytes(buffer_len, &c1, &c2, &c3, &c4);
+			if ((c1 != 0) || (c2 != 0)) {
+				printf("ERROR: buffer content \"%s\" is too long to fit\n", buffer);
+			}
 			if (!ignoreLine) {
 				putc(c3, destFileDesc);
 				putc(c4, destFileDesc);
