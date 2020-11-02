@@ -5,7 +5,10 @@
 #define LARGE_SPACE_SIZE 2048
 #define BYTE_CAP 256
 
-#define BACKSLASH '\\'
+#define CR 0x0D
+#define LF 0x0A
+#define DBQUOTE '"' // 0x22
+#define BACKSLASH '\\' // 0x5C
 
 char* strrev(char* str) {
 	// reverse the input string in-place
@@ -111,7 +114,7 @@ int main(int argc, char *argv[]) {
 	help();
 
 extract:
-	printf("Extracting...\n",j);
+	printf("Extracting...\n");
 	fo = fopen(argv[1],"rb");
 	if (!fo) {
 		printf("error:file %s not found.\n",argv[1]);
@@ -137,10 +140,12 @@ extract:
 	if (argv[3]) {
 		strcpy(sdata3,argv[3]);
 		k = strlen(sdata3);
-		if (sdata3[k-1]==0x22)
-			sdata3[k-1]=0;
-		if (sdata3[k-1]==0x5c)
-			sdata3[k-1]=0;
+		if (sdata3[k-1] == DBQUOTE) {
+			sdata3[k-1] = 0;
+		}
+		if (sdata3[k-1] == BACKSLASH) {
+			sdata3[k-1] = 0;
+		}
 		strcat(sdata3,"\\_filelist.txt");
 		strcpy(sdata,sdata3);
 		//printf("%s\n",sdata);
@@ -148,7 +153,7 @@ extract:
 	else
 		strcpy(sdata,"_filelist.txt");
 
-	printf(" Filelist is '%s'\n",sdata);
+	printf(" Filelist is '%s'\n", sdata);
 
 	fl = fopen(sdata,"wb");
 
@@ -178,10 +183,12 @@ extract:
 		if (argv[3]) {
 		strcpy(sdata3,argv[3]);
 		k = strlen(sdata3);
-		if (sdata3[k-1]==0x22)
+		if (sdata3[k-1] == DBQUOTE) {
 			sdata3[k-1]=0;
-		if (sdata3[k-1]==0x5c)
+		}
+		if (sdata3[k-1] == BACKSLASH) {
 			sdata3[k-1]=0;
+		}
 		strcat(sdata3,"\\");
 		strcat(sdata3,sdata);
 		strcpy(sdata,sdata3);
@@ -206,7 +213,7 @@ extract:
 pack:
 	if (!argv[3]) help();
 
-	printf("Packing...\n",j);
+	printf("Packing...\n");
 	fo = fopen(argv[3],"r");
 	if (!fo) {
 		printf(" Error, file %s not found.\n",argv[3]);
@@ -244,13 +251,13 @@ pack:
 		exit(0);
 	}
 
-	if (totalfiles==0) {
+	if (totalfiles == 0) {
 		printf("Nothing to pack. Check your files!\n");
 		exit(1);
 	}
 
-	if (totalfiles>512) {
-		printf("Sorry, this crappy exe cannot pack more than 512 files !");
+	if (totalfiles > LARGE_SPACE_SIZE) {
+		printf("Sorry, this crappy exe cannot pack more than %d files!\n", LARGE_SPACE_SIZE);
 		exit(1);
 	}
 
@@ -267,11 +274,8 @@ pack:
 	putc(0xFF,fn);
 	putc(0xFF,fn);
 
-	i = totalfiles;
-	o3 = i / BYTE_CAP;
-	j = o3*BYTE_CAP;
-	i = i-j;
-	o4 = i;
+	o3 = totalfiles / BYTE_CAP;
+	o4 = totalfiles % BYTE_CAP;
 	//printf("\n\nDEBUG %x %x %x %x\n\n",o1,o2,o3,o4);
 	putc(o3,fn);
 	putc(o4,fn);
