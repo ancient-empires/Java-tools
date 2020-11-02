@@ -25,7 +25,7 @@ dat2txt: all
 	$(call CHECK_ARGS)
 	./$(TARGET).out $(DAT) $(TXT)
 
-.PHONY: dat2txt
+.PHONY: txt2dat
 txt2dat: all
 	$(call CHECK_ARGS)
 	./$(TARGET).out $(TXT) $(DAT)
