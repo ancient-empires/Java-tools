@@ -223,10 +223,12 @@ pack:
 	printf("Checking filelist...\n");
 	while(!feof(fo)) {
 		sdata[0]=0;
-		fgets(sdata, 512, fo);
+		fgets(sdata, LARGE_SPACE_SIZE, fo);
 		k = strlen(sdata);
-		if ( (k>0) && ((sdata[k-1]==0x0A) || (sdata[k-1]==0x0D)) )sdata[k-1]=0;
-		if ( (strcmp(sdata2[totalfiles],sdata)) && (k>1) ) {
+		if ((k>0) && ((sdata[k-1]==0x0A) || (sdata[k-1]==0x0D))) {
+			sdata[k-1]=0;
+		}
+		if ((strcmp(sdata2[totalfiles],sdata)) && (k>1)) {
 			strcpy(sdata2[totalfiles],sdata);
 			fo3 = fopen(sdata2[totalfiles],"rb");
 			if (!fo3) {
@@ -241,32 +243,29 @@ pack:
 				//printf("'%s' %d bytes\n",sdata2[totalfiles],sdata2s[totalfiles]);
 			}
 			totalfiles++;
-			if (totalfiles>512) break;
+			if (totalfiles > LARGE_SPACE_SIZE) break;
 		}
 	}
 	fclose(fo);
 
-	if (totalerrors>0) {
-		printf("Sorry, could not found %d files, fix the problem before retrying.\n",totalerrors);
+	if (totalerrors > 0) {
+		printf("Sorry, could not found %d files, fix the problem before retrying.\n", totalerrors);
 		exit(0);
 	}
-
-	if (totalfiles == 0) {
+	else if (totalfiles == 0) {
 		printf("Nothing to pack. Check your files!\n");
 		exit(1);
 	}
-
-	if (totalfiles > LARGE_SPACE_SIZE) {
+	else if (totalfiles > LARGE_SPACE_SIZE) {
 		printf("Sorry, this crappy exe cannot pack more than %d files!\n", LARGE_SPACE_SIZE);
 		exit(1);
 	}
 
 	fn = fopen(argv[1],"wb");
-	if (!fn)
-		{
+	if (!fn) {
 		printf("Error, could not open file %s for writing\n",argv[1]);
 		exit(1);
-		}
+	}
 
 
 	rewind(fn);
@@ -296,20 +295,20 @@ pack:
 		fputs(sdata,fn);
 
 
-		//position relative
+		// position relative
 		k = filepos;
-		o1 = (k/16777216);
-		j = (o1*16777216);
+		o1 = k / 16777216;
+		j = o1 * 16777216;
 
-		k = (k-j);
-		o2 = (k/65536);
-		j = (o2*65536);
+		k = k - j;
+		o2 = k / 65536;
+		j = o2 * 65536;
 
-		k = (k-j);
-		o3 = (k/256);
-		j = (o3*256);
+		k = k - j;
+		o3 = k / 256;
+		j = o3 * 256;
 
-		k = (k-j);
+		k = k-j;
 		o4 = k;
 		//printf("\n\nDEBUG %x %x %x %x\n\n",o1,o2,o3,o4);
 		//printf("\n\nDEBUG %d\n\n",sdata2s[i]);
