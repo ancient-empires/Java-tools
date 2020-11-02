@@ -3,9 +3,10 @@
 #include <stdbool.h>
 #include <string.h>
 #include <math.h>
+#include <limits.h>
 
 #define LARGE_SPACE_SIZE 2048
-#define BYTE_CAP 256
+#define BYTE_CAP (unsigned int)pow(2, CHAR_BIT)
 
 #define ERROR_RW -1
 #define ERROR_ARGS 1
@@ -31,9 +32,19 @@ void help(void) {
 	printf("  looking at the files extensions (minuscule only)\n\n");
 }
 
-// void intToFourBytes(int i, char* c1, char* c2, char* c3, char* c4) {
-//
-// }
+// Represent an integer with four bytes
+// Modify the four bytes in-place
+void intToFourBytes(int i, unsigned char* c1, unsigned char* c2, unsigned char* c3, unsigned char* c4) {
+	*c1 = (i >> (CHAR_BIT * 3)) & 0xFF;
+	*c2 = (i >> (CHAR_BIT * 2)) & 0xFF;
+	*c3 = (i >> (CHAR_BIT * 1)) & 0xFF;
+	*c4 = (i >> (CHAR_BIT * 0)) & 0xFF;
+}
+
+int fourBytesToInt(unsigned char c1, unsigned char c2, unsigned char c3, unsigned char c4) {
+	int i = c1 * pow(BYTE_CAP, 3) + c2 * pow(BYTE_CAP, 2) + c3 * BYTE_CAP + c4;
+	return i;
+}
 
 // Convert DAT to TXT
 void dat2txt(char* srcFilename, char* destFilename) {
@@ -62,7 +73,7 @@ void dat2txt(char* srcFilename, char* destFilename) {
 	c2 = getc(srcFileDesc);
 	c3 = getc(srcFileDesc);
 	c4 = getc(srcFileDesc);
-	int totalStrings = c1 * pow(BYTE_CAP, 3) + c2 * pow(BYTE_CAP, 2) + c3 * BYTE_CAP + c4;
+	int totalStrings = fourBytesToInt(c1, c2, c3, c4);
 	printf("Number of total strings: %d\n", totalStrings);
 	if (totalStrings < 1) {
 		// incorrect format
@@ -81,7 +92,7 @@ void dat2txt(char* srcFilename, char* destFilename) {
 		// For each text field in the .dat file, the first two bytes indicate string length in bytes.
 		c3 = getc(srcFileDesc);
 		c4 = getc(srcFileDesc);
-		int textLen = c3 * BYTE_CAP + c4;
+		int textLen = fourBytesToInt(0, 0, c3, c4);
 		if ((textLen < 1) && (textLen != 0)) {
 			long int currentPos = ftell(srcFileDesc);
 			printf("Error when getting length for text no. %d at offset : %ld\n", strIdx, currentPos);
@@ -217,14 +228,9 @@ void txt2dat(char* srcFilename, char* destFilename) {
 	rewind(destFileDesc);
 
 	// put number of total strings in the first 4 bytes
-
-	// first 2 bytes
-	putc(0x0, destFileDesc);
-	putc(0x0, destFileDesc);
-
-	// 3rd and 4th bytes
-	c3 = totalStringsCount / BYTE_CAP;
-	c4 = totalStringsCount % BYTE_CAP;
+	intToFourBytes(totalStringsCount, &c1, &c2, &c3, &c4);
+	putc(c1, destFileDesc);
+	putc(c2, destFileDesc);
 	putc(c3, destFileDesc);
 	putc(c4, destFileDesc);
 
