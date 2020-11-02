@@ -16,7 +16,7 @@ char* strrev(char* str) {
 	strcpy(buffer, str);
 	int buffer_len = strlen(buffer);
 	for (int i = 0; i < buffer_len; ++i) {
-		buffer[buffer_len - 1 - i] = str[i];
+		buffer[buffer_len-1-i] = str[i];
 	}
 	strcpy(str, buffer);
 	return str;
