@@ -111,13 +111,10 @@ void dat2txt(char* srcFilename, char* destFilename) {
 			// Put extracted string in buffer, in order to write into TXT.
 			buffer[charIdx] = c1;
 		}
-		buffer[charIdx] = '\0'; // NULL byte
+		buffer[charIdx] = '\0';
 
-		// Put CRLF at the end of each line, for each string.
-		// CRLF is Windows convention.
-		// CRLF is used, as this program was initially written for Windows.
+		// Put LF at the end of each line, for each string.
 		fputs(buffer, destFileDesc);
-		putc(CR, destFileDesc);
 		putc(LF, destFileDesc);
 		totalStringsCount++;
 	}
