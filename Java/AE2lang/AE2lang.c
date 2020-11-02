@@ -184,13 +184,8 @@ void txt2dat(char* srcFilename, char* destFilename) {
 			ignoreLine = true;
 		}
 
-		if (c1 == VERT) {
-			// Convert '|' in TXT to '\n' in DAT
-			buffer[l] = LF;
-			++l;
-		}
-		else if (c1 == LF) {
-			// Process line endings in TXT
+		if (c1 == LF) {
+			// process line endings in TXT
 			buffer[l] = 0;
 			int buffer_len = strlen(buffer);
 			unsigned char c3 = buffer_len / BYTE_CAP;
@@ -201,10 +196,16 @@ void txt2dat(char* srcFilename, char* destFilename) {
 				fputs(buffer, destFileDesc);
 				totalStringsCount++;
 			}
+			// line processing finished
 			l = 0;
 			ignoreLine = false;
 		}
 		else {
+			// process all characters other than line endings
+			if (c1 == VERT) {
+				// Convert '|' in TXT to '\n' in DAT
+				c1 = LF;
+			}
 			buffer[l] = c1;
 			++l;
 		}
