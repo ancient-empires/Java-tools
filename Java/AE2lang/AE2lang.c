@@ -262,15 +262,15 @@ int main(int argc, char *argv[]) {
 	}
 
 	// DAT to TXT conversion
-	if (!strncmp(&srcFilename[srcFilenameLen - DAT_LEN], DAT, DAT_LEN)
-		&& !strncmp(&destFilename[destFilenameLen - TXT_LEN], TXT, TXT_LEN)) {
+	if (!strncmp(&srcFilename[srcFilenameLen-DAT_LEN], DAT, DAT_LEN)
+		&& !strncmp(&destFilename[destFilenameLen-TXT_LEN], TXT, TXT_LEN)) {
 		dat2txt(srcFilename, destFilename);
 		return 0;
 	}
 
 	// TXT to DAT conversion
-	else if (!strncmp(&srcFilename[srcFilenameLen - TXT_LEN], TXT, TXT_LEN)
-		&& !strncmp(&destFilename[destFilenameLen - DAT_LEN], DAT, DAT_LEN)) {
+	else if (!strncmp(&srcFilename[srcFilenameLen-TXT_LEN], TXT, TXT_LEN)
+		&& !strncmp(&destFilename[destFilenameLen-DAT_LEN], DAT, DAT_LEN)) {
 		txt2dat(srcFilename, destFilename);
 		return 0;
 	}
