@@ -1,45 +1,48 @@
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 
-char* strrev(char* str){
-	// Reverse the input string in-place
-	char buffer[512];
+#define LARGE_SPACE_SIZE 2048
+
+char* strrev(char* str) {
+	// reverse the input string in-place
+	char buffer[LARGE_SPACE_SIZE];
 	strcpy(buffer, str);
-	int temp_buffer_len = strlen(buffer);
-	for (int i = 0; i < temp_buffer_len; ++i) {
-		buffer[temp_buffer_len - 1 - i] = str[i];
+	int buffer_len = strlen(buffer);
+	for (int i = 0; i < buffer_len; ++i) {
+		buffer[buffer_len - 1 - i] = str[i];
 	}
 	strcpy(str, buffer);
 	return str;
 }
 
-void GetFilename(char* sdata){
- int i, k;
- char sdata2[512];
- strcpy(sdata2,sdata);
- strrev(sdata2);
- k = strlen(sdata2);
- for (i=0;i<k;i++){
-	if (sdata2[i]=='\\'){
-		sdata2[i]=0;
-		break;
+char* GetFilename(char* str) {
+	// get filename from str, and save it in-place
+	char buffer[LARGE_SPACE_SIZE];
+	strcpy(buffer, str);
+	strrev(buffer);
+	int buffer_len = strlen(buffer);
+	for (int i = 0; i < buffer_len; ++i) {
+		if (buffer[i] == '\\') {
+			buffer[i] = 0;
+			break;
+		}
 	}
- }
- strrev(sdata2);
- strcpy(sdata,sdata2);
- return;
+	strrev(buffer);
+	strcpy(str, buffer);
+	return str;
 }
 
-void help(void){
- printf(" byblo - 200x - http://go.to/byblo - byblo@hotmail.com\n");
- printf("\n please use the following syntax :\n");
- printf(" AE2pak.exe filename.pak -e (extract) c:\\extract_path (optional)\n");
- printf("  or\n");
- printf(" AE2pak.exe filename.pak -p (pack) filelist.txt\n\n");
- exit(0);
+void help(void) {
+	printf(" byblo - 200x - http://go.to/byblo - byblo@hotmail.com\n");
+	printf("\n please use the following syntax :\n");
+	printf(" AE2pak.exe filename.pak -e (extract) c:\\extract_path (optional)\n");
+	printf("  or\n");
+	printf(" AE2pak.exe filename.pak -p (pack) filelist.txt\n\n");
+	exit(0);
 }
 
-char extract(char* fo2s,char* fn2s,unsigned long int filepos,unsigned long int filesize){
+char extract(char* fo2s,char* fn2s,unsigned long int filepos,unsigned long int filesize) {
  FILE *fo2, *fn2;
  unsigned int i,j;
  unsigned char o1;
@@ -54,15 +57,14 @@ char extract(char* fo2s,char* fn2s,unsigned long int filepos,unsigned long int f
  fseek(fo2, filepos, 0);
 
  fn2 = fopen(fn2s,"wb");
- if (!fn2)
-	{
-	printf(" Error, could not open %s for writing !\n",fn2s);
-	fclose(fo2);
-	return 0;
+	if (!fn2) {
+		printf(" Error, could not open %s for writing !\n",fn2s);
+		fclose(fo2);
+		return 0;
 	}
- for (i=0;i<filesize;i++){
-	o1=getc(fo2);
-	if (feof(fo2)){
+ for (i=0;i<filesize;i++) {
+	o1 = getc(fo2);
+	if (feof(fo2)) {
 		printf(" Error, eof reached when extracting!\n Check your file !");
 		fclose(fo2);
 		fclose(fn2);
@@ -94,12 +96,12 @@ printf("\n Ancient Empires II packer-unpacker v0.11b\n\n"); //titre du programme
 
 if(idx<2) help(); //CHECK1=v�rifie qu'il y a bien au moins 3 parametres
 
-if (!strcmp(argv[2],"-e")){
+if (!strcmp(argv[2],"-e")) {
 	goto extract;
 	exit(0);
 }
 
-if (!strcmp(argv[2],"-p")){
+if (!strcmp(argv[2],"-p")) {
 	goto pack;
 	exit(0);
 }
@@ -109,7 +111,7 @@ help();
 extract:
 printf("Extracting...\n",j);
 fo = fopen(argv[1],"rb");
-if (!fo){
+if (!fo) {
 	printf("error:file %s not found.\n",argv[1]);
 	fclose(fo);
 	exit(1);
@@ -124,13 +126,13 @@ o2=getc(fo);
 totalfiles = ((o1*256)+o2);
 printf("Total Files announced : %d\n",totalfiles);
 
-if (feof(fo)){
+if (feof(fo)) {
 	fclose(fo);
 	printf("error:unexpected end of file \n : %s.\n",argv[1]);
 	exit(1);
 }
 
-if (argv[3]){
+if (argv[3]) {
 	strcpy(sdata3,argv[3]);
 	k = strlen(sdata3);
 	if (sdata3[k-1]==0x22)
@@ -148,18 +150,18 @@ printf(" Filelist is '%s'\n",sdata);
 
 fl = fopen(sdata,"wb");
 
-if (!fl){
+if (!fl) {
 	printf("error:logging file %s cannot be created for writing.\n",sdata);
 	fclose(fo);
 	fclose(fl);
 	exit(1);
 	}
 
-for (i=0;i<totalfiles;i++){
+for (i=0;i<totalfiles;i++) {
 	o1=getc(fo);
 	o2=getc(fo);
 	k = ((o1*256)+o2);
-	for (j=0;j<k;j++){
+	for (j=0;j<k;j++) {
 		sdata[j]=getc(fo);
 	}
 	sdata[j]=0;
@@ -171,7 +173,7 @@ for (i=0;i<totalfiles;i++){
 	o1=getc(fo);
 	o2=getc(fo);
 	filesize = ((o1*256)+o2);
-	if (argv[3]){
+	if (argv[3]) {
 	strcpy(sdata3,argv[3]);
 	k = strlen(sdata3);
 	if (sdata3[k-1]==0x22)
@@ -204,21 +206,21 @@ if (!argv[3]) help();
 
 printf("Packing...\n",j);
 fo = fopen(argv[3],"r");
-if (!fo){
+if (!fo) {
 	printf(" Error, file %s not found.\n",argv[3]);
 	help();
 	}
 rewind(fo);
 printf("Checking filelist...\n");
-while(!feof(fo)){
+while(!feof(fo)) {
 	sdata[0]=0;
 	fgets(sdata, 512, fo);
 	k = strlen(sdata);
 	if ( (k>0) && ((sdata[k-1]==0x0A) || (sdata[k-1]==0x0D)) )sdata[k-1]=0;
-	if ( (strcmp(sdata2[totalfiles],sdata)) && (k>1) ){
+	if ( (strcmp(sdata2[totalfiles],sdata)) && (k>1) ) {
 		strcpy(sdata2[totalfiles],sdata);
 		fo3 = fopen(sdata2[totalfiles],"rb");
-		if (!fo3){
+		if (!fo3) {
 			printf("Error, could not found : %s\n",sdata2[totalfiles]);
 			totalerrors++;
 		}
@@ -235,17 +237,17 @@ while(!feof(fo)){
 }
 fclose(fo);
 
-if (totalerrors>0){
+if (totalerrors>0) {
 	printf("Sorry, could not found %d files, fix the problem before retrying.\n",totalerrors);
 	exit(0);
 }
 
-if (totalfiles==0){
+if (totalfiles==0) {
 	printf("Nothing to pack. Check your files!\n");
 	exit(1);
 }
 
-if (totalfiles>512){
+if (totalfiles>512) {
 	printf("Sorry, this crappy exe cannot pack more than 512 files !");
 	exit(1);
 }
@@ -275,7 +277,7 @@ putc(o3,fn);
 putc(o4,fn);
 
 
-for (i=0;i<totalfiles;i++){
+for (i=0;i<totalfiles;i++) {
 	strcpy(sdata,sdata2[i]);
 	GetFilename(sdata);
 	k = strlen(sdata);
@@ -346,16 +348,16 @@ putc(o4,fn);
 rewind(fn);
 fseek (fn, filepos, 0);
 
-for (i=0;i<totalfiles;i++){
+for (i=0;i<totalfiles;i++) {
 	fo = fopen(sdata2[i],"rb");
-	if (!fo){
+	if (!fo) {
 		printf("Error, could not open file %s for reading\n",sdata2[i]);
 		fclose(fn);
 		exit(1);
 		}
 	//printf("packing file %d from : %s, %d byte(s)\n",i,sdata2[i],sdata2s[i]);
 	j=0;
-	while(!feof(fo)){
+	while(!feof(fo)) {
 		o1=getc(fo);
 		if (!feof(fo)) putc(o1,fn);
 		j++;
