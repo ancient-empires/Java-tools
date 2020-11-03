@@ -1,20 +1,18 @@
 TARGET := AE2lang
 
 src := $(TARGET).c ../utils/utils.c
-CFLAGS := -g -Wall -Werror
-
 objs := $(src:.c=.o)
-
-deps := $(src:.c=.d)
--include $(deps)
-DEPFLAGS = -MMD -MF $(@:.o=.d)
-CC_WRITE_DEP = $(CC) $(CFLAGS) -c $< -o "$@" $(DEPFLAGS)
 
 .PHONY: all
 all: $(TARGET).out
 
+-include ../common/Makefile
+
 $(TARGET).out: $(objs)
 	$(CC) $^ -o "$@"
+
+deps := $(src:.c=.d)
+-include $(deps)
 
 %.o: %.c
 	if [ "$(@D)" = . ]; then \
@@ -25,7 +23,7 @@ $(TARGET).out: $(objs)
 
 .PHONY: clean
 clean:
-	-rm -rf *.o *.out
+	$(CLEAN)
 ifeq ($(R),1)
 	for d in $(dir $(objs)); do \
 		if [ "$$d" != ./ ]; then \
