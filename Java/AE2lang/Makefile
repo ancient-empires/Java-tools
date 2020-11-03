@@ -1,8 +1,14 @@
 TARGET := AE2lang
+
 src := $(TARGET).c ../utils/utils.c
+CFLAGS := -g -Wall -Werror
+
 objs := $(src:.c=.o)
 
-CFLAGS := -g -Wall -Werror
+deps := $(src:.c=.d)
+-include $(deps)
+DEPFLAGS = -MMD -MF $(@:.o=.d)
+CC_WRITE_DEP = $(CC) $(CFLAGS) -c $< -o "$@" $(DEPFLAGS)
 
 .PHONY: all
 all: $(TARGET).out
@@ -12,7 +18,7 @@ $(TARGET).out: $(objs)
 
 %.o: %.c
 	if [ "$(@D)" = . ]; then \
-		$(CC) $(CFLAGS) -c "$^" -o $@; \
+		$(CC_WRITE_DEP); \
 	else \
 		$(MAKE) "$@" -C "$(@D)" CFLAGS="$(CFLAGS)"; \
 	fi

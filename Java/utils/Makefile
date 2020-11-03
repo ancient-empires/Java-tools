@@ -8,6 +8,7 @@ all: $(TARGET).o
 deps := $(TARGET).d
 -include $(deps)
 DEPFLAGS = -MMD -MF $(@:.o=.d)
+CC_WRITE_DEP = $(CC) $(CFLAGS) -c $< -o "$@" $(DEPFLAGS)
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o "$@" $(DEPFLAGS)
