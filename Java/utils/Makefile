@@ -3,8 +3,6 @@ TARGET := utils
 src := $(TARGET).c
 objs := $(src:.c=.o)
 
-CFLAGS := -g -Wall -Werror
-
 .PHONY: all
 all: $(TARGET).o
 
