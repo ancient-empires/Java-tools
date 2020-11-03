@@ -6,11 +6,13 @@ objs := $(src:.c=.o)
 .PHONY: all
 all: $(TARGET).out
 
+# common parts
 -include ../common/Makefile
 
 $(TARGET).out: $(objs)
 	$(CC) $^ -o "$@"
 
+# automatic prerequisite generation
 deps := $(src:.c=.d)
 -include $(deps)
 
