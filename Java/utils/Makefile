@@ -7,12 +7,10 @@ all: $(TARGET).o
 
 deps := $(TARGET).d
 -include $(deps)
+DEPFLAGS = -MMD -MF $(@:.o=.d)
 
-%.o: %.c %.d
-	$(CC) $(CFLAGS) -c $< -o "$@"
-
-%.d: %.c
-	$(CC) -MM $^ -MF $@
+%.o: %.c
+	$(CC) $(CFLAGS) -c $< -o "$@" $(DEPFLAGS)
 
 .PHONY: clean
 clean:
