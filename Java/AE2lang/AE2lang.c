@@ -4,6 +4,8 @@
 #include <string.h>
 #include <limits.h>
 
+#include "../utils/utils.h"
+
 #define LARGE_SPACE_SIZE 2048
 #define BYTE_CAP (unsigned int)pow(2, CHAR_BIT)
 
@@ -29,25 +31,6 @@ void help(void) {
 	printf(" AE2lang lang.txt lang.dat (txt2dat)\n\n");
 	printf(" Note that the appropriate function is selected\n");
 	printf("  looking at the files extensions (minuscule only)\n\n");
-}
-
-// Represent an integer with four bytes
-// Modify the four bytes in-place
-void intToFourBytes(int i, unsigned char* c1, unsigned char* c2, unsigned char* c3, unsigned char* c4) {
-	unsigned int j = *(unsigned int*)&i;
-	*c4 = j & 0xFF;
-	*c3 = (j >>= CHAR_BIT) & 0xFF;
-	*c2 = (j >>= CHAR_BIT) & 0xFF;
-	*c1 = (j >>= CHAR_BIT) & 0xFF;
-}
-
-// Concatenate four bytes into an integer
-int fourBytesToInt(unsigned char c1, unsigned char c2, unsigned char c3, unsigned char c4) {
-	int i = c1;
-	i = (i << CHAR_BIT) + c2;
-	i = (i << CHAR_BIT) + c3;
-	i = (i << CHAR_BIT) + c4;
-	return i;
 }
 
 // Convert DAT to TXT

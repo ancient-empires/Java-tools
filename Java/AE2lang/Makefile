@@ -1,17 +1,32 @@
 TARGET := AE2lang
+src := $(TARGET).c ../utils/utils.c
+objs := $(src:.c=.o)
+
+CFLAGS := -g -Wall -Werror
 
 .PHONY: all
 all: $(TARGET).out
 
-$(TARGET).out: $(TARGET).o
+$(TARGET).out: $(objs)
 	$(CC) $^ -o "$@"
 
 %.o: %.c
-	$(CC) -g -Wall -Werror -c $^ -o "$@"
+	if [ "$(@D)" = . ]; then \
+		$(CC) $(CFLAGS) -c "$^" -o $@; \
+	else \
+		$(MAKE) "$@" -C "$(@D)" CFLAGS="$(CFLAGS)"; \
+	fi
 
 .PHONY: clean
 clean:
 	-rm -rf *.o *.out
+ifeq ($(R),1)
+	for d in $(dir $(objs)); do \
+		if [ "$$d" != ./ ]; then \
+			$(MAKE) $@ -C $$d; \
+		fi; \
+	done
+endif
 
 # Check variables "DAT" and "TXT" before making conversions
 ERROR_MSG := "ERROR: Invalid DAT and/or TXT file"
