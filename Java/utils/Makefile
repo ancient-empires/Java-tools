@@ -1,18 +1,23 @@
 TARGET := utils
 
+src := $(TARGET).c
+objs := $(src:.c=.o)
+
 CFLAGS := -g -Wall -Werror
 
 .PHONY: all
 all: $(TARGET).o
 
-deps := $(TARGET).d
+# common parts
+-include ../common/Makefile
+
+# automatic prerequisite generation
+deps := $(src:.c=.d)
 -include $(deps)
-DEPFLAGS = -MMD -MF $(@:.o=.d)
-CC_WRITE_DEP = $(CC) $(CFLAGS) -c $< -o "$@" $(DEPFLAGS)
 
 %.o: %.c
-	$(CC) $(CFLAGS) -c $< -o "$@" $(DEPFLAGS)
+	$(CC_WRITE_DEP)
 
 .PHONY: clean
 clean:
-	-rm -rf *.o *.d
+	$(CLEAN)
