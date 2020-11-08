@@ -1,14 +1,38 @@
 TARGET := AE2pak
 
+src := $(TARGET).c ../utils/utils.c
+objs := $(src:.c=.o)
+
 .PHONY: all
 all: $(TARGET).out
 
-$(TARGET).out: $(TARGET).o
+# common parts
+common := ../common/Makefile
+-include $(common)
+
+$(TARGET).out: $(objs)
 	$(CC) $^ -o "$@"
 
+# automatic prerequisite generation
+deps := $(src:.c=.d)
+-include $(deps)
+
 %.o: %.c
-	$(CC) -g -Wall -Werror -c $^ -o "$@"
+	if [ "$(@D)" = . ]; then \
+		$(CC_WRITE_DEP); \
+	else \
+		# Generate targets in other directories \
+		$(MAKE) "$@" -C "$(@D)" CFLAGS="$(CFLAGS)"; \
+	fi
 
 .PHONY: clean
 clean:
-	-rm -rf *.o *.out
+	$(CLEAN)
+# Use R=1 to recursively clean up generated files in other directories
+ifeq ($(R),1)
+	for d in $(dir $(objs)); do \
+		if [ "$$d" != ./ ]; then \
+			$(MAKE) "$@" -C "$$d"; \
+		fi; \
+	done
+endif

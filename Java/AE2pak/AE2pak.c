@@ -2,13 +2,9 @@
 #include <string.h>
 #include <stdlib.h>
 
-#define LARGE_SPACE_SIZE 2048
-#define BYTE_CAP 256
+#include "../utils/utils.h"
 
-#define CR 0x0D
-#define LF 0x0A
-#define DBQUOTE '"' // 0x22
-#define BACKSLASH '\\' // 0x5C
+#define LARGE_SPACE_SIZE 2048
 
 // Reverse the input string in-place
 char* strrev(char* str) {
@@ -50,7 +46,7 @@ void help(void) {
 
 char extract(char* fo2s,char* fn2s,unsigned long int filepos,unsigned long int filesize) {
 	FILE *fo2, *fn2;
-	unsigned int i,j;
+	unsigned int i;
 	unsigned char o1;
 
 	fo2 = fopen(fo2s,"rb");
@@ -88,12 +84,11 @@ char extract(char* fo2s,char* fn2s,unsigned long int filepos,unsigned long int f
 int main(int argc, char *argv[]) {
 	int idx;
 	FILE *fo, *fo3, *fn, *fl;
-	unsigned long int i, j, k, l, m, headpos, totalfiles=0, totalextracted=0, filepos=0, filesize, totalerrors=0;
+	unsigned long int i, j, k, headpos, totalfiles=0, totalextracted=0, filepos=0, filesize, totalerrors=0;
 	unsigned char o1, o2, o3, o4;
 	char sdata[LARGE_SPACE_SIZE], sdata3[LARGE_SPACE_SIZE];
 	char sdata2[LARGE_SPACE_SIZE][BYTE_CAP];
 	unsigned int sdata2s[LARGE_SPACE_SIZE];
-	char newfile[LARGE_SPACE_SIZE];
 
 
 	for (idx = 0; idx < argc; idx++); //ne pas effacer, sinon �a foire.
@@ -115,9 +110,9 @@ int main(int argc, char *argv[]) {
 
 extract:
 	printf("Extracting...\n");
-	fo = fopen(argv[1],"rb");
+	fo = fopen(argv[1], "rb");
 	if (!fo) {
-		printf("error:file %s not found.\n",argv[1]);
+		printf("ERROR: file %s not found.\n",argv[1]);
 		fclose(fo);
 		exit(1);
 		}
@@ -125,20 +120,20 @@ extract:
 	o1=getc(fo);
 	o2=getc(fo);
 	headpos = o1 * BYTE_CAP + o2;
-	printf("Header position : %d\n",headpos);
+	printf("Header position: %ld\n", headpos);
 	o1=getc(fo);
 	o2=getc(fo);
 	headpos = o1 * BYTE_CAP + o2;
-	printf("Total Files announced : %d\n",totalfiles);
+	printf("Total Files announced: %ld\n", totalfiles);
 
 	if (feof(fo)) {
 		fclose(fo);
-		printf("error:unexpected end of file \n : %s.\n",argv[1]);
+		printf("ERROR: unexpected end of file:\n\"%s\"\n", argv[1]);
 		exit(1);
 	}
 
 	if (argv[3]) {
-		strcpy(sdata3,argv[3]);
+		strcpy(sdata3, argv[3]);
 		k = strlen(sdata3);
 		if (sdata3[k-1] == DBQUOTE) {
 			sdata3[k-1] = 0;
@@ -146,7 +141,7 @@ extract:
 		if (sdata3[k-1] == BACKSLASH) {
 			sdata3[k-1] = 0;
 		}
-		strcat(sdata3,"\\_filelist.txt");
+		strcat(sdata3,"/_filelist.txt");
 		strcpy(sdata,sdata3);
 		//printf("%s\n",sdata);
 	}
@@ -164,11 +159,11 @@ extract:
 		exit(1);
 		}
 
-	for (i=0;i<totalfiles;i++) {
-		o1=getc(fo);
-		o2=getc(fo);
-		k = (o1 * BYTE_CAP+o2;
-		for (j=0;j<k;j++) {
+	for (i = 0; i < totalfiles; ++i) {
+		o1 = getc(fo);
+		o2 = getc(fo);
+		k = o1 * BYTE_CAP + o2;
+		for (j = 0; j < k; ++j) {
 			sdata[j]=getc(fo);
 		}
 		sdata[j]=0;
@@ -207,7 +202,7 @@ extract:
 	fclose(fo);
 
 
-	printf("\n Uh yeah, its done! %d errors for %d/%d (extracted/announced)\n",totalerrors, totalextracted,totalfiles);
+	printf("\n Uh yeah, its done! %ld errors for %ld/%ld (extracted/announced)\n", totalerrors, totalextracted, totalfiles);
 	exit(0);
 
 pack:
@@ -249,7 +244,7 @@ pack:
 	fclose(fo);
 
 	if (totalerrors > 0) {
-		printf("Sorry, could not found %d files, fix the problem before retrying.\n", totalerrors);
+		printf("Sorry, could not found %ld files, fix the problem before retrying.\n", totalerrors);
 		exit(0);
 	}
 	else if (totalfiles == 0) {
@@ -366,13 +361,14 @@ pack:
 			if (!feof(fo)) putc(o1,fn);
 			j++;
 		}
-		if ((j-1)!=sdata2s[i]) printf("Error, could not match size of file ! j = %d\n",j);
+		if (j - 1 != sdata2s[i]) {
+			printf("Error, could not match size of file! j = %ld\n", j);
+		}
 		fclose(fo);
 	}
 	fclose(fn);
 
 
-	printf("\n Uh yeah, its done! %d errors for %d (announced)\n",totalerrors, totalfiles);
+	printf("\n Uh yeah, its done! %ld errors for %ld (announced)\n", totalerrors, totalfiles);
 	exit(0);
 }
-
