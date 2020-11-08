@@ -1,7 +1,7 @@
 # This Makefile performs several tasks:
 # - Extract map editors for AE1 and AE2.
 # - Compile AE2lang tool, which is used to convert and edit the language files for AE1 and AE2.
-# - TODO: Compile AE2lang tool, which is used to convert and edit the resource files for AE1 and AE2.
+# - TODO: Compile AE2pak tool, which is used to convert and edit the resource files for AE1 and AE2.
 
 TARGETS = $(AE1MAP) $(AE2MAP) $(AE2LANG)
 AE1MAP := AE1map
