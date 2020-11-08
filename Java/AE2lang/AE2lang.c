@@ -29,7 +29,7 @@ void dat2txt(char* srcFilename, char* destFilename) {
 	printf("\n Converting DAT to TXT...\n\n");
 
 	// Check source file (.dat)
-	FILE* srcFileDesc = fopen(srcFilename,"rb");
+	FILE* srcFileDesc = fopen(srcFilename, "rb");
 	if (!srcFileDesc) {
 		printf(" ERROR: could not open \"%s\" for reading !\n", srcFilename);
 		exit(ERROR_RW);
@@ -215,7 +215,7 @@ void txt2dat(char* srcFilename, char* destFilename) {
 	putc(c4, destFileDesc);
 
 	// finish
-	printf(" Uh yeah, its done! %d (strings count)\n",totalStringsCount);
+	printf(" Uh yeah, its done! %d (strings count)\n", totalStringsCount);
 	fclose(srcFileDesc);
 	fclose(destFileDesc);
 }
