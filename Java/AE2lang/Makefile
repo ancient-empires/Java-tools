@@ -21,16 +21,18 @@ deps := $(src:.c=.d)
 	if [ "$(@D)" = . ]; then \
 		$(CC_WRITE_DEP); \
 	else \
+		# Generate targets in other directories \
 		$(MAKE) "$@" -C "$(@D)" CFLAGS="$(CFLAGS)"; \
 	fi
 
 .PHONY: clean
 clean:
 	$(CLEAN)
+# Use R=1 to recursively clean up generated files in other directories
 ifeq ($(R),1)
 	for d in $(dir $(objs)); do \
 		if [ "$$d" != ./ ]; then \
-			$(MAKE) $@ -C $$d; \
+			$(MAKE) "$@" -C "$$d"; \
 		fi; \
 	done
 endif
