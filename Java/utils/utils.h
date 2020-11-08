@@ -1,7 +1,7 @@
 #ifndef UTILS_H
 #define UTILS_H
 
-#define BYTE_CAP (unsigned int)pow(2, CHAR_BIT)
+#define BYTE_CAP (size_t)pow(2, CHAR_BIT)
 
 #define ERROR_RW -1
 #define ERROR_ARGS 1
