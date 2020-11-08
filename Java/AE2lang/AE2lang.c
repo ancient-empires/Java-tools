@@ -151,7 +151,7 @@ void txt2dat(char* srcFilename, char* destFilename) {
 	// inits
 	char buffer[LARGE_SPACE_SIZE];
 	buffer[0] = 0;
-	int buffer_pos = 0;
+	int bufferPos = 0;
 	int totalStringsCount = 0;
 	bool ignoreLine = false;
 
@@ -160,14 +160,14 @@ void txt2dat(char* srcFilename, char* destFilename) {
 	while (!feof(srcFileDesc)) {
 		c1 = getc(srcFileDesc);
 
-		if ((buffer_pos == 0) && (c1 == CARET)) {
+		if ((bufferPos == 0) && (c1 == CARET)) {
 			// ignore lines starting with ^ character
 			ignoreLine = true;
 		}
 
 		if (c1 == LF) {
 			// process line endings in TXT
-			buffer[buffer_pos] = 0;
+			buffer[bufferPos] = 0;
 			unsigned int bufferLen = strlen(buffer);
 			unsignedIntToFourBytes(bufferLen, &c1, &c2, &c3, &c4);
 			if ((c1 != 0) || (c2 != 0)) {
@@ -180,7 +180,7 @@ void txt2dat(char* srcFilename, char* destFilename) {
 				totalStringsCount++;
 			}
 			// line processing finished
-			buffer_pos = 0;
+			bufferPos = 0;
 			ignoreLine = false;
 		}
 		else {
@@ -189,8 +189,8 @@ void txt2dat(char* srcFilename, char* destFilename) {
 				// Convert '|' in TXT to '\n' in DAT
 				c1 = LF;
 			}
-			buffer[buffer_pos] = c1;
-			++buffer_pos;
+			buffer[bufferPos] = c1;
+			++bufferPos;
 		}
 	}
 
