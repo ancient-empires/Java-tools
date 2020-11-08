@@ -19,10 +19,10 @@
 
 // Represent an integer with four bytes
 // Modify the four bytes in-place
-void intToFourBytes(int i, unsigned char* c1, unsigned char* c2, unsigned char* c3, unsigned char* c4);
+void unsignedIntToFourBytes(unsigned int i, unsigned char* c1, unsigned char* c2, unsigned char* c3, unsigned char* c4);
 
 // Concatenate four bytes into an integer
-int fourBytesToInt(unsigned char c1, unsigned char c2, unsigned char c3, unsigned char c4);
+unsigned int fourBytesToUnsignedInt(unsigned char c1, unsigned char c2, unsigned char c3, unsigned char c4);
 
 // Reverse the input string in-place
 char* strrev(char* str);

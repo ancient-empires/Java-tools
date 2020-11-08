@@ -50,7 +50,7 @@ void dat2txt(char* srcFilename, char* destFilename) {
 	c2 = getc(srcFileDesc);
 	c3 = getc(srcFileDesc);
 	c4 = getc(srcFileDesc);
-	int totalStrings = fourBytesToInt(c1, c2, c3, c4);
+	int totalStrings = fourBytesToUnsignedInt(c1, c2, c3, c4);
 	printf("Number of total strings: %d\n", totalStrings);
 	if (totalStrings < 1) {
 		// incorrect format
@@ -69,7 +69,7 @@ void dat2txt(char* srcFilename, char* destFilename) {
 		// For each text field in the .dat file, the first two bytes indicate string length in bytes.
 		c3 = getc(srcFileDesc);
 		c4 = getc(srcFileDesc);
-		int textLen = fourBytesToInt(0, 0, c3, c4);
+		unsigned int textLen = fourBytesToUnsignedInt(0, 0, c3, c4);
 		if ((textLen < 1) && (textLen != 0)) {
 			long int currentPos = ftell(srcFileDesc);
 			printf("ERROR when getting length for text no. %d at offset: %ld\n", strIdx, currentPos);
@@ -176,7 +176,7 @@ void txt2dat(char* srcFilename, char* destFilename) {
 			// process line endings in TXT
 			buffer[l] = 0;
 			int buffer_len = strlen(buffer);
-			intToFourBytes(buffer_len, &c1, &c2, &c3, &c4);
+			unsignedIntToFourBytes(buffer_len, &c1, &c2, &c3, &c4);
 			if ((c1 != 0) || (c2 != 0)) {
 				printf("ERROR: buffer content \"%s\" is too long to fit\n", buffer);
 			}
@@ -207,7 +207,7 @@ void txt2dat(char* srcFilename, char* destFilename) {
 	rewind(destFileDesc);
 
 	// put number of total strings in the first 4 bytes
-	intToFourBytes(totalStringsCount, &c1, &c2, &c3, &c4);
+	unsignedIntToFourBytes(totalStringsCount, &c1, &c2, &c3, &c4);
 	putc(c1, destFileDesc);
 	putc(c2, destFileDesc);
 	putc(c3, destFileDesc);
