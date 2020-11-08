@@ -199,8 +199,7 @@ extract:
 		}
 		//printf("extracting file %d at %d : %s, %d byte(s)\n",i,filepos,sdata,filesize);
 		fprintf(fl,"%s",sdata);
-		putc(0x0d,fl);
-		putc(0x0a,fl);
+		putc(LF, fl);
 
 		if (!extract(argv[1],sdata,filepos,filesize))
 			totalerrors++;
