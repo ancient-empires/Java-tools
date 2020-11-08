@@ -7,15 +7,6 @@
 #include "../utils/utils.h"
 
 #define LARGE_SPACE_SIZE 2048
-#define BYTE_CAP (unsigned int)pow(2, CHAR_BIT)
-
-#define ERROR_RW -1
-#define ERROR_ARGS 1
-
-#define VERT '|' // 0x7C
-#define CR '\r' // 0x0D
-#define LF '\n' // 0x0A
-#define CARET '^' // 0x5E
 
 #define DAT ".dat"
 #define DAT_LEN strlen(DAT)

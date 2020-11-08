@@ -11,11 +11,6 @@
 #define LF '\n' // 0x0A
 #define CARET '^' // 0x5E
 
-#define DAT ".dat"
-#define DAT_LEN strlen(DAT)
-#define TXT ".txt"
-#define TXT_LEN strlen(TXT)
-
 // Represent an integer with four bytes
 // Modify the four bytes in-place
 void intToFourBytes(int i, unsigned char* c1, unsigned char* c2, unsigned char* c3, unsigned char* c4);
