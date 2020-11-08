@@ -7,7 +7,8 @@ objs := $(src:.c=.o)
 all: $(TARGET).out
 
 # common parts
--include ../common/Makefile
+common := ../common/Makefile
+-include $(common)
 
 $(TARGET).out: $(objs)
 	$(CC) $^ -o "$@"

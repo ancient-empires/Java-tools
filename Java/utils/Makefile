@@ -7,7 +7,8 @@ objs := $(src:.c=.o)
 all: $(TARGET).o
 
 # common parts
--include ../common/Makefile
+common := ../common/Makefile
+-include $(common)
 
 # automatic prerequisite generation
 deps := $(src:.c=.d)
