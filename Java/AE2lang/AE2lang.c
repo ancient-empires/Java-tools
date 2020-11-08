@@ -50,7 +50,7 @@ void dat2txt(char* srcFilename, char* destFilename) {
 	c2 = getc(srcFileDesc);
 	c3 = getc(srcFileDesc);
 	c4 = getc(srcFileDesc);
-	int totalStrings = fourBytesToUnsignedInt(c1, c2, c3, c4);
+	unsigned int totalStrings = fourBytesToUnsignedInt(c1, c2, c3, c4);
 	printf("Number of total strings: %d\n", totalStrings);
 	if (totalStrings < 1) {
 		// incorrect format
@@ -60,7 +60,7 @@ void dat2txt(char* srcFilename, char* destFilename) {
 	}
 
 	// Inits
-	int totalStringsCount = 0;
+	unsigned int totalStringsCount = 0;
 	char buffer[LARGE_SPACE_SIZE];
 
 	// Process all strings
@@ -70,13 +70,6 @@ void dat2txt(char* srcFilename, char* destFilename) {
 		c3 = getc(srcFileDesc);
 		c4 = getc(srcFileDesc);
 		unsigned int textLen = fourBytesToUnsignedInt(0, 0, c3, c4);
-		if ((textLen < 1) && (textLen != 0)) {
-			long int currentPos = ftell(srcFileDesc);
-			printf("ERROR when getting length for text no. %d at offset: %ld\n", strIdx, currentPos);
-			fclose(srcFileDesc);
-			fclose(destFileDesc);
-			exit(ERROR_RW);
-		}
 
 		// Then process each character of the string, one by one.
 		int charIdx = 0;
@@ -158,7 +151,7 @@ void txt2dat(char* srcFilename, char* destFilename) {
 	// inits
 	char buffer[LARGE_SPACE_SIZE];
 	buffer[0] = 0;
-	int l = 0;
+	int buffer_pos = 0;
 	int totalStringsCount = 0;
 	bool ignoreLine = false;
 
@@ -167,16 +160,16 @@ void txt2dat(char* srcFilename, char* destFilename) {
 	while (!feof(srcFileDesc)) {
 		c1 = getc(srcFileDesc);
 
-		if ((l == 0) && (c1 == CARET)) {
+		if ((buffer_pos == 0) && (c1 == CARET)) {
 			// ignore lines starting with ^ character
 			ignoreLine = true;
 		}
 
 		if (c1 == LF) {
 			// process line endings in TXT
-			buffer[l] = 0;
-			int buffer_len = strlen(buffer);
-			unsignedIntToFourBytes(buffer_len, &c1, &c2, &c3, &c4);
+			buffer[buffer_pos] = 0;
+			unsigned int bufferLen = strlen(buffer);
+			unsignedIntToFourBytes(bufferLen, &c1, &c2, &c3, &c4);
 			if ((c1 != 0) || (c2 != 0)) {
 				printf("ERROR: buffer content \"%s\" is too long to fit\n", buffer);
 			}
@@ -187,7 +180,7 @@ void txt2dat(char* srcFilename, char* destFilename) {
 				totalStringsCount++;
 			}
 			// line processing finished
-			l = 0;
+			buffer_pos = 0;
 			ignoreLine = false;
 		}
 		else {
@@ -196,8 +189,8 @@ void txt2dat(char* srcFilename, char* destFilename) {
 				// Convert '|' in TXT to '\n' in DAT
 				c1 = LF;
 			}
-			buffer[l] = c1;
-			++l;
+			buffer[buffer_pos] = c1;
+			++buffer_pos;
 		}
 	}
 
@@ -233,14 +226,10 @@ int main(int argc, char *argv[]) {
 
 	// Check source and destination file names
 	strcpy(srcFilename, argv[1]);
-	int srcFilenameLen = strlen(srcFilename);
+	unsigned int srcFilenameLen = strlen(srcFilename);
 	strcpy(destFilename, argv[2]);
-	int destFilenameLen = strlen(destFilename);
-	if (srcFilenameLen < 1) {
-		help();
-		return ERROR_ARGS;
-	}
-	else if (destFilenameLen < 1) {
+	unsigned int destFilenameLen = strlen(destFilename);
+	if ((srcFilenameLen < 1) || (destFilenameLen < 1)) {
 		help();
 		return ERROR_ARGS;
 	}
