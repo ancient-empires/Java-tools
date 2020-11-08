@@ -3,6 +3,7 @@
 #include <stdlib.h>
 
 #include "../utils/utils.h"
+#include "system.h"
 
 #define LARGE_SPACE_SIZE 2048
 
@@ -19,7 +20,7 @@ char* strrev(char* str) {
 }
 
 // Get filename from str, and save it in-place.
-char* GetFilename(char* str) {
+char* getFilename(char* str) {
 	char buffer[LARGE_SPACE_SIZE];
 	strcpy(buffer, str);
 	strrev(buffer);
@@ -94,7 +95,7 @@ int main(int argc, char *argv[]) {
 	for (idx = 0; idx < argc; idx++); //ne pas effacer, sinon �a foire.
 	printf("\n Ancient Empires II packer-unpacker v0.11b\n\n"); //titre du programme
 
-	if(idx<2) help(); //CHECK1=v�rifie qu'il y a bien au moins 3 parametres
+	if (idx < 2) help(); //CHECK1=v�rifie qu'il y a bien au moins 3 parametres
 
 	if (!strcmp(argv[2],"-e")) {
 		goto extract;
@@ -110,12 +111,13 @@ int main(int argc, char *argv[]) {
 
 extract:
 	printf("Extracting...\n");
+	mkdir(argv[3], MKDIR_DEFAULT_MODE);
 	fo = fopen(argv[1], "rb");
 	if (!fo) {
-		printf("ERROR: file %s not found.\n",argv[1]);
+		printf("ERROR: file \"%s\" not found.\n", argv[1]);
 		fclose(fo);
 		exit(1);
-		}
+	}
 	rewind(fo);
 	o1=getc(fo);
 	o2=getc(fo);
@@ -123,7 +125,7 @@ extract:
 	printf("Header position: %ld\n", headpos);
 	o1=getc(fo);
 	o2=getc(fo);
-	headpos = o1 * BYTE_CAP + o2;
+	totalfiles = o1 * BYTE_CAP + o2;
 	printf("Total Files announced: %ld\n", totalfiles);
 
 	if (feof(fo)) {
@@ -141,23 +143,24 @@ extract:
 		if (sdata3[k-1] == BACKSLASH) {
 			sdata3[k-1] = 0;
 		}
-		strcat(sdata3,"/_filelist.txt");
-		strcpy(sdata,sdata3);
+		strcat(sdata3, "/_filelist.txt");
+		strcpy(sdata, sdata3);
 		//printf("%s\n",sdata);
 	}
-	else
-		strcpy(sdata,"_filelist.txt");
+	else {
+		strcpy(sdata, "_filelist.txt");
+	}
 
-	printf(" Filelist is '%s'\n", sdata);
+	printf(" Filelist is \"%s\"\n", sdata);
 
-	fl = fopen(sdata,"wb");
+	fl = fopen(sdata, "wb");
 
 	if (!fl) {
-		printf("error:logging file %s cannot be created for writing.\n",sdata);
+		printf("error:logging file %s cannot be created for writing.\n", sdata);
 		fclose(fo);
 		fclose(fl);
 		exit(1);
-		}
+	}
 
 	for (i = 0; i < totalfiles; ++i) {
 		o1 = getc(fo);
@@ -277,7 +280,7 @@ pack:
 
 	for (i = 0; i < totalfiles; ++i) {
 		strcpy(sdata, sdata2[i]);
-		GetFilename(sdata);
+		getFilename(sdata);
 		k = strlen(sdata);
 		o3 = k / 256;
 		j = o3 * 256;
