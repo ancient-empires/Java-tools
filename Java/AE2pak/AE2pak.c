@@ -9,13 +9,14 @@
 
 // Reverse the input string in-place
 char* strrev(char* str) {
-	char buffer[LARGE_SPACE_SIZE];
-	strcpy(buffer, str);
-	int buffer_len = strlen(buffer);
-	for (int i = 0; i < buffer_len; ++i) {
-		buffer[buffer_len-1-i] = str[i];
+	size_t len = strlen(str);
+	char* buffer = (char*)calloc(sizeof(char), len);
+	strncpy(buffer, str, len);
+	for (int i = 0; i < len; ++i) {
+		buffer[i] = str[len-1-i];
 	}
-	strcpy(str, buffer);
+	strncpy(str, buffer, len);
+	free(buffer);
 	return str;
 }
 
