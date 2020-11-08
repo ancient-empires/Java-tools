@@ -20,3 +20,20 @@ int fourBytesToInt(unsigned char c1, unsigned char c2, unsigned char c3, unsigne
 	i = (i << CHAR_BIT) + c4;
 	return i;
 }
+
+// Reverse the input string in-place
+char* strrev(char* str) {
+	size_t len = strlen(str);
+	char* buffer = (char*)calloc(sizeof(char), len);
+	if (!buffer) {
+		printf("ERROR: Failed to allocate memory to reverse string \"%s\".\nExiting.\n", str);
+		exit(ERROR_RW);
+	}
+	strncpy(buffer, str, len);
+	for (int i = 0; i < len; ++i) {
+		buffer[i] = str[len-1-i];
+	}
+	strncpy(str, buffer, len);
+	free(buffer);
+	return str;
+}

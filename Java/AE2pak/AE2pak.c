@@ -7,23 +7,6 @@
 
 #define LARGE_SPACE_SIZE 2048
 
-// Reverse the input string in-place
-char* strrev(char* str) {
-	size_t len = strlen(str);
-	char* buffer = (char*)calloc(sizeof(char), len);
-	if (!buffer) {
-		printf("ERROR: Failed to allocate memory to reverse string \"%s\".\nExiting.\n", str);
-		exit(ERROR_RW);
-	}
-	strncpy(buffer, str, len);
-	for (int i = 0; i < len; ++i) {
-		buffer[i] = str[len-1-i];
-	}
-	strncpy(str, buffer, len);
-	free(buffer);
-	return str;
-}
-
 // Get filename from str, and save it in-place.
 char* getFilename(char* str) {
 	char buffer[LARGE_SPACE_SIZE];

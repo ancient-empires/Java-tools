@@ -1,6 +1,9 @@
 #ifndef UTILS_H
 #define UTILS_H
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <limits.h>
 #include <math.h>
 
@@ -23,5 +26,8 @@ void intToFourBytes(int i, unsigned char* c1, unsigned char* c2, unsigned char* 
 
 // Concatenate four bytes into an integer
 int fourBytesToInt(unsigned char c1, unsigned char c2, unsigned char c3, unsigned char c4);
+
+// Reverse the input string in-place
+char* strrev(char* str);
 
 #endif
