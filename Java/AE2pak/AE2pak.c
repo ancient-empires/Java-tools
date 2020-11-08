@@ -39,7 +39,7 @@ char* getFilename(char* str) {
 void help(void) {
 	printf(" byblo - 200x - http://go.to/byblo - byblo@hotmail.com\n");
 	printf("\n please use the following syntax :\n");
-	printf(" AE2pak.exe filename.pak -e (extract) c:\\extract_path (optional)\n");
+	printf(" AE2pak.exe filename.pak -e (extract) path/to/extracted/files \n");
 	printf("  or\n");
 	printf(" AE2pak.exe filename.pak -p (pack) filelist.txt\n\n");
 	exit(0);
@@ -179,18 +179,18 @@ extract:
 		o2=getc(fo);
 		filesize = ((o1*BYTE_CAP)+o2);
 		if (argv[3]) {
-		strcpy(sdata3,argv[3]);
-		k = strlen(sdata3);
-		if (sdata3[k-1] == DBQUOTE) {
-			sdata3[k-1]=0;
-		}
-		if (sdata3[k-1] == BACKSLASH) {
-			sdata3[k-1]=0;
-		}
-		strcat(sdata3,"\\");
-		strcat(sdata3,sdata);
-		strcpy(sdata,sdata3);
-		//printf("%s\n",sdata);
+			strcpy(sdata3,argv[3]);
+			k = strlen(sdata3);
+			if (sdata3[k-1] == DBQUOTE) {
+				sdata3[k-1]=0;
+			}
+			if (sdata3[k-1] == BACKSLASH) {
+				sdata3[k-1]=0;
+			}
+			strcat(sdata3,"/");
+			strcat(sdata3,sdata);
+			strcpy(sdata,sdata3);
+			//printf("%s\n",sdata);
 		}
 		//printf("extracting file %d at %d : %s, %d byte(s)\n",i,filepos,sdata,filesize);
 		fprintf(fl,"%s",sdata);
