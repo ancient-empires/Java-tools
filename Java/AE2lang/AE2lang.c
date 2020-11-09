@@ -105,7 +105,7 @@ void dat2txt(char* srcFilename, char* destFilename) {
 }
 
 void str2dat(void) {
-	printf("Inserting string to dat...\n\n");
+	printf("Inserting strings to dat...\n\n");
 }
 
 // Convert TXT back to DAT
