@@ -43,10 +43,10 @@ void dat2txt(char* srcFilename, char* destFilename) {
 
 	// Get number of total strings.
 	// Number of total strings is specified in the first 4 bytes.
-	c1 = getc(srcFileDesc);
-	c2 = getc(srcFileDesc);
-	c3 = getc(srcFileDesc);
-	c4 = getc(srcFileDesc);
+	c1 = fgetc(srcFileDesc);
+	c2 = fgetc(srcFileDesc);
+	c3 = fgetc(srcFileDesc);
+	c4 = fgetc(srcFileDesc);
 	unsigned int totalStrings = fourBytesToUnsignedInt(c1, c2, c3, c4);
 	printf("Number of total strings: %d\n\n", totalStrings);
 	if (totalStrings < 1) {
@@ -62,14 +62,14 @@ void dat2txt(char* srcFilename, char* destFilename) {
 	for (; strIdx < totalStrings; ++strIdx) {
 		// First check string validity.
 		// For each text field in the .dat file, the first two bytes indicate string length in bytes.
-		c3 = getc(srcFileDesc);
-		c4 = getc(srcFileDesc);
+		c3 = fgetc(srcFileDesc);
+		c4 = fgetc(srcFileDesc);
 		unsigned int textLen = fourBytesToUnsignedInt(0, 0, c3, c4);
 
 		// Then process each character of the string, one by one.
 		unsigned int charIdx = 0;
 		for (; charIdx < textLen; ++charIdx) {
-			c1 = getc(srcFileDesc);
+			c1 = fgetc(srcFileDesc);
 
 			// In the extracted .txt file, use '|' character to designate '\n' in each text field in the UI.
 			if (c1 == LF) {
@@ -92,7 +92,7 @@ void dat2txt(char* srcFilename, char* destFilename) {
 
 		// Put LF at the end of each line, for each string.
 		fputs(buffer, destFileDesc);
-		putc(LF, destFileDesc);
+		fputc(LF, destFileDesc);
 	}
 	unsigned int stringsCount = strIdx;
 
@@ -175,15 +175,15 @@ void txt2dat(char* srcFilename, char* destFilename) {
 	// Put placeholder characters (not valid in UTF-8) in the first 4 bytes
 	// They will be later replaced by valid bytes specifying total number of strings
 	for (int i = 0; i < 4; ++i) {
-		putc(0xff, destFileDesc);
+		fputc(0xff, destFileDesc);
 	}
 
 	unsigned char c1, c2, c3, c4;
 
 	// detect and avoid EFBB BF bytes
-	c1 = getc(srcFileDesc);
-	c2 = getc(srcFileDesc);
-	c3 = getc(srcFileDesc);
+	c1 = fgetc(srcFileDesc);
+	c2 = fgetc(srcFileDesc);
+	c3 = fgetc(srcFileDesc);
 	if ((c1 == 0xEF) && (c2 == 0xBB) && (c3 == 0xBF)) {
 		printf("Detected and avoided the header EFBB BF from the text file.\n");
 	}
@@ -202,10 +202,10 @@ void txt2dat(char* srcFilename, char* destFilename) {
 
 	// put number of total strings in the first 4 bytes
 	unsignedIntToFourBytes(stringsCount, &c1, &c2, &c3, &c4);
-	putc(c1, destFileDesc);
-	putc(c2, destFileDesc);
-	putc(c3, destFileDesc);
-	putc(c4, destFileDesc);
+	fputc(c1, destFileDesc);
+	fputc(c2, destFileDesc);
+	fputc(c3, destFileDesc);
+	fputc(c4, destFileDesc);
 
 	// finish
 	printf("Uh yeah, it's done!\n");
