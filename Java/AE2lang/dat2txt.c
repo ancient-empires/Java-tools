@@ -8,7 +8,7 @@
 // srcFileDesc: the .dat file descriptor (read from)
 // destFileDesc: the .txt file descriptor (write to)
 // return: the number of strings successfully extracted
-unsigned int _dat2str(FILE* srcFileDesc, FILE* destFileDesc, unsigned int* stringsCount, unsigned int* totalStrings) {
+static unsigned int dat2str(FILE* srcFileDesc, FILE* destFileDesc, unsigned int* stringsCount, unsigned int* totalStrings) {
 	*stringsCount = 0;
 	*totalStrings = 0;
 
@@ -93,7 +93,7 @@ void dat2txt(char* srcFilename, char* destFilename) {
 
 	// process all strings in the .dat file, and write to the .txt file
 	unsigned int stringsCount = 0, totalStrings = 0;
-	_dat2str(srcFileDesc, destFileDesc, &stringsCount, &totalStrings);
+	dat2str(srcFileDesc, destFileDesc, &stringsCount, &totalStrings);
 
 	// finish
 	printf("Uh yeah, its done!\n");

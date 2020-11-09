@@ -9,7 +9,7 @@
 // srcFileDesc: the .txt file descriptor (read from)
 // destFileDesc: the .dat file descriptor (write to)
 // return: the total number of strings converted
-unsigned int _str2dat(FILE* srcFileDesc, FILE* destFileDesc, unsigned int* stringsCount) {
+static unsigned int str2dat(FILE* srcFileDesc, FILE* destFileDesc, unsigned int* stringsCount) {
 
 	unsigned char c1, c2, c3, c4;
 
@@ -106,7 +106,7 @@ void txt2dat(char* srcFilename, char* destFilename) {
 
 	// process all strings in the .txt file, and write to the .dat file
 	unsigned int stringsCount = 0;
-	_str2dat(srcFileDesc, destFileDesc, &stringsCount);
+	str2dat(srcFileDesc, destFileDesc, &stringsCount);
 
 	// finish
 	printf("Uh yeah, it's done!\n");
