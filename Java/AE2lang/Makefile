@@ -1,6 +1,6 @@
 TARGET := AE2lang
 
-src := $(TARGET).c ../utils/utils.c
+src := $(TARGET).c ../utils/utils.c txt2dat.c
 objs := $(src:.c=.o)
 
 .PHONY: all
