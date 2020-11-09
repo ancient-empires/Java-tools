@@ -52,7 +52,7 @@ void dat2txt(char* srcFilename, char* destFilename) {
 	if (totalStrings < 1) {
 		// incorrect format
 		fclose(srcFileDesc);
-		printf("\nERROR: incorrect format: %d (totalStrings announced in 4 first bytes)\n\n", totalStrings);
+		printf("\nERROR: incorrect format:\ntotalStrings: %d (announced in first 4 bytes)\n\n", totalStrings);
 		exit(ERROR_RW);
 	}
 
