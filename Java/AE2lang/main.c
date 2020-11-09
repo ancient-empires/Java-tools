@@ -1,0 +1,64 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#include "../utils/utils.h"
+#include "dat2txt.h"
+#include "txt2dat.h"
+
+#define DAT ".dat"
+#define DAT_LEN strlen(DAT)
+#define TXT ".txt"
+#define TXT_LEN strlen(TXT)
+
+// Show help when user enters invalid arguments in command line
+void help(void) {
+	printf("Please use the following syntax:\n");
+	printf("- dat2txt: ./AE2lang.out lang.dat lang.txt\n");
+	printf("- txt2dat: ./AE2lang.out lang.txt lang.dat\n\n");
+	printf("Note that the appropriate function is selected according to the files extensions (minuscule only).\n\n");
+}
+
+/* Usage:
+	- dat2txt: ./AE2lang.out lang.dat lang.txt
+	- txt2dat: ./AE2lang.out lang.txt lang.dat
+*/
+int main(int argc, char *argv[]) {
+
+	// Program title
+	printf("\n=== Ancient Empires II language file text converter v0.1b ===\n\n");
+
+	// Check if the user has entered 3 parameters
+	if (argc < 3) {
+		help();
+		return ERROR_ARGS;
+	}
+
+	// Check source and destination file names
+	char* srcFilename = argv[1];
+	unsigned int srcFilenameLen = strlen(srcFilename);
+	char* destFilename = argv[2];
+	unsigned int destFilenameLen = strlen(destFilename);
+	if ((srcFilenameLen < DAT_LEN) || (destFilenameLen < TXT_LEN)) {
+		help();
+		return ERROR_ARGS;
+	}
+
+	// .dat to .txt conversion
+	if (!strncmp(&srcFilename[srcFilenameLen-DAT_LEN], DAT, DAT_LEN)
+		&& !strncmp(&destFilename[destFilenameLen-TXT_LEN], TXT, TXT_LEN)) {
+		dat2txt(srcFilename, destFilename);
+		return 0;
+	}
+
+	// .txt to .dat conversion
+	else if (!strncmp(&srcFilename[srcFilenameLen-TXT_LEN], TXT, TXT_LEN)
+		&& !strncmp(&destFilename[destFilenameLen-DAT_LEN], DAT, DAT_LEN)) {
+		txt2dat(srcFilename, destFilename);
+		return 0;
+	}
+
+	// If we got invalid arguments, then just show help, and return 0
+	help();
+	return ERROR_ARGS;
+}
