@@ -109,7 +109,15 @@ void dat2txt(char* srcFilename, char* destFilename) {
 // return: the total number of strings converted
 unsigned int str2dat(FILE* srcFileDesc, FILE* destFileDesc, unsigned int* stringsCount) {
 
+	rewind(srcFileDesc);
+
+	// Start from the 4th byte (index starts from 0) of the output file.
+	// The first 4 bytes are reserved for specifying the number of total strings, which will be written finally.
+	fseek(destFileDesc, 4, SEEK_SET);
+
 	*stringsCount = 0;
+
+	unsigned char c1, c2, c3, c4;
 
 	while (!feof(srcFileDesc)) {
 		char* line = NULL;
@@ -128,7 +136,6 @@ unsigned int str2dat(FILE* srcFileDesc, FILE* destFileDesc, unsigned int* string
 				line[lineLen] = '\0';
 
 				// check number of characters in the line
-				unsigned char c1, c2, c3, c4;
 				unsignedIntToFourBytes(lineLen, &c1, &c2, &c3, &c4);
 				if (c1 || c2) {
 					printf("ERROR: line content \"%s\" is too long to fit in\n", line);
@@ -152,6 +159,18 @@ unsigned int str2dat(FILE* srcFileDesc, FILE* destFileDesc, unsigned int* string
 		free(line);
 	}
 
+	// Now we need to write total strings information in the first 4 bytes.
+
+	// go back to beginning
+	rewind(destFileDesc);
+
+	// put number of total strings in the first 4 bytes
+	unsignedIntToFourBytes(*stringsCount, &c1, &c2, &c3, &c4);
+	fputc(c1, destFileDesc);
+	fputc(c2, destFileDesc);
+	fputc(c3, destFileDesc);
+	fputc(c4, destFileDesc);
+
 	return *stringsCount;
 }
 
@@ -174,11 +193,7 @@ void txt2dat(char* srcFilename, char* destFilename) {
 		exit(ERROR_RW);
 	}
 
-	// Start from the 4th byte (index starts from 0) of the output file.
-	// The first 4 bytes are reserved for specifying the number of total strings, which will be written finally.
-	fseek(destFileDesc, 4, SEEK_SET);
-
-	unsigned char c1, c2, c3, c4;
+	unsigned char c1, c2, c3;
 
 	// detect and avoid EFBB BF bytes from the .txt file
 	c1 = fgetc(srcFileDesc);
@@ -194,18 +209,6 @@ void txt2dat(char* srcFilename, char* destFilename) {
 	// process all strings in the .txt file
 	unsigned int stringsCount = 0;
 	str2dat(srcFileDesc, destFileDesc, &stringsCount);
-
-	// Now we need to write total strings information in the first 4 bytes.
-
-	// go back to beginning
-	rewind(destFileDesc);
-
-	// put number of total strings in the first 4 bytes
-	unsignedIntToFourBytes(stringsCount, &c1, &c2, &c3, &c4);
-	fputc(c1, destFileDesc);
-	fputc(c2, destFileDesc);
-	fputc(c3, destFileDesc);
-	fputc(c4, destFileDesc);
 
 	// finish
 	printf("Uh yeah, it's done!\n");
