@@ -92,14 +92,14 @@ void txt2dat(char* srcFilename, char* destFilename) {
 	// check source file (.txt)
 	FILE* srcFileDesc = fopen(srcFilename, "r");
 	if (!srcFileDesc) {
-		printf("ERROR: could not open \"%s\" for reading !\n", srcFilename);
+		printf("ERROR: could not open \"%s\" for reading!\n", srcFilename);
 		exit(ERROR_RW);
 	}
 
 	// check destination file (.dat)
 	FILE* destFileDesc = fopen(destFilename, "wb");
 	if (!destFileDesc) {
-		printf("ERROR: could not open \"%s\" for writing !\n", destFilename);
+		printf("ERROR: could not open \"%s\" for writing!\n", destFilename);
 		fclose(srcFileDesc);
 		exit(ERROR_RW);
 	}
