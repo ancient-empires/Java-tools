@@ -33,12 +33,12 @@ void help(void) {
 	exit(0);
 }
 
-char extract(char* fo2s,char* fn2s,unsigned long int filepos,unsigned long int filesize) {
+char extract(char* fo2s, char* fn2s, unsigned long int filepos, unsigned long int filesize) {
 	FILE *fo2, *fn2;
 	unsigned int i;
 	unsigned char o1;
 
-	fo2 = fopen(fo2s,"rb");
+	fo2 = fopen(fo2s, "rb");
 	if (!fo2) {
 		printf("ERROR: Could not open \"%s\" for extraction!\n", fo2s);
 		return 0;
@@ -46,9 +46,9 @@ char extract(char* fo2s,char* fn2s,unsigned long int filepos,unsigned long int f
 	rewind(fo2);
 	fseek(fo2, filepos, 0);
 
-	fn2 = fopen(fn2s,"wb");
+	fn2 = fopen(fn2s, "wb");
 	if (!fn2) {
-		printf("Error: Could not open \"%s\" for writing !\n", fn2s);
+		printf("ERROR: Could not open \"%s\" for writing !\n", fn2s);
 		fclose(fo2);
 		return 0;
 	}
@@ -61,7 +61,7 @@ char extract(char* fo2s,char* fn2s,unsigned long int filepos,unsigned long int f
 			fclose(fn2);
 			return 0;
 		}
-		putc(o1,fn2);
+		putc(o1, fn2);
 	}
 
 	fclose(fo2);
@@ -85,12 +85,12 @@ int main(int argc, char *argv[]) {
 
 	if (idx < 2) help(); //CHECK1=v�rifie qu'il y a bien au moins 3 parametres
 
-	if (!strcmp(argv[2],"-e")) {
+	if (!strcmp(argv[2], "-e")) {
 		goto extract;
 		exit(0);
 	}
 
-	if (!strcmp(argv[2],"-p")) {
+	if (!strcmp(argv[2], "-p")) {
 		goto pack;
 		exit(0);
 	}
@@ -213,9 +213,9 @@ pack:
 		}
 		if ((strcmp(sdata2[totalfiles], sdata)) && (k>1)) {
 			strcpy(sdata2[totalfiles], sdata);
-			fo3 = fopen(sdata2[totalfiles],"rb");
+			fo3 = fopen(sdata2[totalfiles], "rb");
 			if (!fo3) {
-				printf("ERROR: Could not find \"%s\"\n",sdata2[totalfiles]);
+				printf("ERROR: Could not find \"%s\"\n", sdata2[totalfiles]);
 				totalerrors++;
 			}
 			else {
@@ -252,14 +252,13 @@ pack:
 
 	rewind(fn);
 	//r�serv�
-	putc(0xFF,fn);
-	putc(0xFF,fn);
+	putc(0xFF, fn);
+	putc(0xFF, fn);
 
 	o3 = totalfiles / BYTE_CAP;
 	o4 = totalfiles % BYTE_CAP;
-	//printf("\n\nDEBUG %x %x %x %x\n\n",o1,o2,o3,o4);
-	putc(o3,fn);
-	putc(o4,fn);
+	putc(o3, fn);
+	putc(o4, fn);
 
 
 	for (i = 0; i < totalfiles; ++i) {
@@ -271,10 +270,10 @@ pack:
 		k = k-j;
 		o4 = k;
 
-		putc(o3,fn);
-		putc(o4,fn);
+		putc(o3, fn);
+		putc(o4, fn);
 
-		fputs(sdata,fn);
+		fputs(sdata, fn);
 
 
 		// position relative
@@ -292,10 +291,10 @@ pack:
 
 		k = k-j;
 		o4 = k;
-		putc(o1,fn);
-		putc(o2,fn);
-		putc(o3,fn);
-		putc(o4,fn);
+		putc(o1, fn);
+		putc(o2, fn);
+		putc(o3, fn);
+		putc(o4, fn);
 
 
 		// file size
@@ -308,13 +307,13 @@ pack:
 		k = (k-j);
 		o4 = k;
 
-		putc(o3,fn);
-		putc(o4,fn);
+		putc(o3, fn);
+		putc(o4, fn);
 
 	}
 
 	// Writing the header of the end position of the header
-	fseek (fn, 0, SEEK_END);
+	fseek(fn, 0, SEEK_END);
 	filepos = ftell(fn);
 	k = filepos;
 
@@ -325,15 +324,15 @@ pack:
 	o4 = k;
 
 	rewind(fn);
-	putc(o3,fn);
-	putc(o4,fn);
+	putc(o3, fn);
+	putc(o4, fn);
 
 	// pack files
 	rewind(fn);
 	fseek (fn, filepos, 0);
 
 	for (i=0;i<totalfiles;i++) {
-		fo = fopen(sdata2[i],"rb");
+		fo = fopen(sdata2[i], "rb");
 		if (!fo) {
 			printf("ERROR: Could not open file \"%s\" for reading\n", sdata2[i]);
 			fclose(fn);
@@ -342,7 +341,7 @@ pack:
 		j=0;
 		while(!feof(fo)) {
 			o1=getc(fo);
-			if (!feof(fo)) putc(o1,fn);
+			if (!feof(fo)) putc(o1, fn);
 			j++;
 		}
 		if (j - 1 != sdata2s[i]) {
