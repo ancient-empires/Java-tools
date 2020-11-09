@@ -20,9 +20,9 @@ void help(void) {
 	printf("Note that the appropriate function is selected according to the files extensions (minuscule only).\n\n");
 }
 
-// Convert DAT to TXT
+// Convert .dat to .txt
 void dat2txt(char* srcFilename, char* destFilename) {
-	printf("Converting DAT to TXT...\n\n");
+	printf("Converting .dat to .txt ...\n\n");
 
 	// Check source file (.dat)
 	FILE* srcFileDesc = fopen(srcFilename, "rb");
@@ -61,7 +61,7 @@ void dat2txt(char* srcFilename, char* destFilename) {
 	char buffer[LARGE_SPACE_SIZE];
 
 	// Process all strings
-	for (int strIdx = 0; strIdx < totalStrings; ++strIdx) {
+	for (unsigned int strIdx = 0; strIdx < totalStrings; ++strIdx) {
 		// First check string validity.
 		// For each text field in the .dat file, the first two bytes indicate string length in bytes.
 		c3 = getc(srcFileDesc);
@@ -69,10 +69,11 @@ void dat2txt(char* srcFilename, char* destFilename) {
 		unsigned int textLen = fourBytesToUnsignedInt(0, 0, c3, c4);
 
 		// Then process each character of the string, one by one.
-		int charIdx = 0;
+		unsigned int charIdx = 0;
 		for (; charIdx < textLen; ++charIdx) {
 			c1 = getc(srcFileDesc);
-			// In the extracted txt file, use '|' character to designate '\n' in each text field in the UI.
+
+			// In the extracted .txt file, use '|' character to designate '\n' in each text field in the UI.
 			if (c1 == LF) {
 				c1 = VERT;
 			}
@@ -86,7 +87,7 @@ void dat2txt(char* srcFilename, char* destFilename) {
 				exit(ERROR_RW);
 			}
 
-			// Put extracted string in buffer, in order to write into TXT.
+			// Put extracted string in buffer, in order to write into the .txt file.
 			buffer[charIdx] = c1;
 		}
 		buffer[charIdx] = '\0';
@@ -105,9 +106,9 @@ void dat2txt(char* srcFilename, char* destFilename) {
 }
 
 // Convert all strings from TXT to DAT format
-// srcFileDesc: the TXT file descriptor (read from)
-// destFileDesc: the DAT file descriptor (write to)
-// return: the descriptor of the DAT file
+// srcFileDesc: the .txt file descriptor (read from)
+// destFileDesc: the .dat file descriptor (write to)
+// return: the descriptor of the .dat file
 FILE* str2dat(FILE* srcFileDesc, FILE* destFileDesc, unsigned int* stringsCount) {
 	// Inits
 	char buffer[LARGE_SPACE_SIZE];
@@ -118,7 +119,7 @@ FILE* str2dat(FILE* srcFileDesc, FILE* destFileDesc, unsigned int* stringsCount)
 
 	unsigned char c1, c2, c3, c4;
 
-	// Read and process the TXT file, character by character.
+	// Read and process the .txt file, character by character.
 	while (!feof(srcFileDesc)) {
 		c1 = getc(srcFileDesc);
 
@@ -128,7 +129,7 @@ FILE* str2dat(FILE* srcFileDesc, FILE* destFileDesc, unsigned int* stringsCount)
 		}
 
 		if (c1 == LF) {
-			// process line endings in TXT
+			// process line endings in .txt
 			buffer[bufferPos] = '\0';
 			unsigned int bufferLen = bufferPos;
 			unsignedIntToFourBytes(bufferLen, &c1, &c2, &c3, &c4);
@@ -148,7 +149,7 @@ FILE* str2dat(FILE* srcFileDesc, FILE* destFileDesc, unsigned int* stringsCount)
 		else {
 			// process all characters other than line endings
 			if (c1 == VERT) {
-				// Convert '|' in TXT to '\n' in DAT
+				// Convert '|' in .txt to '\n' in .dat
 				c1 = LF;
 			}
 			buffer[bufferPos] = c1;
@@ -159,9 +160,9 @@ FILE* str2dat(FILE* srcFileDesc, FILE* destFileDesc, unsigned int* stringsCount)
 	return destFileDesc;
 }
 
-// Convert TXT back to DAT
+// Convert .txt back to .dat
 void txt2dat(char* srcFilename, char* destFilename) {
-	printf("Converting TXT to DAT...\n\n");
+	printf("Converting .txt to .dat ...\n\n");
 
 	// check source file (.txt)
 	FILE* srcFileDesc = fopen(srcFilename, "r");
@@ -197,7 +198,7 @@ void txt2dat(char* srcFilename, char* destFilename) {
 		rewind(srcFileDesc);
 	}
 
-	// process all strings in the TXT file
+	// process all strings in the .txt file
 	unsigned int stringsCount = 0;
 	str2dat(srcFileDesc, destFileDesc, &stringsCount);
 
@@ -242,14 +243,14 @@ int main(int argc, char *argv[]) {
 		return ERROR_ARGS;
 	}
 
-	// DAT to TXT conversion
+	// .dat to .txt conversion
 	if (!strncmp(&srcFilename[srcFilenameLen-DAT_LEN], DAT, DAT_LEN)
 		&& !strncmp(&destFilename[destFilenameLen-TXT_LEN], TXT, TXT_LEN)) {
 		dat2txt(srcFilename, destFilename);
 		return 0;
 	}
 
-	// TXT to DAT conversion
+	// .txt to .dat conversion
 	else if (!strncmp(&srcFilename[srcFilenameLen-TXT_LEN], TXT, TXT_LEN)
 		&& !strncmp(&destFilename[destFilenameLen-DAT_LEN], DAT, DAT_LEN)) {
 		txt2dat(srcFilename, destFilename);
