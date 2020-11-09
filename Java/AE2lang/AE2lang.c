@@ -134,9 +134,9 @@ FILE* str2dat(FILE* srcFileDesc, FILE* destFileDesc, unsigned int* stringsCount)
 			unsigned int bufferLen = bufferPos;
 			unsignedIntToFourBytes(bufferLen, &c1, &c2, &c3, &c4);
 			if ((c1 != 0) || (c2 != 0)) {
-				printf("ERROR: buffer content \"%s\" is too long to fit\n", buffer);
+				printf("ERROR: buffer content \"%s\" is too long to fit in\n", buffer);
 			}
-			if (!ignoreLine) {
+			else if (!ignoreLine) {
 				putc(c3, destFileDesc);
 				putc(c4, destFileDesc);
 				fputs(buffer, destFileDesc);
