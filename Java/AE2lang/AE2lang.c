@@ -57,7 +57,6 @@ void dat2txt(char* srcFilename, char* destFilename) {
 	}
 
 	// Process all strings
-	char buffer[LARGE_SPACE_SIZE];
 	unsigned int strIdx = 0;
 	for (; strIdx < totalStrings; ++strIdx) {
 		// First check string validity.
@@ -67,6 +66,7 @@ void dat2txt(char* srcFilename, char* destFilename) {
 		unsigned int textLen = fourBytesToUnsignedInt(0, 0, c3, c4);
 
 		// Then process each character of the string, one by one.
+		char* buffer = (char*)calloc(textLen + 1, sizeof(char));
 		unsigned int charIdx = 0;
 		for (; charIdx < textLen; ++charIdx) {
 			c1 = fgetc(srcFileDesc);
@@ -75,6 +75,7 @@ void dat2txt(char* srcFilename, char* destFilename) {
 			if (feof(srcFileDesc)) {
 				long currentPos = ftell(srcFileDesc);
 				printf("ERROR: Reached end of file unexpectedly when reading text No. %d at offset %ld.\n", strIdx, currentPos);
+				free(buffer);
 				fclose(srcFileDesc);
 				fclose(destFileDesc);
 				exit(ERROR_RW);
@@ -87,11 +88,11 @@ void dat2txt(char* srcFilename, char* destFilename) {
 			}
 			buffer[charIdx] = c1;
 		}
-		buffer[charIdx] = '\0';
 
 		// Put LF at the end of each line, for each string.
 		fputs(buffer, destFileDesc);
 		fputc(LF, destFileDesc);
+		free(buffer);
 	}
 	unsigned int stringsCount = strIdx;
 
