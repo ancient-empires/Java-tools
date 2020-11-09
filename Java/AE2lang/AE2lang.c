@@ -109,15 +109,24 @@ void dat2txt(char* srcFilename, char* destFilename) {
 // return: the total number of strings converted
 unsigned int str2dat(FILE* srcFileDesc, FILE* destFileDesc, unsigned int* stringsCount) {
 
-	rewind(srcFileDesc);
+	unsigned char c1, c2, c3, c4;
 
-	// Start from the 4th byte (index starts from 0) of the output file.
+	// detect and avoid EFBB BF bytes at the beginning of the .txt file
+	c1 = fgetc(srcFileDesc);
+	c2 = fgetc(srcFileDesc);
+	c3 = fgetc(srcFileDesc);
+	if ((c1 == 0xEF) && (c2 == 0xBB) && (c3 == 0xBF)) {
+		printf("Detected and avoided the header EFBB BF from the .txt file.\n");
+	}
+	else {
+		rewind(srcFileDesc);
+	}
+
+	// For the output .dat file, start from the 4th byte (index starts from 0).
 	// The first 4 bytes are reserved for specifying the number of total strings, which will be written finally.
 	fseek(destFileDesc, 4, SEEK_SET);
 
 	*stringsCount = 0;
-
-	unsigned char c1, c2, c3, c4;
 
 	while (!feof(srcFileDesc)) {
 		char* line = NULL;
@@ -191,19 +200,6 @@ void txt2dat(char* srcFilename, char* destFilename) {
 		printf("ERROR: could not open \"%s\" for writing !\n", destFilename);
 		fclose(srcFileDesc);
 		exit(ERROR_RW);
-	}
-
-	unsigned char c1, c2, c3;
-
-	// detect and avoid EFBB BF bytes from the .txt file
-	c1 = fgetc(srcFileDesc);
-	c2 = fgetc(srcFileDesc);
-	c3 = fgetc(srcFileDesc);
-	if ((c1 == 0xEF) && (c2 == 0xBB) && (c3 == 0xBF)) {
-		printf("Detected and avoided the header EFBB BF from the .txt file.\n");
-	}
-	else {
-		rewind(srcFileDesc);
 	}
 
 	// process all strings in the .txt file
