@@ -56,12 +56,10 @@ void dat2txt(char* srcFilename, char* destFilename) {
 		exit(ERROR_RW);
 	}
 
-	// Inits
-	unsigned int stringsCount = 0;
-	char buffer[LARGE_SPACE_SIZE];
-
 	// Process all strings
-	for (unsigned int strIdx = 0; strIdx < totalStrings; ++strIdx) {
+	char buffer[LARGE_SPACE_SIZE];
+	unsigned int strIdx = 0;
+	for (; strIdx < totalStrings; ++strIdx) {
 		// First check string validity.
 		// For each text field in the .dat file, the first two bytes indicate string length in bytes.
 		c3 = getc(srcFileDesc);
@@ -95,8 +93,8 @@ void dat2txt(char* srcFilename, char* destFilename) {
 		// Put LF at the end of each line, for each string.
 		fputs(buffer, destFileDesc);
 		putc(LF, destFileDesc);
-		++stringsCount;
 	}
+	unsigned int stringsCount = strIdx;
 
 	// finish
 	printf("Uh yeah, its done!\n");
