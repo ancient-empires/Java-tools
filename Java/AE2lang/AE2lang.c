@@ -149,12 +149,15 @@ void txt2dat(char* srcFilename, char* destFilename) {
 	// Inits
 	char buffer[LARGE_SPACE_SIZE];
 	buffer[0] = 0;
-	int bufferPos = 0;
+	unsigned int bufferPos = 0;
+
 	unsigned int stringsCount = 0;
+
 	bool ignoreLine = false;
 
-	// read and process the TXT file
 	str2dat();
+
+	// Read and process the TXT file, character by character.
 	while (!feof(srcFileDesc)) {
 		c1 = getc(srcFileDesc);
 
@@ -166,7 +169,7 @@ void txt2dat(char* srcFilename, char* destFilename) {
 		if (c1 == LF) {
 			// process line endings in TXT
 			buffer[bufferPos] = 0;
-			unsigned int bufferLen = strlen(buffer);
+			unsigned int bufferLen = bufferPos;
 			unsignedIntToFourBytes(bufferLen, &c1, &c2, &c3, &c4);
 			if ((c1 != 0) || (c2 != 0)) {
 				printf("ERROR: buffer content \"%s\" is too long to fit\n", buffer);
