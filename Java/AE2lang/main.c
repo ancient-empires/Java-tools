@@ -13,10 +13,10 @@
 
 // Show help when user enters invalid arguments in command line
 void help(void) {
-	printf("Please use the following syntax:\n");
-	printf("- dat2txt: ./AE2lang.out lang.dat lang.txt\n");
-	printf("- txt2dat: ./AE2lang.out lang.txt lang.dat\n\n");
-	printf("Note that the appropriate function is selected according to the files extensions (minuscule only).\n\n");
+	fprintf(stderr, "Please use the following syntax:\n");
+	fprintf(stderr, "- dat2txt: ./AE2lang.out lang.dat lang.txt\n");
+	fprintf(stderr, "- txt2dat: ./AE2lang.out lang.txt lang.dat\n\n");
+	fprintf(stderr, "Note that the appropriate function is selected according to the files extensions (minuscule only).\n\n");
 }
 
 /* Usage:

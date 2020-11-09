@@ -25,7 +25,7 @@ static unsigned int dat2str(FILE* srcFileDesc, FILE* destFileDesc, unsigned int*
 	if (*totalStrings < 1) {
 		// incorrect format
 		fclose(srcFileDesc);
-		printf("\nERROR: incorrect format:\ntotalStrings: %d (announced in first 4 bytes)\n\n", *totalStrings);
+		fprintf(stderr, "ERROR: incorrect format:\ntotalStrings: %d (announced in first 4 bytes)\n\n", *totalStrings);
 		exit(ERROR_RW);
 	}
 
@@ -47,7 +47,7 @@ static unsigned int dat2str(FILE* srcFileDesc, FILE* destFileDesc, unsigned int*
 			// Check if reached the end of file unexpectedly.
 			if (feof(srcFileDesc)) {
 				long currentPos = ftell(srcFileDesc);
-				printf("ERROR: Reached end of file unexpectedly when reading text No. %d at offset %ld.\n", strIdx, currentPos);
+				fprintf(stderr, "ERROR: Reached end of file unexpectedly when reading text No. %d at offset %ld.\n", strIdx, currentPos);
 				free(buffer);
 				fclose(srcFileDesc);
 				fclose(destFileDesc);
@@ -79,7 +79,7 @@ void dat2txt(char* srcFilename, char* destFilename) {
 	// check source file (.dat)
 	FILE* srcFileDesc = fopen(srcFilename, "rb");
 	if (!srcFileDesc) {
-		printf("ERROR: could not open \"%s\" for reading !\n", srcFilename);
+		fprintf(stderr, "ERROR: could not open \"%s\" for reading !\n", srcFilename);
 		exit(ERROR_RW);
 	}
 
@@ -87,7 +87,7 @@ void dat2txt(char* srcFilename, char* destFilename) {
 	FILE* destFileDesc = fopen(destFilename, "w");
 	if (!destFileDesc) {
 		fclose(srcFileDesc);
-		printf("ERROR: could not open \"%s\" for writing !\n", destFilename);
+		fprintf(stderr, "ERROR: could not open \"%s\" for writing !\n", destFilename);
 		exit(ERROR_RW);
 	}
 

@@ -28,7 +28,7 @@ char* strrev(char* str) {
 	size_t len = strlen(str);
 	char* buffer = (char*)calloc(sizeof(char), len);
 	if (!buffer) {
-		printf("ERROR: Failed to allocate memory to reverse string \"%s\".\nExiting.\n", str);
+		fprintf(stderr, "ERROR: Failed to allocate memory to reverse string \"%s\".\nExiting.\n", str);
 		exit(ERROR_RW);
 	}
 	strncpy(buffer, str, len);

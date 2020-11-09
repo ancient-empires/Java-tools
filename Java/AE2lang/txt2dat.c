@@ -49,7 +49,7 @@ static unsigned int str2dat(FILE* srcFileDesc, FILE* destFileDesc, unsigned int*
 				// check number of characters in the line
 				unsignedIntToFourBytes(lineLen, &c1, &c2, &c3, &c4);
 				if (c1 || c2) {
-					printf("ERROR: line content \"%s\" is too long to fit in\n", line);
+					fprintf(stderr, "ERROR: line content \"%s\" is too long to fit in\n", line);
 					free(line);
 					continue;
 				}
@@ -92,14 +92,14 @@ void txt2dat(char* srcFilename, char* destFilename) {
 	// check source file (.txt)
 	FILE* srcFileDesc = fopen(srcFilename, "r");
 	if (!srcFileDesc) {
-		printf("ERROR: could not open \"%s\" for reading!\n", srcFilename);
+		fprintf(stderr, "ERROR: could not open \"%s\" for reading!\n", srcFilename);
 		exit(ERROR_RW);
 	}
 
 	// check destination file (.dat)
 	FILE* destFileDesc = fopen(destFilename, "wb");
 	if (!destFileDesc) {
-		printf("ERROR: could not open \"%s\" for writing!\n", destFilename);
+		fprintf(stderr, "ERROR: could not open \"%s\" for writing!\n", destFilename);
 		fclose(srcFileDesc);
 		exit(ERROR_RW);
 	}
