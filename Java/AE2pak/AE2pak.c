@@ -76,7 +76,7 @@ int main(int argc, char *argv[]) {
 	unsigned long int i, j, k, headpos, totalfiles=0, totalextracted=0, filepos=0, filesize, totalerrors=0;
 	unsigned char o1, o2, o3, o4;
 	char sdata[LARGE_SPACE_SIZE], sdata3[LARGE_SPACE_SIZE];
-	char sdata2[LARGE_SPACE_SIZE][BYTE_CAP];
+	char sdata2[LARGE_SPACE_SIZE][LARGE_SPACE_SIZE];
 	unsigned int sdata2s[LARGE_SPACE_SIZE];
 
 
