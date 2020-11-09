@@ -1,6 +1,6 @@
 TARGET := AE2pak
 
-src := $(TARGET).c ../utils/utils.c
+src := main.c ../utils/utils.c
 objs := $(src:.c=.o)
 
 .PHONY: all

@@ -7,6 +7,12 @@
 
 #define LARGE_SPACE_SIZE 2048
 
+void help(void) {
+	fprintf(stderr, "Please use the following syntax:\n");
+	fprintf(stderr, "- extract: ./AE2pak.out filename.pak -e <directory/of/extracted/files>\n");
+	fprintf(stderr, "- ./pack: AE2pak.exe filename.pak -p (pack) filelist.txt\n\n");
+}
+
 // Get filename from str, and save it in-place.
 char* getFilename(char* str) {
 	char buffer[LARGE_SPACE_SIZE];
@@ -22,15 +28,6 @@ char* getFilename(char* str) {
 	strrev(buffer);
 	strcpy(str, buffer);
 	return str;
-}
-
-void help(void) {
-	printf(" byblo - 200x - http://go.to/byblo - byblo@hotmail.com\n");
-	printf("\n please use the following syntax :\n");
-	printf(" AE2pak.exe filename.pak -e (extract) path/to/extracted/files \n");
-	printf("  or\n");
-	printf(" AE2pak.exe filename.pak -p (pack) filelist.txt\n\n");
-	exit(0);
 }
 
 char extract(char* fo2s, char* fn2s, unsigned long int filepos, unsigned long int filesize) {
@@ -71,7 +68,6 @@ char extract(char* fo2s, char* fn2s, unsigned long int filepos, unsigned long in
 
 
 int main(int argc, char *argv[]) {
-	int idx;
 	FILE *fo, *fo3, *fn, *fl;
 	unsigned long int i, j, k, headpos, totalfiles=0, totalextracted=0, filepos=0, filesize, totalerrors=0;
 	unsigned char o1, o2, o3, o4;
@@ -80,10 +76,13 @@ int main(int argc, char *argv[]) {
 	unsigned int sdata2s[LARGE_SPACE_SIZE];
 
 
-	for (idx = 0; idx < argc; idx++); //ne pas effacer, sinon �a foire.
-	printf("\n Ancient Empires II packer-unpacker v0.11b\n\n"); //titre du programme
+	// Program title
+	printf("\n=== Ancient Empires II packer / unpacker v0.11b ===\n\n");
 
-	if (idx < 2) help(); //CHECK1=v�rifie qu'il y a bien au moins 3 parametres
+	if (argc < 2) {
+		help();
+		exit(ERROR_ARGS);
+	}
 
 	if (!strcmp(argv[2], "-e")) {
 		goto extract;
