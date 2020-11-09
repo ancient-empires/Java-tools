@@ -104,7 +104,7 @@ void txt2dat(char* srcFilename, char* destFilename) {
 		exit(ERROR_RW);
 	}
 
-	// process all strings in the .txt file
+	// process all strings in the .txt file, and write to the .dat file
 	unsigned int stringsCount = 0;
 	_str2dat(srcFileDesc, destFileDesc, &stringsCount);
 
