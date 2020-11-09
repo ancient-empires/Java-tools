@@ -107,7 +107,7 @@ void dat2txt(char* srcFilename, char* destFilename) {
 // srcFileDesc: the .txt file descriptor (read from)
 // destFileDesc: the .dat file descriptor (write to)
 // return: the total number of strings converted
-int str2dat(FILE* srcFileDesc, FILE* destFileDesc, unsigned int* stringsCount) {
+unsigned int str2dat(FILE* srcFileDesc, FILE* destFileDesc, unsigned int* stringsCount) {
 
 	*stringsCount = 0;
 
