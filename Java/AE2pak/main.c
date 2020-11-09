@@ -193,7 +193,10 @@ extract:
 	exit(0);
 
 pack:
-	if (!argv[3]) help();
+	if (!argv[3]) {
+		help();
+		exit(ERROR_ARGS);
+	}
 
 	printf("Packing...\n");
 	fo = fopen(argv[3], "r");
