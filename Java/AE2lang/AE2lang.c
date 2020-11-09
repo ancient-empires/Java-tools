@@ -109,6 +109,8 @@ void dat2txt(char* srcFilename, char* destFilename) {
 // return: the total number of strings converted
 int str2dat(FILE* srcFileDesc, FILE* destFileDesc, unsigned int* stringsCount) {
 
+	*stringsCount = 0;
+
 	while (!feof(srcFileDesc)) {
 		char* line = NULL;
 		size_t n = 0;
