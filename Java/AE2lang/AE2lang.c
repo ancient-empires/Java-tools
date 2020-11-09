@@ -79,7 +79,7 @@ void dat2txt(char* srcFilename, char* destFilename) {
 			// check if reached the end of file unexpectedly
 			if (feof(srcFileDesc) && ((textLen + 1) != totalStrings)) {
 				long int currentPos = ftell(srcFileDesc);
-				printf("ERROR: Reached end of file unexpected when reading text no. %d at offset %ld\n", strIdx, currentPos);
+				printf("ERROR: Reached end of file unexpectedly when reading text no. %d at offset %ld\n", strIdx, currentPos);
 				fclose(srcFileDesc);
 				fclose(destFileDesc);
 				exit(ERROR_RW);
@@ -174,20 +174,18 @@ void txt2dat(char* srcFilename, char* destFilename) {
 		exit(ERROR_RW);
 	}
 
-	// Put placeholder characters (not valid in UTF-8) in the first 4 bytes
-	// They will be later replaced by valid bytes specifying total number of strings
-	for (int i = 0; i < 4; ++i) {
-		fputc(0xff, destFileDesc);
-	}
+	// Start from the 4th byte (index starts from 0) of the output file.
+	// The first 4 bytes are reserved for specifying the number of total strings, which will be written finally.
+	fseek(destFileDesc, 4, SEEK_SET);
 
 	unsigned char c1, c2, c3, c4;
 
-	// detect and avoid EFBB BF bytes
+	// detect and avoid EFBB BF bytes from the .txt file
 	c1 = fgetc(srcFileDesc);
 	c2 = fgetc(srcFileDesc);
 	c3 = fgetc(srcFileDesc);
 	if ((c1 == 0xEF) && (c2 == 0xBB) && (c3 == 0xBF)) {
-		printf("Detected and avoided the header EFBB BF from the text file.\n");
+		printf("Detected and avoided the header EFBB BF from the .txt file.\n");
 	}
 	else {
 		rewind(srcFileDesc);
