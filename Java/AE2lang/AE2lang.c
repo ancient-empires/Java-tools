@@ -108,8 +108,8 @@ void dat2txt(char* srcFilename, char* destFilename) {
 // Convert all strings from TXT to DAT format
 // srcFileDesc: the .txt file descriptor (read from)
 // destFileDesc: the .dat file descriptor (write to)
-// return: the descriptor of the .dat file
-FILE* str2dat(FILE* srcFileDesc, FILE* destFileDesc, unsigned int* stringsCount) {
+// return: the total number of strings converted
+int str2dat(FILE* srcFileDesc, FILE* destFileDesc, unsigned int* stringsCount) {
 	// Inits
 	char buffer[LARGE_SPACE_SIZE];
 	buffer[0] = 0;
@@ -157,7 +157,7 @@ FILE* str2dat(FILE* srcFileDesc, FILE* destFileDesc, unsigned int* stringsCount)
 		}
 	}
 
-	return destFileDesc;
+	return *stringsCount;
 }
 
 // Convert .txt back to .dat
