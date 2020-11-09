@@ -5,20 +5,10 @@
 
 #include "../utils/utils.h"
 
-#define LARGE_SPACE_SIZE 2048
-
 #define DAT ".dat"
 #define DAT_LEN strlen(DAT)
 #define TXT ".txt"
 #define TXT_LEN strlen(TXT)
-
-// Show help when user enters invalid arguments in command line
-void help(void) {
-	printf("Please use the following syntax:\n");
-	printf("- dat2txt: ./AE2lang.out lang.dat lang.txt\n");
-	printf("- txt2dat: ./AE2lang.out lang.txt lang.dat\n\n");
-	printf("Note that the appropriate function is selected according to the files extensions (minuscule only).\n\n");
-}
 
 // Convert .dat to .txt
 void dat2txt(char* srcFilename, char* destFilename) {
@@ -213,8 +203,19 @@ void txt2dat(char* srcFilename, char* destFilename) {
 	fclose(destFileDesc);
 }
 
+// Show help when user enters invalid arguments in command line
+void help(void) {
+	printf("Please use the following syntax:\n");
+	printf("- dat2txt: ./AE2lang.out lang.dat lang.txt\n");
+	printf("- txt2dat: ./AE2lang.out lang.txt lang.dat\n\n");
+	printf("Note that the appropriate function is selected according to the files extensions (minuscule only).\n\n");
+}
+
+/* Usage:
+	- dat2txt: ./AE2lang.out lang.dat lang.txt
+	- txt2dat: ./AE2lang.out lang.txt lang.dat
+*/
 int main(int argc, char *argv[]) {
-	char srcFilename[LARGE_SPACE_SIZE], destFilename[LARGE_SPACE_SIZE];
 
 	// Program title
 	printf("\n=== Ancient Empires II language file text converter v0.1b ===\n\n");
@@ -226,11 +227,11 @@ int main(int argc, char *argv[]) {
 	}
 
 	// Check source and destination file names
-	strncpy(srcFilename, argv[1], LARGE_SPACE_SIZE - 1);
+	char* srcFilename = argv[1];
 	unsigned int srcFilenameLen = strlen(srcFilename);
-	strncpy(destFilename, argv[2], LARGE_SPACE_SIZE - 1);
+	char* destFilename = argv[2];
 	unsigned int destFilenameLen = strlen(destFilename);
-	if ((srcFilenameLen < 1) || (destFilenameLen < 1)) {
+	if ((srcFilenameLen < DAT_LEN) || (destFilenameLen < TXT_LEN)) {
 		help();
 		return ERROR_ARGS;
 	}
