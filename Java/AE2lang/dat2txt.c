@@ -4,24 +4,13 @@
 #include "../utils/utils.h"
 #include "dat2txt.h"
 
-// Convert .dat to .txt
-void dat2txt(char* srcFilename, char* destFilename) {
-	printf("Converting .dat to .txt ...\n\n");
-
-	// Check source file (.dat)
-	FILE* srcFileDesc = fopen(srcFilename, "rb");
-	if (!srcFileDesc) {
-		printf("ERROR: could not open \"%s\" for reading !\n", srcFilename);
-		exit(ERROR_RW);
-	}
-
-	// Check destination file (.txt)
-	FILE* destFileDesc = fopen(destFilename, "w");
-	if (!destFileDesc) {
-		fclose(srcFileDesc);
-		printf("ERROR: could not open \"%s\" for writing !\n", destFilename);
-		exit(ERROR_RW);
-	}
+// Convert all strings from DAT to TXT format (internal use only)
+// srcFileDesc: the .dat file descriptor (read from)
+// destFileDesc: the .txt file descriptor (write to)
+// return: the number of strings successfully extracted
+unsigned int _dat2str(FILE* srcFileDesc, FILE* destFileDesc, unsigned int* stringsCount, unsigned int* totalStrings) {
+	*stringsCount = 0;
+	*totalStrings = 0;
 
 	unsigned char c1, c2, c3, c4;
 
@@ -31,18 +20,18 @@ void dat2txt(char* srcFilename, char* destFilename) {
 	c2 = fgetc(srcFileDesc);
 	c3 = fgetc(srcFileDesc);
 	c4 = fgetc(srcFileDesc);
-	unsigned int totalStrings = fourBytesToUnsignedInt(c1, c2, c3, c4);
-	printf("Number of total strings: %d\n\n", totalStrings);
-	if (totalStrings < 1) {
+	*totalStrings = fourBytesToUnsignedInt(c1, c2, c3, c4);
+	printf("Number of total strings: %d\n\n", *totalStrings);
+	if (*totalStrings < 1) {
 		// incorrect format
 		fclose(srcFileDesc);
-		printf("\nERROR: incorrect format:\ntotalStrings: %d (announced in first 4 bytes)\n\n", totalStrings);
+		printf("\nERROR: incorrect format:\ntotalStrings: %d (announced in first 4 bytes)\n\n", *totalStrings);
 		exit(ERROR_RW);
 	}
 
 	// Process all strings
 	unsigned int strIdx = 0;
-	for (; strIdx < totalStrings; ++strIdx) {
+	for (; strIdx < *totalStrings; ++strIdx) {
 		// First check string validity.
 		// For each text field in the .dat file, the first two bytes indicate string length in bytes.
 		c3 = fgetc(srcFileDesc);
@@ -78,7 +67,33 @@ void dat2txt(char* srcFilename, char* destFilename) {
 		fputc(LF, destFileDesc);
 		free(buffer);
 	}
-	unsigned int stringsCount = strIdx;
+	*stringsCount = strIdx;
+
+	return *stringsCount;
+}
+
+// Convert .dat to .txt
+void dat2txt(char* srcFilename, char* destFilename) {
+	printf("Converting .dat to .txt ...\n\n");
+
+	// check source file (.dat)
+	FILE* srcFileDesc = fopen(srcFilename, "rb");
+	if (!srcFileDesc) {
+		printf("ERROR: could not open \"%s\" for reading !\n", srcFilename);
+		exit(ERROR_RW);
+	}
+
+	// check destination file (.txt)
+	FILE* destFileDesc = fopen(destFilename, "w");
+	if (!destFileDesc) {
+		fclose(srcFileDesc);
+		printf("ERROR: could not open \"%s\" for writing !\n", destFilename);
+		exit(ERROR_RW);
+	}
+
+	// process all strings in the .dat file, and write to the .txt file
+	unsigned int stringsCount = 0, totalStrings = 0;
+	_dat2str(srcFileDesc, destFileDesc, &stringsCount, &totalStrings);
 
 	// finish
 	printf("Uh yeah, its done!\n");
