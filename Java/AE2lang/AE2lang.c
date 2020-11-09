@@ -71,21 +71,20 @@ void dat2txt(char* srcFilename, char* destFilename) {
 		for (; charIdx < textLen; ++charIdx) {
 			c1 = fgetc(srcFileDesc);
 
-			// In the extracted .txt file, use '|' character to designate '\n' in each text field in the UI.
-			if (c1 == LF) {
-				c1 = VERT;
-			}
-
-			// check if reached the end of file unexpectedly
-			if (feof(srcFileDesc) && ((textLen + 1) != totalStrings)) {
-				long int currentPos = ftell(srcFileDesc);
-				printf("ERROR: Reached end of file unexpectedly when reading text no. %d at offset %ld\n", strIdx, currentPos);
+			// Check if reached the end of file unexpectedly.
+			if (feof(srcFileDesc)) {
+				long currentPos = ftell(srcFileDesc);
+				printf("ERROR: Reached end of file unexpectedly when reading text No. %d at offset %ld.\n", strIdx, currentPos);
 				fclose(srcFileDesc);
 				fclose(destFileDesc);
 				exit(ERROR_RW);
 			}
 
 			// Put extracted string in buffer, in order to write into the .txt file.
+			// In the extracted .txt file, use '|' character to designate '\n' in each text field in the UI.
+			if (c1 == LF) {
+				c1 = VERT;
+			}
 			buffer[charIdx] = c1;
 		}
 		buffer[charIdx] = '\0';
