@@ -5,11 +5,11 @@
 #include "../utils/utils.h"
 #include "txt2dat.h"
 
-// Convert all strings from TXT to DAT format
+// Convert all strings from TXT to DAT format (internal use only)
 // srcFileDesc: the .txt file descriptor (read from)
 // destFileDesc: the .dat file descriptor (write to)
 // return: the total number of strings converted
-unsigned int str2dat(FILE* srcFileDesc, FILE* destFileDesc, unsigned int* stringsCount) {
+unsigned int _str2dat(FILE* srcFileDesc, FILE* destFileDesc, unsigned int* stringsCount) {
 
 	unsigned char c1, c2, c3, c4;
 
@@ -106,7 +106,7 @@ void txt2dat(char* srcFilename, char* destFilename) {
 
 	// process all strings in the .txt file
 	unsigned int stringsCount = 0;
-	str2dat(srcFileDesc, destFileDesc, &stringsCount);
+	_str2dat(srcFileDesc, destFileDesc, &stringsCount);
 
 	// finish
 	printf("Uh yeah, it's done!\n");
