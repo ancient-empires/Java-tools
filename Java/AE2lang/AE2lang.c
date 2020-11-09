@@ -227,9 +227,9 @@ int main(int argc, char *argv[]) {
 	}
 
 	// Check source and destination file names
-	strcpy(srcFilename, argv[1]);
+	strncpy(srcFilename, argv[1], LARGE_SPACE_SIZE - 1);
 	unsigned int srcFilenameLen = strlen(srcFilename);
-	strcpy(destFilename, argv[2]);
+	strncpy(destFilename, argv[2], LARGE_SPACE_SIZE - 1);
 	unsigned int destFilenameLen = strlen(destFilename);
 	if ((srcFilenameLen < 1) || (destFilenameLen < 1)) {
 		help();
