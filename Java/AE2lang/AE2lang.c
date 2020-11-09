@@ -14,23 +14,20 @@
 
 // Show help when user enters invalid arguments in command line
 void help(void) {
-	printf(" byblo - 200x - http://go.to/byblo - byblo@hotmail.com\n");
-	printf("\n please use the following syntax :\n");
-	printf(" AE2lang lang.dat lang.txt (dat2txt)\n");
-	printf("  or\n");
-	printf(" AE2lang lang.txt lang.dat (txt2dat)\n\n");
-	printf(" Note that the appropriate function is selected\n");
-	printf("  looking at the files extensions (minuscule only)\n\n");
+	printf("Please use the following syntax:\n");
+	printf("- dat2txt: ./AE2lang.out lang.dat lang.txt\n");
+	printf("- txt2dat: ./AE2lang.out lang.txt lang.dat\n\n");
+	printf("Note that the appropriate function is selected according to the files extensions (minuscule only).\n\n");
 }
 
 // Convert DAT to TXT
 void dat2txt(char* srcFilename, char* destFilename) {
-	printf("\n Converting DAT to TXT...\n\n");
+	printf("Converting DAT to TXT...\n\n");
 
 	// Check source file (.dat)
 	FILE* srcFileDesc = fopen(srcFilename, "rb");
 	if (!srcFileDesc) {
-		printf(" ERROR: could not open \"%s\" for reading !\n", srcFilename);
+		printf("ERROR: could not open \"%s\" for reading !\n", srcFilename);
 		exit(ERROR_RW);
 	}
 
@@ -51,7 +48,7 @@ void dat2txt(char* srcFilename, char* destFilename) {
 	c3 = getc(srcFileDesc);
 	c4 = getc(srcFileDesc);
 	unsigned int totalStrings = fourBytesToUnsignedInt(c1, c2, c3, c4);
-	printf("Number of total strings: %d\n", totalStrings);
+	printf("Number of total strings: %d\n\n", totalStrings);
 	if (totalStrings < 1) {
 		// incorrect format
 		fclose(srcFileDesc);
@@ -60,7 +57,7 @@ void dat2txt(char* srcFilename, char* destFilename) {
 	}
 
 	// Inits
-	unsigned int totalStringsCount = 0;
+	unsigned int stringsCount = 0;
 	char buffer[LARGE_SPACE_SIZE];
 
 	// Process all strings
@@ -97,22 +94,23 @@ void dat2txt(char* srcFilename, char* destFilename) {
 		// Put LF at the end of each line, for each string.
 		fputs(buffer, destFileDesc);
 		putc(LF, destFileDesc);
-		totalStringsCount++;
+		++stringsCount;
 	}
 
 	// finish
-	printf(" Uh yeah, its done! %d/%d (anounced/extracted)\n", totalStrings, totalStringsCount);
+	printf("Uh yeah, its done!\n");
+	printf("Announced: %d; Extracted: %d\n\n", totalStrings, stringsCount);
 	fclose(srcFileDesc);
 	fclose(destFileDesc);
 }
 
 void str2dat(void) {
-	printf("\n Inserting string to dat...\n\n");
+	printf("Inserting string to dat...\n\n");
 }
 
 // Convert TXT back to DAT
 void txt2dat(char* srcFilename, char* destFilename) {
-	printf("\n Converting TXT to DAT...\n\n");
+	printf("Converting TXT to DAT...\n\n");
 
 	// Check source file (.txt)
 	FILE* srcFileDesc = fopen(srcFilename, "r");
@@ -148,11 +146,11 @@ void txt2dat(char* srcFilename, char* destFilename) {
 		rewind(srcFileDesc);
 	}
 
-	// inits
+	// Inits
 	char buffer[LARGE_SPACE_SIZE];
 	buffer[0] = 0;
 	int bufferPos = 0;
-	int totalStringsCount = 0;
+	unsigned int stringsCount = 0;
 	bool ignoreLine = false;
 
 	// read and process the TXT file
@@ -177,7 +175,7 @@ void txt2dat(char* srcFilename, char* destFilename) {
 				putc(c3, destFileDesc);
 				putc(c4, destFileDesc);
 				fputs(buffer, destFileDesc);
-				totalStringsCount++;
+				++stringsCount;
 			}
 			// line processing finished
 			bufferPos = 0;
@@ -200,14 +198,15 @@ void txt2dat(char* srcFilename, char* destFilename) {
 	rewind(destFileDesc);
 
 	// put number of total strings in the first 4 bytes
-	unsignedIntToFourBytes(totalStringsCount, &c1, &c2, &c3, &c4);
+	unsignedIntToFourBytes(stringsCount, &c1, &c2, &c3, &c4);
 	putc(c1, destFileDesc);
 	putc(c2, destFileDesc);
 	putc(c3, destFileDesc);
 	putc(c4, destFileDesc);
 
 	// finish
-	printf(" Uh yeah, its done! %d (strings count)\n", totalStringsCount);
+	printf("Uh yeah, it's done!\n");
+	printf("Total strings: %d\n\n", stringsCount);
 	fclose(srcFileDesc);
 	fclose(destFileDesc);
 }
@@ -216,7 +215,7 @@ int main(int argc, char *argv[]) {
 	char srcFilename[LARGE_SPACE_SIZE], destFilename[LARGE_SPACE_SIZE];
 
 	// Program title
-	printf("\n Ancient Empires II language file text converter v0.1b\n\n");
+	printf("\n=== Ancient Empires II language file text converter v0.1b ===\n\n");
 
 	// Check if the user has entered 3 parameters
 	if (argc < 3) {
