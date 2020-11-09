@@ -40,7 +40,7 @@ char extract(char* fo2s,char* fn2s,unsigned long int filepos,unsigned long int f
 
 	fo2 = fopen(fo2s,"rb");
 	if (!fo2) {
-		printf("Error, could not open \"%s\" for extraction!\n", fo2s);
+		printf("ERROR: Could not open \"%s\" for extraction!\n", fo2s);
 		return 0;
 	}
 	rewind(fo2);
@@ -48,7 +48,7 @@ char extract(char* fo2s,char* fn2s,unsigned long int filepos,unsigned long int f
 
 	fn2 = fopen(fn2s,"wb");
 	if (!fn2) {
-		printf(" Error, could not open \"%s\" for writing !\n", fn2s);
+		printf("Error: Could not open \"%s\" for writing !\n", fn2s);
 		fclose(fo2);
 		return 0;
 	}
@@ -56,7 +56,7 @@ char extract(char* fo2s,char* fn2s,unsigned long int filepos,unsigned long int f
 	for (i = 0; i < filesize; ++i) {
 		o1 = getc(fo2);
 		if (feof(fo2)) {
-			printf(" Error, eof reached when extracting!\n Check your file !");
+			printf("ERROR: EOF reached when extracting!\n Check your file !");
 			fclose(fo2);
 			fclose(fn2);
 			return 0;
@@ -102,7 +102,7 @@ extract:
 	mkdir(argv[3], MKDIR_DEFAULT_MODE);
 	fo = fopen(argv[1], "rb");
 	if (!fo) {
-		printf("ERROR: file \"%s\" not found.\n", argv[1]);
+		printf("ERROR: File \"%s\" not found.\n", argv[1]);
 		fclose(fo);
 		exit(1);
 	}
@@ -118,7 +118,7 @@ extract:
 
 	if (feof(fo)) {
 		fclose(fo);
-		printf("ERROR: unexpected end of file:\n\"%s\"\n", argv[1]);
+		printf("ERROR: Unexpected end of file:\n\"%s\"\n", argv[1]);
 		exit(1);
 	}
 
@@ -133,18 +133,17 @@ extract:
 		}
 		strcat(sdata3, "/_filelist.txt");
 		strcpy(sdata, sdata3);
-		//printf("%s\n",sdata);
 	}
 	else {
 		strcpy(sdata, "_filelist.txt");
 	}
 
-	printf(" Filelist is \"%s\"\n", sdata);
+	printf("Filelist is: \"%s\"\n", sdata);
 
 	fl = fopen(sdata, "wb");
 
 	if (!fl) {
-		printf("error:logging file %s cannot be created for writing.\n", sdata);
+		printf("ERROR: Logging file \"%s\" cannot be created for writing.\n", sdata);
 		fclose(fo);
 		fclose(fl);
 		exit(1);
@@ -167,7 +166,7 @@ extract:
 		o2=getc(fo);
 		filesize = ((o1*BYTE_CAP)+o2);
 		if (argv[3]) {
-			strcpy(sdata3,argv[3]);
+			strcpy(sdata3, argv[3]);
 			k = strlen(sdata3);
 			if (sdata3[k-1] == DBQUOTE) {
 				sdata3[k-1]=0;
@@ -175,17 +174,16 @@ extract:
 			if (sdata3[k-1] == BACKSLASH) {
 				sdata3[k-1]=0;
 			}
-			strcat(sdata3,"/");
-			strcat(sdata3,sdata);
-			strcpy(sdata,sdata3);
-			//printf("%s\n",sdata);
+			strcat(sdata3, "/");
+			strcat(sdata3, sdata);
+			strcpy(sdata, sdata3);
 		}
-		//printf("extracting file %d at %d : %s, %d byte(s)\n",i,filepos,sdata,filesize);
-		fprintf(fl,"%s",sdata);
+		fprintf(fl, "%s", sdata);
 		putc(LF, fl);
 
-		if (!extract(argv[1],sdata,filepos,filesize))
+		if (!extract(argv[1], sdata, filepos, filesize)) {
 			totalerrors++;
+		}
 		totalextracted++;
 	}
 	fclose(fl);
@@ -199,9 +197,9 @@ pack:
 	if (!argv[3]) help();
 
 	printf("Packing...\n");
-	fo = fopen(argv[3],"r");
+	fo = fopen(argv[3], "r");
 	if (!fo) {
-		printf(" Error, file %s not found.\n",argv[3]);
+		printf("ERROR: File %s not found.\n", argv[3]);
 		help();
 		}
 	rewind(fo);
@@ -213,19 +211,18 @@ pack:
 		if ((k>0) && ((sdata[k-1]==0x0A) || (sdata[k-1]==0x0D))) {
 			sdata[k-1]=0;
 		}
-		if ((strcmp(sdata2[totalfiles],sdata)) && (k>1)) {
-			strcpy(sdata2[totalfiles],sdata);
+		if ((strcmp(sdata2[totalfiles], sdata)) && (k>1)) {
+			strcpy(sdata2[totalfiles], sdata);
 			fo3 = fopen(sdata2[totalfiles],"rb");
 			if (!fo3) {
-				printf("Error, could not found : %s\n",sdata2[totalfiles]);
+				printf("ERROR: Could not find \"%s\"\n",sdata2[totalfiles]);
 				totalerrors++;
 			}
-			else{
+			else {
 				rewind(fo3);
 				fseek (fo3, 0, SEEK_END);
 				sdata2s[totalfiles] = ftell(fo3);
 				fclose(fo3);
-				//printf("'%s' %d bytes\n",sdata2[totalfiles],sdata2s[totalfiles]);
 			}
 			totalfiles++;
 			if (totalfiles > LARGE_SPACE_SIZE) break;
@@ -246,9 +243,9 @@ pack:
 		exit(1);
 	}
 
-	fn = fopen(argv[1],"wb");
+	fn = fopen(argv[1], "wb");
 	if (!fn) {
-		printf("Error, could not open file %s for writing\n",argv[1]);
+		printf("ERROR: Could not open file \"%s\" for writing\n", argv[1]);
 		exit(1);
 	}
 
@@ -295,15 +292,13 @@ pack:
 
 		k = k-j;
 		o4 = k;
-		//printf("\n\nDEBUG %x %x %x %x\n\n",o1,o2,o3,o4);
-		//printf("\n\nDEBUG %d\n\n",sdata2s[i]);
 		putc(o1,fn);
 		putc(o2,fn);
 		putc(o3,fn);
 		putc(o4,fn);
 
 
-		//taille du fichier
+		// file size
 		k = sdata2s[i];
 		filepos = (filepos+k);
 
@@ -333,18 +328,17 @@ pack:
 	putc(o3,fn);
 	putc(o4,fn);
 
-	// package files
+	// pack files
 	rewind(fn);
 	fseek (fn, filepos, 0);
 
 	for (i=0;i<totalfiles;i++) {
 		fo = fopen(sdata2[i],"rb");
 		if (!fo) {
-			printf("Error, could not open file %s for reading\n",sdata2[i]);
+			printf("ERROR: Could not open file \"%s\" for reading\n", sdata2[i]);
 			fclose(fn);
 			exit(1);
-			}
-		//printf("packing file %d from : %s, %d byte(s)\n",i,sdata2[i],sdata2s[i]);
+		}
 		j=0;
 		while(!feof(fo)) {
 			o1=getc(fo);
@@ -352,7 +346,7 @@ pack:
 			j++;
 		}
 		if (j - 1 != sdata2s[i]) {
-			printf("Error, could not match size of file! j = %ld\n", j);
+			printf("ERROR: Could not match size of file! j = %ld\n", j);
 		}
 		fclose(fo);
 	}
