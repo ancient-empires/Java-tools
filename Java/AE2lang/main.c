@@ -36,9 +36,9 @@ int main(int argc, char *argv[]) {
 
 	// Check source and destination file names
 	char* srcFilename = argv[1];
-	unsigned int srcFilenameLen = strlen(srcFilename);
+	size_t srcFilenameLen = strlen(srcFilename);
 	char* destFilename = argv[2];
-	unsigned int destFilenameLen = strlen(destFilename);
+	size_t destFilenameLen = strlen(destFilename);
 	if ((srcFilenameLen < DAT_LEN) || (destFilenameLen < TXT_LEN)) {
 		help();
 		return ERROR_ARGS;
