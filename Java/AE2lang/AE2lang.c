@@ -108,51 +108,46 @@ void dat2txt(char* srcFilename, char* destFilename) {
 // destFileDesc: the .dat file descriptor (write to)
 // return: the total number of strings converted
 int str2dat(FILE* srcFileDesc, FILE* destFileDesc, unsigned int* stringsCount) {
-	// Inits
-	char buffer[LARGE_SPACE_SIZE];
-	buffer[0] = 0;
-	unsigned int bufferPos = 0;
 
-	bool ignoreLine = false;
-
-	unsigned char c1, c2, c3, c4;
-
-	// Read and process the .txt file, character by character.
 	while (!feof(srcFileDesc)) {
-		c1 = getc(srcFileDesc);
+		char* line = NULL;
+		size_t n = 0;
+		ssize_t lineLen = getline(&line, &n, srcFileDesc);
 
-		if ((bufferPos == 0) && (c1 == CARET)) {
-			// ignore lines starting with ^ character
-			ignoreLine = true;
-		}
+		// lineLen > 0 if getline gets a valid line
+		// lineLen == -1 if getline fails
+		if (lineLen > 0) {
+			// ignore lines starting with '^'
+			bool ignoreLine = line[0] == CARET;
 
-		if (c1 == LF) {
-			// process line endings in .txt
-			buffer[bufferPos] = '\0';
-			unsigned int bufferLen = bufferPos;
-			unsignedIntToFourBytes(bufferLen, &c1, &c2, &c3, &c4);
-			if ((c1 != 0) || (c2 != 0)) {
-				printf("ERROR: buffer content \"%s\" is too long to fit in\n", buffer);
-			}
-			else if (!ignoreLine) {
-				putc(c3, destFileDesc);
-				putc(c4, destFileDesc);
-				fputs(buffer, destFileDesc);
+			if (!ignoreLine) {
+				// replace '\n' with '\0' for writing to .dat
+				--lineLen;
+				line[lineLen] = '\0';
+
+				// check number of characters in the line
+				unsigned char c1, c2, c3, c4;
+				unsignedIntToFourBytes(lineLen, &c1, &c2, &c3, &c4);
+				if (c1 || c2) {
+					printf("ERROR: line content \"%s\" is too long to fit in\n", line);
+					free(line);
+					continue;
+				}
+
+				// write lines to .dat file
+				for (size_t i = 0; i < lineLen; ++i) {
+					// revert back the '|' character in .txt into '\n' in .dat
+					if (line[i] == VERT) {
+						line[i] = LF;
+					}
+				}
+				fputc(c3, destFileDesc);
+				fputc(c4, destFileDesc);
+				fputs(line, destFileDesc);
 				++(*stringsCount);
 			}
-			// line processing finished
-			bufferPos = 0;
-			ignoreLine = false;
 		}
-		else {
-			// process all characters other than line endings
-			if (c1 == VERT) {
-				// Convert '|' in .txt to '\n' in .dat
-				c1 = LF;
-			}
-			buffer[bufferPos] = c1;
-			++bufferPos;
-		}
+		free(line);
 	}
 
 	return *stringsCount;
