@@ -104,58 +104,19 @@ void dat2txt(char* srcFilename, char* destFilename) {
 	fclose(destFileDesc);
 }
 
-void str2dat(void) {
-	printf("Inserting strings to dat...\n\n");
-}
-
-// Convert TXT back to DAT
-void txt2dat(char* srcFilename, char* destFilename) {
-	printf("Converting TXT to DAT...\n\n");
-
-	// Check source file (.txt)
-	FILE* srcFileDesc = fopen(srcFilename, "r");
-	if (!srcFileDesc) {
-		printf("ERROR: could not open \"%s\" for reading !\n", srcFilename);
-		exit(ERROR_RW);
-	}
-
-	// Check destination file (.dat)
-	FILE* destFileDesc = fopen(destFilename, "wb");
-	if (!destFileDesc) {
-		printf("ERROR: could not open \"%s\" for writing !\n", destFilename);
-		fclose(srcFileDesc);
-		exit(ERROR_RW);
-	}
-
-	// Put placeholder characters (not valid in UTF-8) in the first 4 bytes
-	// They will be later replaced by valid bytes specifying total number of strings
-	for (int i = 0; i < 4; ++i) {
-		putc(0xff, destFileDesc);
-	}
-
-	unsigned char c1, c2, c3, c4;
-
-	// Detect and avoid EFBB BF bytes
-	c1 = getc(srcFileDesc);
-	c2 = getc(srcFileDesc);
-	c3 = getc(srcFileDesc);
-	if ((c1 == 0xEF) && (c2 == 0xBB) && (c3 == 0xBF)) {
-		printf("Detected and avoided the header EFBB BF from the text file.\n");
-	}
-	else {
-		rewind(srcFileDesc);
-	}
-
+// Convert all strings from TXT to DAT format
+// srcFileDesc: the TXT file descriptor (read from)
+// destFileDesc: the DAT file descriptor (write to)
+// return: the descriptor of the DAT file
+FILE* str2dat(FILE* srcFileDesc, FILE* destFileDesc, unsigned int* stringsCount) {
 	// Inits
 	char buffer[LARGE_SPACE_SIZE];
 	buffer[0] = 0;
 	unsigned int bufferPos = 0;
 
-	unsigned int stringsCount = 0;
-
 	bool ignoreLine = false;
 
-	str2dat();
+	unsigned char c1, c2, c3, c4;
 
 	// Read and process the TXT file, character by character.
 	while (!feof(srcFileDesc)) {
@@ -168,7 +129,7 @@ void txt2dat(char* srcFilename, char* destFilename) {
 
 		if (c1 == LF) {
 			// process line endings in TXT
-			buffer[bufferPos] = 0;
+			buffer[bufferPos] = '\0';
 			unsigned int bufferLen = bufferPos;
 			unsignedIntToFourBytes(bufferLen, &c1, &c2, &c3, &c4);
 			if ((c1 != 0) || (c2 != 0)) {
@@ -178,7 +139,7 @@ void txt2dat(char* srcFilename, char* destFilename) {
 				putc(c3, destFileDesc);
 				putc(c4, destFileDesc);
 				fputs(buffer, destFileDesc);
-				++stringsCount;
+				++(*stringsCount);
 			}
 			// line processing finished
 			bufferPos = 0;
@@ -195,7 +156,52 @@ void txt2dat(char* srcFilename, char* destFilename) {
 		}
 	}
 
-	// now we need to write total strings information in the first 4 bytes
+	return destFileDesc;
+}
+
+// Convert TXT back to DAT
+void txt2dat(char* srcFilename, char* destFilename) {
+	printf("Converting TXT to DAT...\n\n");
+
+	// check source file (.txt)
+	FILE* srcFileDesc = fopen(srcFilename, "r");
+	if (!srcFileDesc) {
+		printf("ERROR: could not open \"%s\" for reading !\n", srcFilename);
+		exit(ERROR_RW);
+	}
+
+	// check destination file (.dat)
+	FILE* destFileDesc = fopen(destFilename, "wb");
+	if (!destFileDesc) {
+		printf("ERROR: could not open \"%s\" for writing !\n", destFilename);
+		fclose(srcFileDesc);
+		exit(ERROR_RW);
+	}
+
+	// Put placeholder characters (not valid in UTF-8) in the first 4 bytes
+	// They will be later replaced by valid bytes specifying total number of strings
+	for (int i = 0; i < 4; ++i) {
+		putc(0xff, destFileDesc);
+	}
+
+	unsigned char c1, c2, c3, c4;
+
+	// detect and avoid EFBB BF bytes
+	c1 = getc(srcFileDesc);
+	c2 = getc(srcFileDesc);
+	c3 = getc(srcFileDesc);
+	if ((c1 == 0xEF) && (c2 == 0xBB) && (c3 == 0xBF)) {
+		printf("Detected and avoided the header EFBB BF from the text file.\n");
+	}
+	else {
+		rewind(srcFileDesc);
+	}
+
+	// process all strings in the TXT file
+	unsigned int stringsCount = 0;
+	str2dat(srcFileDesc, destFileDesc, &stringsCount);
+
+	// Now we need to write total strings information in the first 4 bytes.
 
 	// go back to beginning
 	rewind(destFileDesc);
