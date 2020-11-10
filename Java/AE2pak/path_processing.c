@@ -1,16 +1,18 @@
+#define _GNU_SOURCE
 #include <string.h>
 #include <stdlib.h>
+#include <limits.h>
 
 #include "../utils/utils.h"
 #include "path_processing.h"
 
-// Convert Windows to Unix path in-place.
+// convert Windows to Unix path in-placefree(*pPath)
 char* Windows2UnixPath(char* path) {
 	strrep(path, BACKSLASH, SLASH);
 	return path;
 }
 
-// Convert Windows to Unix path in-place.
+// convert Unix to Windows path in-place
 char* Unix2WindowsPath(char* path) {
 	strrep(path, SLASH, BACKSLASH);
 	return path;

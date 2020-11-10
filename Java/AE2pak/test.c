@@ -3,7 +3,7 @@
 #include "path_processing.h"
 
 int main(void) {
-	char test[] = "12\\///345\\\\\\678";
+	char test[] = "///usr//\\\\///bin///sh";
 	filepath_t t = splitPath(test);
 	printf("%s %s\n", t.dir, t.filename);
 	freeFilepathStruct(&t);
