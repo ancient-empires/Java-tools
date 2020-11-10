@@ -5,7 +5,7 @@
 #include "../utils/utils.h"
 #include "path_processing.h"
 
-// convert Windows to Unix path in-placefree(*pPath)
+// convert Windows to Unix path in-place
 char* Windows2UnixPath(char* path) {
 	strrep(path, BACKSLASH, SLASH);
 	return path;
