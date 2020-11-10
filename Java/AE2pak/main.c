@@ -14,21 +14,27 @@ void help(void) {
 	fprintf(stderr, "- pack: ./AE2pak.out filename.pak -p filelist.txt\n\n");
 }
 
-// Get filename from str, and save it in-place.
-char* getFilename(char* str) {
-	char buffer[LARGE_SPACE_SIZE];
-	strcpy(buffer, str);
-	strrev(buffer);
-	int buffer_len = strlen(buffer);
-	for (int i = 0; i < buffer_len; ++i) {
-		if (buffer[i] == BACKSLASH) {
-			buffer[i] = 0;
-			break;
-		}
+// Get filename from path, and save it in-place.
+// Path separator is '\' (Windows convention).
+// We can expect that the returned string is shorter than or equal to the input string.
+char* getFilename(char* path) {
+	int pathLen = strlen(path);
+	char* lastBackslash = strrchr(path, BACKSLASH);
+	if (!lastBackslash) {
+		return path;
 	}
-	strrev(buffer);
-	strcpy(str, buffer);
-	return str;
+
+	char* filename = &lastBackslash[1];
+	char* buffer = (char*)calloc(strlen(filename) + 1, sizeof(char));
+	if (!buffer) {
+		fprintf(stderr, "ERROR: Failed to get filename from path \"%s\"\n", path);
+	}
+	strcpy(buffer, filename);
+	memset(path, 0, pathLen);
+	strcpy(path, buffer);
+	free(buffer);
+
+	return path;
 }
 
 char extract(char* fo2s, char* fn2s, unsigned long int filepos, unsigned long int filesize) {
