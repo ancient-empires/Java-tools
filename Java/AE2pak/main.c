@@ -37,7 +37,7 @@ char extract(char* fo2s, char* fn2s, unsigned long int filepos, unsigned long in
 
 	fo2 = fopen(fo2s, "rb");
 	if (!fo2) {
-		printf("ERROR: Could not open \"%s\" for extraction!\n", fo2s);
+		fprintf(stderr, "ERROR: Could not open \"%s\" for extraction!\n", fo2s);
 		return 0;
 	}
 	rewind(fo2);
@@ -45,7 +45,7 @@ char extract(char* fo2s, char* fn2s, unsigned long int filepos, unsigned long in
 
 	fn2 = fopen(fn2s, "wb");
 	if (!fn2) {
-		printf("ERROR: Could not open \"%s\" for writing !\n", fn2s);
+		fprintf(stderr, "ERROR: Could not open \"%s\" for writing !\n", fn2s);
 		fclose(fo2);
 		return 0;
 	}
@@ -53,7 +53,7 @@ char extract(char* fo2s, char* fn2s, unsigned long int filepos, unsigned long in
 	for (i = 0; i < filesize; ++i) {
 		o1 = getc(fo2);
 		if (feof(fo2)) {
-			printf("ERROR: EOF reached when extracting!\n Check your file !");
+			fprintf(stderr, "ERROR: EOF reached when extracting!\n Check your file !");
 			fclose(fo2);
 			fclose(fn2);
 			return 0;
@@ -101,7 +101,7 @@ extract:
 	mkdir(argv[3], MKDIR_DEFAULT_MODE);
 	fo = fopen(argv[1], "rb");
 	if (!fo) {
-		printf("ERROR: File \"%s\" not found.\n", argv[1]);
+		fprintf(stderr, "ERROR: File \"%s\" not found.\n", argv[1]);
 		fclose(fo);
 		exit(1);
 	}
@@ -117,7 +117,7 @@ extract:
 
 	if (feof(fo)) {
 		fclose(fo);
-		printf("ERROR: Unexpected end of file:\n\"%s\"\n", argv[1]);
+		fprintf(stderr, "ERROR: Unexpected end of file:\n\"%s\"\n", argv[1]);
 		exit(1);
 	}
 
@@ -142,7 +142,7 @@ extract:
 	fl = fopen(sdata, "wb");
 
 	if (!fl) {
-		printf("ERROR: Logging file \"%s\" cannot be created for writing.\n", sdata);
+		fprintf(stderr, "ERROR: Logging file \"%s\" cannot be created for writing.\n", sdata);
 		fclose(fo);
 		fclose(fl);
 		exit(1);
@@ -201,7 +201,7 @@ pack:
 	printf("Packing...\n");
 	fo = fopen(argv[3], "r");
 	if (!fo) {
-		printf("ERROR: File %s not found.\n", argv[3]);
+		fprintf(stderr, "ERROR: File %s not found.\n", argv[3]);
 		help();
 		}
 	rewind(fo);
@@ -217,7 +217,7 @@ pack:
 			strcpy(sdata2[totalfiles], sdata);
 			fo3 = fopen(sdata2[totalfiles], "rb");
 			if (!fo3) {
-				printf("ERROR: Could not find \"%s\"\n", sdata2[totalfiles]);
+				fprintf(stderr, "ERROR: Could not find \"%s\"\n", sdata2[totalfiles]);
 				totalerrors++;
 			}
 			else {
@@ -247,7 +247,7 @@ pack:
 
 	fn = fopen(argv[1], "wb");
 	if (!fn) {
-		printf("ERROR: Could not open file \"%s\" for writing\n", argv[1]);
+		fprintf(stderr, "ERROR: Could not open file \"%s\" for writing\n", argv[1]);
 		exit(1);
 	}
 
@@ -336,7 +336,7 @@ pack:
 	for (i=0;i<totalfiles;i++) {
 		fo = fopen(sdata2[i], "rb");
 		if (!fo) {
-			printf("ERROR: Could not open file \"%s\" for reading\n", sdata2[i]);
+			fprintf(stderr, "ERROR: Could not open file \"%s\" for reading\n", sdata2[i]);
 			fclose(fn);
 			exit(1);
 		}
@@ -347,7 +347,7 @@ pack:
 			j++;
 		}
 		if (j - 1 != sdata2s[i]) {
-			printf("ERROR: Could not match size of file! j = %ld\n", j);
+			fprintf(stderr, "ERROR: Could not match size of file! j = %ld\n", j);
 		}
 		fclose(fo);
 	}
