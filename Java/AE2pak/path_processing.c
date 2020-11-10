@@ -6,8 +6,8 @@
 #include "../utils/utils.h"
 #include "path_processing.h"
 
-// normalize path (path to normalize must exist)
-// return pointer to the normalized path
+// Normalize path (path to normalize must exist).
+// Return pointer to the normalized path.
 char* normalizePath(char* path) {
 	char* normalized = canonicalize_file_name(path);
 	if (normalized) {
@@ -17,16 +17,14 @@ char* normalizePath(char* path) {
 	return path;
 }
 
-// convert Windows to Unix path
-// return pointer to the converted path
+// Convert Windows to Unix path, and return pointer to the converted path.
 char* Windows2UnixPath(char* path) {
 	strrep(path, BACKSLASH, SLASH);
 	path = normalizePath(path);
 	return path;
 }
 
-// convert Unix to Windows path
-// return pointer to the converted path
+// Convert Unix to Windows path, and return pointer to the converted path.
 char* Unix2WindowsPath(char* path) {
 	path = normalizePath(path);
 	strrep(path, SLASH, BACKSLASH);

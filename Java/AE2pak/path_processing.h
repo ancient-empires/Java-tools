@@ -8,10 +8,14 @@ typedef struct {
 	char* filename;
 } filepath_t;
 
-// convert Windows to Unix path in-place
+// Normalize path (path to normalize must exist).
+// Return pointer to the normalized path.
+char* normalizePath(char* path);
+
+// Convert Windows to Unix path, and return pointer to the converted path.
 char* Windows2UnixPath(char* path);
 
-// convert Windows to Unix path in-place
+// Convert Unix to Windows path, and return pointer to the converted path.
 char* Unix2WindowsPath(char* path);
 
 // Split path into directory and filename.
