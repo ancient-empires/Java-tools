@@ -69,7 +69,7 @@ char extract(char* fo2s, char* fn2s, unsigned long int filepos, unsigned long in
 
 int main(int argc, char *argv[]) {
 	FILE *fo, *fo3, *fn, *fl;
-	unsigned long int i, j, k, headpos, totalfiles=0, totalextracted=0, filepos=0, filesize, totalerrors=0;
+	unsigned long int i, j, k, fileDataStartPos, totalFiles=0, totalextracted=0, filepos=0, filesize, totalerrors=0;
 	unsigned char o1, o2, o3, o4;
 	char sdata[LARGE_SPACE_SIZE], sdata3[LARGE_SPACE_SIZE];
 	char sdata2[LARGE_SPACE_SIZE][LARGE_SPACE_SIZE];
@@ -108,12 +108,12 @@ extract:
 	rewind(fo);
 	o1=getc(fo);
 	o2=getc(fo);
-	headpos = o1 * BYTE_CAP + o2;
-	printf("Header position: %ld\n", headpos);
+	fileDataStartPos = o1 * BYTE_CAP + o2;
+	printf("File data starts at byte: %ld\n", fileDataStartPos);
 	o1=getc(fo);
 	o2=getc(fo);
-	totalfiles = o1 * BYTE_CAP + o2;
-	printf("Total Files announced: %ld\n", totalfiles);
+	totalFiles = o1 * BYTE_CAP + o2;
+	printf("Total Files announced: %ld\n", totalFiles);
 
 	if (feof(fo)) {
 		fclose(fo);
@@ -148,19 +148,23 @@ extract:
 		exit(1);
 	}
 
-	for (i = 0; i < totalfiles; ++i) {
+	for (i = 0; i < totalFiles; ++i) {
+		// get filename length
 		o1 = getc(fo);
 		o2 = getc(fo);
 		k = o1 * BYTE_CAP + o2;
+		// get filename
 		for (j = 0; j < k; ++j) {
 			sdata[j]=getc(fo);
 		}
 		sdata[j]=0;
+		Windows2UnixPath(sdata);
+
 		o1=getc(fo);
 		o2=getc(fo);
 		o3=getc(fo);
 		o4=getc(fo);
-		filepos = ((o1*16777216)+(o2*65536)+(o3*256)+o4+headpos);
+		filepos = ((o1*16777216)+(o2*65536)+(o3*256)+o4+fileDataStartPos);
 		o1=getc(fo);
 		o2=getc(fo);
 		filesize = ((o1*BYTE_CAP)+o2);
@@ -189,7 +193,7 @@ extract:
 	fclose(fo);
 
 
-	printf("\n Uh yeah, its done! %ld errors for %ld/%ld (extracted/announced)\n", totalerrors, totalextracted, totalfiles);
+	printf("\n Uh yeah, its done! %ld errors for %ld/%ld (extracted/announced)\n", totalerrors, totalextracted, totalFiles);
 	exit(0);
 
 pack:
@@ -213,21 +217,21 @@ pack:
 		if ((k>0) && ((sdata[k-1]==0x0A) || (sdata[k-1]==0x0D))) {
 			sdata[k-1]=0;
 		}
-		if ((strcmp(sdata2[totalfiles], sdata)) && (k>1)) {
-			strcpy(sdata2[totalfiles], sdata);
-			fo3 = fopen(sdata2[totalfiles], "rb");
+		if ((strcmp(sdata2[totalFiles], sdata)) && (k>1)) {
+			strcpy(sdata2[totalFiles], sdata);
+			fo3 = fopen(sdata2[totalFiles], "rb");
 			if (!fo3) {
-				fprintf(stderr, "ERROR: Could not find \"%s\"\n", sdata2[totalfiles]);
+				fprintf(stderr, "ERROR: Could not find \"%s\"\n", sdata2[totalFiles]);
 				totalerrors++;
 			}
 			else {
 				rewind(fo3);
 				fseek (fo3, 0, SEEK_END);
-				sdata2s[totalfiles] = ftell(fo3);
+				sdata2s[totalFiles] = ftell(fo3);
 				fclose(fo3);
 			}
-			totalfiles++;
-			if (totalfiles > LARGE_SPACE_SIZE) break;
+			totalFiles++;
+			if (totalFiles > LARGE_SPACE_SIZE) break;
 		}
 	}
 	fclose(fo);
@@ -236,11 +240,11 @@ pack:
 		printf("Sorry, could not found %ld files, fix the problem before retrying.\n", totalerrors);
 		exit(0);
 	}
-	else if (totalfiles == 0) {
+	else if (totalFiles == 0) {
 		printf("Nothing to pack. Check your files!\n");
 		exit(1);
 	}
-	else if (totalfiles > LARGE_SPACE_SIZE) {
+	else if (totalFiles > LARGE_SPACE_SIZE) {
 		printf("Sorry, this crappy exe cannot pack more than %d files!\n", LARGE_SPACE_SIZE);
 		exit(1);
 	}
@@ -257,13 +261,13 @@ pack:
 	putc(0xFF, fn);
 	putc(0xFF, fn);
 
-	o3 = totalfiles / BYTE_CAP;
-	o4 = totalfiles % BYTE_CAP;
+	o3 = totalFiles / BYTE_CAP;
+	o4 = totalFiles % BYTE_CAP;
 	putc(o3, fn);
 	putc(o4, fn);
 
 
-	for (i = 0; i < totalfiles; ++i) {
+	for (i = 0; i < totalFiles; ++i) {
 		strcpy(sdata, sdata2[i]);
 		getFilename(sdata);
 		k = strlen(sdata);
@@ -333,7 +337,7 @@ pack:
 	rewind(fn);
 	fseek (fn, filepos, 0);
 
-	for (i=0;i<totalfiles;i++) {
+	for (i=0;i<totalFiles;i++) {
 		fo = fopen(sdata2[i], "rb");
 		if (!fo) {
 			fprintf(stderr, "ERROR: Could not open file \"%s\" for reading\n", sdata2[i]);
@@ -354,6 +358,6 @@ pack:
 	fclose(fn);
 
 
-	printf("\n Uh yeah, its done! %ld errors for %ld (announced)\n", totalerrors, totalfiles);
+	printf("\n Uh yeah, its done! %ld errors for %ld (announced)\n", totalerrors, totalFiles);
 	exit(0);
 }
