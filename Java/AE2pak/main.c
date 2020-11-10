@@ -18,21 +18,14 @@ void help(void) {
 // Path separator is '\' (Windows convention).
 // We can expect that the returned string is shorter than or equal to the input string.
 char* getFilename(char* path) {
-	int pathLen = strlen(path);
 	char* lastBackslash = strrchr(path, BACKSLASH);
 	if (!lastBackslash) {
 		return path;
 	}
 
 	char* filename = &lastBackslash[1];
-	char* buffer = (char*)calloc(strlen(filename) + 1, sizeof(char));
-	if (!buffer) {
-		fprintf(stderr, "ERROR: Failed to get filename from path \"%s\"\n", path);
-	}
-	strcpy(buffer, filename);
-	memset(path, 0, pathLen);
-	strcpy(path, buffer);
-	free(buffer);
+	size_t filenameLen = strlen(filename);
+	memmove(path, filename, filenameLen + 1); // include '\0' at the end
 
 	return path;
 }
