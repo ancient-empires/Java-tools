@@ -7,10 +7,11 @@
 
 #define LARGE_SPACE_SIZE 2048
 
+// Show help if user enters invalid arguments
 void help(void) {
 	fprintf(stderr, "Please use the following syntax:\n");
 	fprintf(stderr, "- extract: ./AE2pak.out filename.pak -e <directory/of/extracted/files>\n");
-	fprintf(stderr, "- ./pack: AE2pak.exe filename.pak -p (pack) filelist.txt\n\n");
+	fprintf(stderr, "- pack: ./AE2pak.out filename.pak -p filelist.txt\n\n");
 }
 
 // Get filename from str, and save it in-place.
