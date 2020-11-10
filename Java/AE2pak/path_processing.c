@@ -1,3 +1,4 @@
+#define _GNU_SOURCE
 #include <string.h>
 #include <stdlib.h>
 #include <limits.h>
@@ -5,14 +6,29 @@
 #include "../utils/utils.h"
 #include "path_processing.h"
 
-// convert Windows to Unix path in-place
-char* Windows2UnixPath(char* path) {
-	strrep(path, BACKSLASH, SLASH);
+// normalize path (path to normalize must exist)
+// return pointer to the normalized path
+char* normalizePath(char* path) {
+	char* normalized = canonicalize_file_name(path);
+	if (normalized) {
+		free(path);
+		path = normalized;
+	}
 	return path;
 }
 
-// convert Unix to Windows path in-place
+// convert Windows to Unix path
+// return pointer to the converted path
+char* Windows2UnixPath(char* path) {
+	strrep(path, BACKSLASH, SLASH);
+	path = normalizePath(path);
+	return path;
+}
+
+// convert Unix to Windows path
+// return pointer to the converted path
 char* Unix2WindowsPath(char* path) {
+	path = normalizePath(path);
 	strrep(path, SLASH, BACKSLASH);
 	return path;
 }
@@ -28,7 +44,7 @@ filepath_t splitPath(char* path) {
 	size_t pathLen = strlen(path);
 	char* buffer = calloc(pathLen + 1, sizeof(char));
 	strcpy(buffer, path);
-	Windows2UnixPath(buffer);
+	buffer = Windows2UnixPath(buffer);
 
 	// Find last occurence of '/'.
 	// This is the separation of directory and filename.
