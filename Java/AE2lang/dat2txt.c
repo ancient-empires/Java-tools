@@ -39,7 +39,7 @@ static unsigned int dat2str(FILE* srcFileDesc, FILE* destFileDesc, unsigned int*
 		unsigned int textLen = fourBytesToUnsignedInt(0, 0, c3, c4);
 
 		// Then process each character of the string, one by one.
-		char* buffer = (char*)calloc(textLen + 1, sizeof(char));
+		char* buffer = calloc(textLen + 1, sizeof(char));
 		unsigned int charIdx = 0;
 		for (; charIdx < textLen; ++charIdx) {
 			c1 = fgetc(srcFileDesc);

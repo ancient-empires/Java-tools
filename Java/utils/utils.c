@@ -26,7 +26,7 @@ unsigned int fourBytesToUnsignedInt(unsigned char c1, unsigned char c2, unsigned
 // Reverse the input string in-place
 char* strrev(char* str) {
 	size_t len = strlen(str);
-	char* buffer = (char*)calloc(sizeof(char), len);
+	char* buffer = calloc(sizeof(char), len);
 	if (!buffer) {
 		fprintf(stderr, "ERROR: Failed to allocate memory to reverse string \"%s\".\nExiting.\n", str);
 		exit(ERROR_RW);
@@ -37,5 +37,16 @@ char* strrev(char* str) {
 	}
 	strncpy(str, buffer, len);
 	free(buffer);
+	return str;
+}
+
+// Replace one character with another in the input string in-place
+char* strrep(char* str, char src, char dest) {
+	size_t len = strlen(str);
+	for (size_t i = 0; i < len; ++i) {
+		if (str[i] == src) {
+			str[i] = dest;
+		}
+	}
 	return str;
 }
