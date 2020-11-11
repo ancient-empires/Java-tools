@@ -10,7 +10,7 @@
 #define LARGE_SPACE_SIZE 2048
 
 // Extract single file (internal use only)
-static bool extractFile(const char* pakFile, char* targetFile, unsigned int fileDataPos, unsigned int fileSize) {
+static bool extractFile(const char* pakFile, const char* targetFile, unsigned int fileDataPos, unsigned int fileSize) {
 
 	// open .pak file for reading
 	FILE *pakFileDesc = fopen(pakFile, "rb");
