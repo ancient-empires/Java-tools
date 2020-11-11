@@ -12,6 +12,7 @@
 // Extract single file (internal use only)
 static bool extractFile(const char* pakFile, char* targetFile, unsigned int fileDataPos, unsigned int fileSize) {
 
+	// open .pak file for reading
 	FILE *pakFileDesc = fopen(pakFile, "rb");
 	if (!pakFileDesc) {
 		fprintf(stderr, "ERROR: Could not open PAK file \"%s\" for extraction!\n", pakFile);
@@ -20,6 +21,7 @@ static bool extractFile(const char* pakFile, char* targetFile, unsigned int file
 	}
 	fseek(pakFileDesc, fileDataPos, SEEK_SET);
 
+	// open target file for writing
 	FILE* targetFileDesc = fopen(targetFile, "wb");
 	if (!targetFileDesc) {
 		fprintf(stderr, "ERROR: Could not open \"%s\" for writing !\n", targetFile);
@@ -28,6 +30,7 @@ static bool extractFile(const char* pakFile, char* targetFile, unsigned int file
 		return false;
 	}
 
+	// copy bytes from .pak to target file
 	for (unsigned int i = 0; i < fileSize; ++i) {
 		unsigned char c = getc(pakFileDesc);
 		if (feof(pakFileDesc)) {
@@ -51,7 +54,6 @@ void extract(const char* pakFile, const char* extractDir) {
 	printf("Extracting...\n");
 
 	// open .pak file for reading
-	mkdir(extractDir, MKDIR_DEFAULT_MODE);
 	FILE* pakFileDesc = fopen(pakFile, "rb");
 	if (!pakFileDesc) {
 		fprintf(stderr, "ERROR: PAK file \"%s\" not found.\n", pakFile);
@@ -63,7 +65,6 @@ void extract(const char* pakFile, const char* extractDir) {
 	// place it in current working directory
 	char fileListLOG[LARGE_SPACE_SIZE];
 	strcpy(fileListLOG, "_filelist.log");
-	printf("\nStoring file list in log file: \"%s\"\n\n", fileListLOG);
 
 	// open the file list .log file for writing
 	FILE* fileListDesc = fopen(fileListLOG, "wb");
@@ -73,6 +74,8 @@ void extract(const char* pakFile, const char* extractDir) {
 		fclose(fileListDesc);
 		exit(ERROR_RW);
 	}
+	mkdir(extractDir, MKDIR_DEFAULT_MODE);
+	printf("\nStoring file list in log file: \"%s\"\n\n", fileListLOG);
 
 	unsigned char c1, c2, c3, c4;
 
@@ -81,7 +84,7 @@ void extract(const char* pakFile, const char* extractDir) {
 	c1 = getc(pakFileDesc);
 	c2 = getc(pakFileDesc);
 	unsigned int fileDataStartPos = fourBytesToUnsignedInt(0, 0, c1, c2);
-	printf("File data starts at byte: %d\n", fileDataStartPos);
+	printf("File data start at byte: %d\n", fileDataStartPos);
 
 	// get number of total files (next 2 bytes)
 	c1 = getc(pakFileDesc);
