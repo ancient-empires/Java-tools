@@ -11,7 +11,7 @@
 void help(void) {
 	fprintf(stderr, "Please use the following syntax:\n");
 	fprintf(stderr, "- extract: ./AE2pak.out filename.pak -e <directory/of/extracted/files>\n");
-	fprintf(stderr, "- pack: ./AE2pak.out filename.pak -p filelist.txt\n\n");
+	fprintf(stderr, "- pack: ./AE2pak.out filename.pak -p _filelist.log\n\n");
 }
 
 void getFilename(char* sdata) {
@@ -80,22 +80,16 @@ void extract(const char* pakFile, const char* extractDir) {
 		exit(ERROR_RW);
 	}
 
-	// get .txt file in which to write extracted file list
-	char fileListTXT[LARGE_SPACE_SIZE];
-	size_t extractDirLen = strlen(extractDir);
-	if (extractDirLen > 0) {
-		strcpy(fileListTXT, extractDir);
-		strcat(fileListTXT, "/_filelist.txt");
-	}
-	else {
-		strcpy(fileListTXT, "_filelist.txt");
-	}
-	printf("\nStoring file list in text file: \"%s\"\n\n", fileListTXT);
+	// get .log file in which to write extracted file list
+	// place it in current working directory
+	char fileListLOG[LARGE_SPACE_SIZE];
+	strcpy(fileListLOG, "_filelist.log");
+	printf("\nStoring file list in log file: \"%s\"\n\n", fileListLOG);
 
-	// open the file list .txt file for writing
-	FILE* fileListDesc = fopen(fileListTXT, "wb");
+	// open the file list .log file for writing
+	FILE* fileListDesc = fopen(fileListLOG, "wb");
 	if (!fileListDesc) {
-		fprintf(stderr, "ERROR: \"%s\" cannot be created for writing.\n", fileListTXT);
+		fprintf(stderr, "ERROR: \"%s\" cannot be created for writing.\n", fileListLOG);
 		fclose(pakFileDesc);
 		fclose(fileListDesc);
 		exit(ERROR_RW);
