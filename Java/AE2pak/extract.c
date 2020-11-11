@@ -10,39 +10,37 @@
 #define LARGE_SPACE_SIZE 2048
 
 // Extract single file (internal use only)
-static bool extract_file(const char* fo2s, char* fn2s, unsigned int fileDataPos, unsigned int fileSize) {
-	FILE *fo2, *fn2;
-	unsigned int i;
-	unsigned char c1;
+static bool extractFile(const char* pakFile, char* targetFile, unsigned int fileDataPos, unsigned int fileSize) {
 
-	fo2 = fopen(fo2s, "rb");
-	if (!fo2) {
-		fprintf(stderr, "ERROR: Could not open \"%s\" for extraction!\n", fo2s);
+	FILE *pakFileDesc = fopen(pakFile, "rb");
+	if (!pakFileDesc) {
+		fprintf(stderr, "ERROR: Could not open PAK file \"%s\" for extraction!\n", pakFile);
+		fclose(pakFileDesc);
 		return false;
 	}
-	rewind(fo2);
-	fseek(fo2, fileDataPos, 0);
+	fseek(pakFileDesc, fileDataPos, SEEK_SET);
 
-	fn2 = fopen(fn2s, "wb");
-	if (!fn2) {
-		fprintf(stderr, "ERROR: Could not open \"%s\" for writing !\n", fn2s);
-		fclose(fo2);
+	FILE* targetFileDesc = fopen(targetFile, "wb");
+	if (!targetFileDesc) {
+		fprintf(stderr, "ERROR: Could not open \"%s\" for writing !\n", targetFile);
+		fclose(pakFileDesc);
+		fclose(targetFileDesc);
 		return false;
 	}
 
-	for (i = 0; i < fileSize; ++i) {
-		c1 = getc(fo2);
-		if (feof(fo2)) {
-			fprintf(stderr, "ERROR: EOF reached when extracting!\n Check your file!");
-			fclose(fo2);
-			fclose(fn2);
+	for (unsigned int i = 0; i < fileSize; ++i) {
+		unsigned char c = getc(pakFileDesc);
+		if (feof(pakFileDesc)) {
+			fprintf(stderr, "ERROR: EOF reached in PAK file \"%s\" when extracting! Please check your file!", pakFile);
+			fclose(pakFileDesc);
+			fclose(targetFileDesc);
 			return false;
 		}
-		putc(c1, fn2);
+		fputc(c, targetFileDesc);
 	}
 
-	fclose(fo2);
-	fclose(fn2);
+	fclose(pakFileDesc);
+	fclose(targetFileDesc);
 	return true;
 }
 
@@ -145,7 +143,7 @@ void extract(const char* pakFile, const char* extractDir) {
 		fprintf(fileListDesc, "%s\n", line);
 
 		// Extract file
-		if (!extract_file(pakFile, line, fileDataPos, fileSize)) {
+		if (!extractFile(pakFile, line, fileDataPos, fileSize)) {
 			++totalErrors;
 		}
 		++totalExtracted;
