@@ -2,9 +2,8 @@
 #define UTILS_H
 
 #include <limits.h>
-#include <math.h>
 
-#define BYTE_CAP (size_t)pow(2, CHAR_BIT)
+#define BYTE_CAP (((unsigned int)1) << CHAR_BIT)
 
 #define ERROR_RW -1
 #define ERROR_ARGS 1
