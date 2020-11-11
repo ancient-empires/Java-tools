@@ -54,22 +54,25 @@ int main(int argc, char *argv[]) {
 	printf("\n=== Ancient Empires II packer / unpacker v0.11b ===\n\n");
 
 	if (argc < 3) {
+		// invalid arguments
 		help();
-		exit(ERROR_ARGS);
+		return ERROR_ARGS;
 	}
-
-	if (!strcmp(argv[2], "-e")) {
+	else if (strcmp(argv[2], "-e") == 0) {
+		// extract mode
 		extract(argv[1], argv[3]);
-		exit(0);
+		return 0;
 	}
-
-	if (!strcmp(argv[2], "-p")) {
+	else if (strcmp(argv[2], "-p") == 0) {
+		// pack mode
 		goto pack;
-		exit(0);
+		return 0;
 	}
-
-	help();
-
+	else {
+		// invalid arguments
+		help();
+		return ERROR_ARGS;
+	}
 
 pack:
 	if (!argv[3]) {
