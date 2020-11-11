@@ -145,7 +145,7 @@ void extract(const char* pakFile, const char* extractDir) {
 		strcat(line, filename);
 		fprintf(fileListDesc, "%s\n", line);
 
-		// Extract file
+		// extract file
 		if (!extractFile(pakFile, line, fileDataPos, fileSize)) {
 			++totalErrors;
 		}
