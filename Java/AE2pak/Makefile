@@ -1,17 +1,14 @@
 TARGET := AE2pak
 
-src := main.c ../utils/utils.c path_processing.c
+src := main.c ../utils/utils.c
 objs := $(src:.c=.o)
 
 .PHONY: all
-all: $(TARGET).out test.out
+all: $(TARGET).out
 
 # common parts
 common := ../common/Makefile
 -include $(common)
-
-test.out: path_processing.c test.c ../utils/utils.c
-	$(CC) $(CFLAGS) $^ -o test.out
 
 $(TARGET).out: $(objs)
 	$(CC) $^ -o "$@"

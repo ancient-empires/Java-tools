@@ -14,23 +14,24 @@ void help(void) {
 	fprintf(stderr, "- pack: ./AE2pak.out filename.pak -p filelist.txt\n\n");
 }
 
-// Get filename from path, and save it in-place.
-// Path separator is '\' (Windows convention).
-// We can expect that the returned string is shorter than or equal to the input string.
-char* getFilename(char* path) {
-	char* lastBackslash = strrchr(path, BACKSLASH);
-	if (!lastBackslash) {
-		return path;
+void getFilename(char* sdata) {
+	int i, k;
+	char sdata2[LARGE_SPACE_SIZE];
+	strcpy(sdata2,sdata);
+	strrev(sdata2);
+	k = strlen(sdata2);
+	for (i=0;i<k;i++){
+		if (sdata2[i]=='\\'){
+			sdata2[i]=0;
+			break;
+		}
 	}
-
-	char* filename = &lastBackslash[1];
-	size_t filenameLen = strlen(filename);
-	memmove(path, filename, filenameLen + 1); // include '\0' at the end
-
-	return path;
+	strrev(sdata2);
+	strcpy(sdata,sdata2);
+	return;
 }
 
-char extract(char* fo2s, char* fn2s, unsigned long int filepos, unsigned long int filesize) {
+char extract_file(char* fo2s, char* fn2s, unsigned long int filepos, unsigned long int filesize) {
 	FILE *fo2, *fn2;
 	unsigned int i;
 	unsigned char o1;
@@ -183,7 +184,7 @@ extract:
 		fprintf(fl, "%s", sdata);
 		putc(LF, fl);
 
-		if (!extract(argv[1], sdata, filepos, filesize)) {
+		if (!extract_file(argv[1], sdata, filepos, filesize)) {
 			totalerrors++;
 		}
 		totalextracted++;
