@@ -158,7 +158,6 @@ extract:
 			sdata[j]=getc(fo);
 		}
 		sdata[j]=0;
-		Windows2UnixPath(sdata);
 
 		o1=getc(fo);
 		o2=getc(fo);
