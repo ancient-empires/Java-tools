@@ -40,7 +40,8 @@ char* strrev(char* str) {
 	return str;
 }
 
-// Replace one character with another in the input string in-place
+// Replace one character with another character
+// Modify the input string in-place
 char* strrep(char* str, char src, char dest) {
 	size_t len = strlen(str);
 	for (size_t i = 0; i < len; ++i) {

@@ -27,7 +27,8 @@ unsigned int fourBytesToUnsignedInt(unsigned char c1, unsigned char c2, unsigned
 // Reverse the input string in-place
 char* strrev(char* str);
 
-// Replace one character with another in the input string in-place
+// Replace one character with another character
+// Modify the input string in-place
 char* strrep(char* str, char src, char dest);
 
 #endif
