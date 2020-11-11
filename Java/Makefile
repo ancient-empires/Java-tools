@@ -9,6 +9,8 @@ AE2MAP := AE2map
 AE2LANG := AE2lang
 AE2PAK := AE2pak
 
+UTILS := utils
+
 .PHONY: all
 all: $(TARGETS)
 
@@ -34,3 +36,5 @@ $(AE2PAK):
 clean:
 	-rm -rfv $(AE1MAP) $(AE2MAP)
 	$(MAKE) -C $(AE2LANG)/ $@
+	$(MAKE) -C $(AE2PAK)/ $@
+	$(MAKE) -C $(UTILS)/ $@
