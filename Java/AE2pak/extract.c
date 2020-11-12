@@ -7,6 +7,7 @@
 #include "extract.h"
 
 // Extract single file (internal use only)
+// Return true if successfully extracted; otherwise return false.
 static bool extractFile(const char* pakFile, const char* targetFile, unsigned int fileDataPos, unsigned int fileSize) {
 
 	// open .pak file for reading
