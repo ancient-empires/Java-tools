@@ -10,6 +10,6 @@ char* Windows2UnixPath(char* path);
 char* Unix2WindowsPath(char* path);
 
 // Get filename from path, and modify path in-place.
-char* getFilename(char** pPath);
+// char* getFilename(char** pPath);
 
 #endif

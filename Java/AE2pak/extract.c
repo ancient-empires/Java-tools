@@ -5,6 +5,7 @@
 
 #include "../utils/utils.h"
 #include "extract.h"
+#include "path_processing.h"
 
 // Extract single file (internal use only)
 // Return true if successfully extracted; otherwise return false.
@@ -125,15 +126,18 @@ void extract(const char* pakFile, const char* extractDir) {
 		c2 = getc(pakFileDesc);
 		unsigned int fileSize = fourBytesToUnsignedInt(0, 0, c1, c2);
 
-		// write to file list
+		// write to file list (.log file)
+		// the file list will be created in the current working directory
+		// the extracted file paths are relative to the current working directory
 		size_t extractDirLen = strlen(extractDir);
 		char* extractedFilePath = calloc(extractDirLen + 1 /* '/' character */ + filenameLen + 1, sizeof(char));
 		strcpy(extractedFilePath, extractDir);
+		Windows2UnixPath(extractedFilePath);
 		if (extractedFilePath[extractDirLen-1] == DBQUOTE) {
-			extractedFilePath[extractDirLen-1] = 0;
+			extractedFilePath[extractDirLen-1] = '\0';
 		}
-		else if (extractedFilePath[extractDirLen-1] == BACKSLASH) {
-			extractedFilePath[extractDirLen-1] = 0;
+		else if (extractedFilePath[extractDirLen-1] == SLASH) {
+			extractedFilePath[extractDirLen-1] = '\0';
 		}
 		strcat(extractedFilePath, "/");
 		strcat(extractedFilePath, filename);

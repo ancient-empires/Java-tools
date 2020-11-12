@@ -1,6 +1,6 @@
 TARGET := AE2pak
 
-src := main.c ../utils/utils.c extract.c
+src := main.c ../utils/utils.c path_processing.c extract.c
 objs := $(src:.c=.o)
 
 .PHONY: all
