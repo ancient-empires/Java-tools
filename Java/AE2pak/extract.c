@@ -63,7 +63,7 @@ void extract(const char* pakFile, const char* extractDir) {
 
 	// open the file list .log file for writing
 	// the .log file will be in current working directory
-	char fileListLOG[] = "_filelist.log";
+	char fileListLOG[] = FILE_LIST_LOG;
 	FILE* fileListDesc = fopen(fileListLOG, "wb");
 	if (!fileListDesc) {
 		fprintf(stderr, "ERROR: \"%s\" cannot be created for writing.\n", fileListLOG);
