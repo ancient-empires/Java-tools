@@ -6,8 +6,6 @@
 #include "../utils/utils.h"
 #include "extract.h"
 
-#define LARGE_SPACE_SIZE 2048
-
 // Extract single file (internal use only)
 static bool extractFile(const char* pakFile, const char* targetFile, unsigned int fileDataPos, unsigned int fileSize) {
 
@@ -127,26 +125,27 @@ void extract(const char* pakFile, const char* extractDir) {
 		unsigned int fileSize = fourBytesToUnsignedInt(0, 0, c1, c2);
 
 		// write to file list
-		char line[LARGE_SPACE_SIZE];
 		size_t extractDirLen = strlen(extractDir);
-		strcpy(line, extractDir);
-		if (line[extractDirLen-1] == DBQUOTE) {
-			line[extractDirLen-1]=0;
+		char* extractedFilePath = calloc(extractDirLen + 1 /* '/' character */ + filenameLen + 1, sizeof(char));
+		strcpy(extractedFilePath, extractDir);
+		if (extractedFilePath[extractDirLen-1] == DBQUOTE) {
+			extractedFilePath[extractDirLen-1] = 0;
 		}
-		else if (line[extractDirLen-1] == BACKSLASH) {
-			line[extractDirLen-1]=0;
+		else if (extractedFilePath[extractDirLen-1] == BACKSLASH) {
+			extractedFilePath[extractDirLen-1] = 0;
 		}
-		strcat(line, "/");
-		strcat(line, filename);
-		fprintf(fileListDesc, "%s\n", line);
+		strcat(extractedFilePath, "/");
+		strcat(extractedFilePath, filename);
+		fprintf(fileListDesc, "%s\n", extractedFilePath);
 
 		// extract file
-		if (!extractFile(pakFile, line, fileDataPos, fileSize)) {
+		if (!extractFile(pakFile, extractedFilePath, fileDataPos, fileSize)) {
 			++totalErrors;
 		}
 		++totalExtracted;
 
 		free(filename);
+		free(extractedFilePath);
 	}
 
 	// finish
