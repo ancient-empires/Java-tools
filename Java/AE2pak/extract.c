@@ -136,10 +136,13 @@ void extract(const char* pakFile, const char* extractDir) {
 		}
 		strcat(extractedFilePath, "/");
 		strcat(extractedFilePath, filename);
-		fprintf(fileListDesc, "%s\n", extractedFilePath);
 
 		// extract file
-		if (!extractFile(pakFile, extractedFilePath, fileDataPos, fileSize)) {
+		if (extractFile(pakFile, extractedFilePath, fileDataPos, fileSize)) {
+			// write to file list if extraction is successful
+			fprintf(fileListDesc, "%s\n", extractedFilePath);
+		}
+		else {
 			++totalErrors;
 		}
 		++totalExtracted;
