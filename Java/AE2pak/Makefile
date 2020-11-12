@@ -36,3 +36,17 @@ ifeq ($(R),1)
 		fi; \
 	done
 endif
+
+# extract .pak
+
+# check error for extraction
+EXTRACT_ERROR_MSG := "ERROR: Invalid .pak file and / or extract directory."
+define CHECK_EXTRACT_ERROR =
+$(if $(pak),,$(error EXTRACT_ERROR_MSG))
+$(if $(dir),,$(error EXTRACT_ERROR_MSG))
+endef
+
+.PHONY: extract
+extract:
+	mkdir -vp $(dir)
+	./$(TARGET).out $(pak) -e $(dir)

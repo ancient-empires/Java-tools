@@ -113,11 +113,10 @@ void extract(const char* pakFile, const char* extractDir) {
 
 		// get filename
 		unsigned int j = 0;
-		char filename[LARGE_SPACE_SIZE];
+		char* filename = calloc(filenameLen + 1, sizeof(char));
 		for (; j < filenameLen; ++j) {
 			filename[j] = getc(pakFileDesc);
 		}
-		filename[j] = 0;
 
 		// get file data position (4 bytes)
 		c1 = getc(pakFileDesc);
@@ -150,6 +149,8 @@ void extract(const char* pakFile, const char* extractDir) {
 			++totalErrors;
 		}
 		++totalExtracted;
+
+		free(filename);
 	}
 
 	// finish
