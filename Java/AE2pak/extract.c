@@ -139,7 +139,7 @@ void extract(const char* pakFile, const char* extractDir) {
 		else if (extractedFilePath[extractDirLen-1] == SLASH) {
 			extractedFilePath[extractDirLen-1] = '\0';
 		}
-		strcat(extractedFilePath, "/");
+		strcat(extractedFilePath, SLASH_STR);
 		strcat(extractedFilePath, filename);
 
 		// extract file

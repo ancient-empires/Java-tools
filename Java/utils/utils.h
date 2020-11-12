@@ -17,6 +17,9 @@
 #define SLASH '/' // 0x2F
 #define BACKSLASH '\\' // 0x5C
 
+#define SLASH_STR "/"
+#define BACKSLASH_STR "\\"
+
 // Represent an integer with four bytes
 // Modify the four bytes in-place
 void unsignedIntToFourBytes(const unsigned int i, unsigned char* c1, unsigned char* c2, unsigned char* c3, unsigned char* c4);
