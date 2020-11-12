@@ -3,7 +3,6 @@
 #include <stdlib.h>
 
 #include "../utils/utils.h"
-#include "system.h"
 #include "extract.h"
 
 #define LARGE_SPACE_SIZE 2048

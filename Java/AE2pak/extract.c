@@ -4,7 +4,6 @@
 #include <stdbool.h>
 
 #include "../utils/utils.h"
-#include "system.h"
 #include "extract.h"
 
 #define LARGE_SPACE_SIZE 2048
@@ -48,6 +47,7 @@ static bool extractFile(const char* pakFile, const char* targetFile, unsigned in
 }
 
 // Extract .pak file to extract directory.
+// The extract directory must exist beforehand, or the program will NOT work.
 // Write the .log file containing the list of all extracted files in current working directory.
 void extract(const char* pakFile, const char* extractDir) {
 
@@ -74,7 +74,6 @@ void extract(const char* pakFile, const char* extractDir) {
 		fclose(fileListDesc);
 		exit(ERROR_RW);
 	}
-	mkdir(extractDir, MKDIR_DEFAULT_MODE);
 	printf("\nStoring file list in log file: \"%s\"\n\n", fileListLOG);
 
 	unsigned char c1, c2, c3, c4;
