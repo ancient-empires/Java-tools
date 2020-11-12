@@ -31,7 +31,7 @@ static bool extractFile(const char* pakFile, const char* targetFile, unsigned in
 
 	// copy bytes from .pak to target file
 	for (unsigned int i = 0; i < fileSize; ++i) {
-		unsigned char c = getc(pakFileDesc);
+		unsigned char c = fgetc(pakFileDesc);
 		if (feof(pakFileDesc)) {
 			fprintf(stderr, "ERROR: EOF reached in PAK file \"%s\" when extracting! Please check your file!", pakFile);
 			fclose(pakFileDesc);
@@ -77,14 +77,14 @@ void extract(const char* pakFile, const char* extractDir) {
 
 	// get starting position of file data (first 2 bytes)
 	rewind(pakFileDesc);
-	c1 = getc(pakFileDesc);
-	c2 = getc(pakFileDesc);
+	c1 = fgetc(pakFileDesc);
+	c2 = fgetc(pakFileDesc);
 	unsigned int fileDataStartPos = fourBytesToUnsignedInt(0, 0, c1, c2);
 	printf("File data start at byte: %d\n", fileDataStartPos);
 
 	// get number of total files (next 2 bytes)
-	c1 = getc(pakFileDesc);
-	c2 = getc(pakFileDesc);
+	c1 = fgetc(pakFileDesc);
+	c2 = fgetc(pakFileDesc);
 	unsigned int totalFiles = fourBytesToUnsignedInt(0, 0, c1, c2);
 	printf("Total Files announced: %d\n", totalFiles);
 
@@ -103,27 +103,27 @@ void extract(const char* pakFile, const char* extractDir) {
 
 	for (unsigned int i = 0; i < totalFiles; ++i) {
 		// get filename length (2 bytes)
-		c1 = getc(pakFileDesc);
-		c2 = getc(pakFileDesc);
+		c1 = fgetc(pakFileDesc);
+		c2 = fgetc(pakFileDesc);
 		unsigned int filenameLen = fourBytesToUnsignedInt(0, 0, c1, c2);
 
 		// get filename
 		unsigned int j = 0;
 		char* filename = calloc(filenameLen + 1, sizeof(char));
 		for (; j < filenameLen; ++j) {
-			filename[j] = getc(pakFileDesc);
+			filename[j] = fgetc(pakFileDesc);
 		}
 
 		// get file data position (4 bytes)
-		c1 = getc(pakFileDesc);
-		c2 = getc(pakFileDesc);
-		c3 = getc(pakFileDesc);
-		c4 = getc(pakFileDesc);
+		c1 = fgetc(pakFileDesc);
+		c2 = fgetc(pakFileDesc);
+		c3 = fgetc(pakFileDesc);
+		c4 = fgetc(pakFileDesc);
 		unsigned int fileDataPos = fourBytesToUnsignedInt(c1, c2, c3, c4) + fileDataStartPos;
 
 		// get file size (2 bytes)
-		c1 = getc(pakFileDesc);
-		c2 = getc(pakFileDesc);
+		c1 = fgetc(pakFileDesc);
+		c2 = fgetc(pakFileDesc);
 		unsigned int fileSize = fourBytesToUnsignedInt(0, 0, c1, c2);
 
 		// write to file list (.log file)
