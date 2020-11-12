@@ -61,12 +61,9 @@ void extract(const char* pakFile, const char* extractDir) {
 		exit(ERROR_RW);
 	}
 
-	// get .log file in which to write extracted file list
-	// place it in current working directory
-	char fileListLOG[LARGE_SPACE_SIZE];
-	strcpy(fileListLOG, "_filelist.log");
-
 	// open the file list .log file for writing
+	// the .log file will be in current working directory
+	char fileListLOG[] = "_filelist.log";
 	FILE* fileListDesc = fopen(fileListLOG, "wb");
 	if (!fileListDesc) {
 		fprintf(stderr, "ERROR: \"%s\" cannot be created for writing.\n", fileListLOG);
@@ -159,5 +156,5 @@ void extract(const char* pakFile, const char* extractDir) {
 	printf("\nUh yeah, it's done!\n");
 	printf("Total files: %d\n", totalFiles);
 	printf("Total extracted: %d\n", totalExtracted);
-	printf("Total errors: %d\n", totalErrors);
+	printf("Total errors: %d\n\n", totalErrors);
 }
