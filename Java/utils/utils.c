@@ -7,15 +7,16 @@
 
 // Represent an integer with four bytes
 // Modify the four bytes in-place
-void unsignedIntToFourBytes(unsigned int i, unsigned char* c1, unsigned char* c2, unsigned char* c3, unsigned char* c4) {
-	*c4 = i & 0xFF;
-	*c3 = (i >>= CHAR_BIT) & 0xFF;
-	*c2 = (i >>= CHAR_BIT) & 0xFF;
-	*c1 = (i >>= CHAR_BIT) & 0xFF;
+void unsignedIntToFourBytes(const unsigned int i, unsigned char* c1, unsigned char* c2, unsigned char* c3, unsigned char* c4) {
+	unsigned int j = i;
+	*c4 = j & 0xFF;
+	*c3 = (j >>= CHAR_BIT) & 0xFF;
+	*c2 = (j >>= CHAR_BIT) & 0xFF;
+	*c1 = (j >>= CHAR_BIT) & 0xFF;
 }
 
 // Concatenate four bytes into an integer
-unsigned int fourBytesToUnsignedInt(unsigned char c1, unsigned char c2, unsigned char c3, unsigned char c4) {
+unsigned int fourBytesToUnsignedInt(const unsigned char c1, const unsigned char c2, const unsigned char c3, const unsigned char c4) {
 	unsigned int i = c1;
 	i = (i << CHAR_BIT) + c2;
 	i = (i << CHAR_BIT) + c3;
@@ -42,7 +43,7 @@ char* strrev(char* str) {
 
 // Replace one character with another character
 // Modify the input string in-place
-char* strrep(char* str, char src, char dest) {
+char* strrep(char* str, const char src, const char dest) {
 	size_t len = strlen(str);
 	for (size_t i = 0; i < len; ++i) {
 		if (str[i] == src) {
