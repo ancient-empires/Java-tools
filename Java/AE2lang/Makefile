@@ -38,7 +38,7 @@ ifeq ($(R),1)
 endif
 
 # Check variables "dat" and "txt" before making conversions
-ERROR_MSG := "ERROR: Invalid .dat and/or .txt file"
+ERROR_MSG := ERROR: Invalid .dat and/or .txt file
 define CHECK_ARGS =
 $(if $(dat),,$(error $(ERROR_MSG)))
 $(if $(txt),,$(error $(ERROR_MSG)))
