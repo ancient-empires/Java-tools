@@ -11,14 +11,14 @@ This is a remaster of the AE2lang utility initially published on [byblo](https:/
 $ make
 ```
 
-### Convert from DAT to TXT
+### Convert from .dat to .txt
 ```
-$ make dat2txt DAT=<path/to/dat.dat> TXT=<path/to/txt.txt>
+$ make dat2txt dat=<path/to/dat.dat> txt=<path/to/txt.txt>
 ```
 
-### Convert from TXT to DAT
+### Convert from .txt to .dat
 ```
-$ make txt2dat DAT=<path/to/dat.dat> TXT=<path/to/txt.txt>
+$ make txt2dat dat=<path/to/dat.dat> txt=<path/to/txt.txt>
 ```
 
 ### Clean up

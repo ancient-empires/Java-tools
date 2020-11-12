@@ -37,19 +37,19 @@ ifeq ($(R),1)
 	done
 endif
 
-# Check variables "DAT" and "TXT" before making conversions
-ERROR_MSG := "ERROR: Invalid DAT and/or TXT file"
+# Check variables "dat" and "txt" before making conversions
+ERROR_MSG := "ERROR: Invalid .dat and/or .txt file"
 define CHECK_ARGS =
-$(if $(DAT),,$(error $(ERROR_MSG)))
-$(if $(TXT),,$(error $(ERROR_MSG)))
+$(if $(dat),,$(error $(ERROR_MSG)))
+$(if $(txt),,$(error $(ERROR_MSG)))
 endef
 
 .PHONY: dat2txt
 dat2txt: all
 	$(call CHECK_ARGS)
-	./$(TARGET).out $(DAT) $(TXT)
+	./$(TARGET).out $(dat) $(txt)
 
 .PHONY: txt2dat
 txt2dat: all
 	$(call CHECK_ARGS)
-	./$(TARGET).out $(TXT) $(DAT)
+	./$(TARGET).out $(txt) $(dat)
