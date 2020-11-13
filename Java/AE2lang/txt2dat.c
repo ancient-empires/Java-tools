@@ -39,7 +39,7 @@ static unsigned int str2dat(FILE* srcFileDesc, FILE* destFileDesc, unsigned int*
 		// lineLen == -1 if getline fails
 		if (lineLen > 0) {
 			// ignore lines starting with '^'
-			bool ignoreLine = line[0] == CARET;
+			bool ignoreLine = line[0] == IGNORED_LINE_START;
 
 			if (!ignoreLine) {
 				// replace '\n' with '\0' for writing to .dat
