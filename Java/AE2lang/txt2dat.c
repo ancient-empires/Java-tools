@@ -61,9 +61,12 @@ static unsigned int str2dat(FILE* srcFileDesc, FILE* destFileDesc, unsigned int*
 						line[i] = LF;
 					}
 				}
+				// length of each text field takes 2 bytes
 				fputc(c3, destFileDesc);
 				fputc(c4, destFileDesc);
+				// write back text field
 				fputs(line, destFileDesc);
+
 				++(*stringsCount);
 			}
 		}
