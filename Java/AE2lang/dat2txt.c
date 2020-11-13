@@ -35,7 +35,7 @@ static uint32_t dat2str(FILE* srcFileDesc, FILE* destFileDesc, uint32_t* strings
 	uint32_t strIdx = 0;
 	for (; strIdx < *totalStrings; ++strIdx) {
 		// First check string validity.
-		// For each text field in the .dat file, the first two bytes indicate string length in bytes.
+		// For each text field in the .dat file, the first 2 bytes indicate string length in bytes.
 		c3 = fgetc(srcFileDesc);
 		c4 = fgetc(srcFileDesc);
 		uint32_t textLen = fourBytesToUInt32(0, 0, c3, c4);

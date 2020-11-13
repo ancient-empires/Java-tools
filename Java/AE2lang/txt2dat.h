@@ -2,6 +2,7 @@
 #define TXT2DAT_H
 
 #include "../utils/utils.h"
+#include "field_sizes.h"
 
 #define IGNORED_LINE_START CARET
 

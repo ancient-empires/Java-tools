@@ -1,0 +1,7 @@
+#ifndef FIELD_SIZES_H
+#define FIELD_SIZES_H
+
+#define TOTAL_NUM_STRS_BYTES 4
+#define TEXT_FIELD_LEN_BYTES 2
+
+#endif
