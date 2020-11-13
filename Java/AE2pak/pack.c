@@ -34,18 +34,18 @@ void pack(const char* pakFile, const char* fileListLOG) {
 	unsigned int sdata2s[LARGE_SPACE_SIZE];
 
 	printf("Packing...\n");
-	FILE* fo = fopen(fileListLOG, "r");
-	if (!fo) {
+	FILE* fileListDesc = fopen(fileListLOG, "r");
+	if (!fileListDesc) {
 		fprintf(stderr, "ERROR: Failed to open file list \"%s\".\n", fileListLOG);
 		exit(ERROR_RW);
 	}
-	rewind(fo);
-	printf("Checking filelist...\n");
-	while(!feof(fo)) {
+	rewind(fileListDesc);
+	printf("Checking file list...\n");
+	while(!feof(fileListDesc)) {
 		sdata[0]=0;
-		fgets(sdata, LARGE_SPACE_SIZE, fo);
+		fgets(sdata, LARGE_SPACE_SIZE, fileListDesc);
 		k = strlen(sdata);
-		if ((k>0) && ((sdata[k-1]==0x0A) || (sdata[k-1]==0x0D))) {
+		if ((k > 0) && ((sdata[k-1] == CR) || (sdata[k-1] == LF))) {
 			sdata[k-1]=0;
 		}
 		if ((strcmp(sdata2[totalFiles], sdata)) && (k>1)) {
@@ -65,7 +65,7 @@ void pack(const char* pakFile, const char* fileListLOG) {
 			if (totalFiles > LARGE_SPACE_SIZE) break;
 		}
 	}
-	fclose(fo);
+	fclose(fileListDesc);
 
 	if (totalErrors > 0) {
 		printf("Sorry, could not found %ld files, fix the problem before retrying.\n", totalErrors);
@@ -170,7 +170,7 @@ void pack(const char* pakFile, const char* fileListLOG) {
 	fseek (fn, fileDataPos, 0);
 
 	for (i=0;i<totalFiles;i++) {
-		fo = fopen(sdata2[i], "rb");
+		FILE* fo = fopen(sdata2[i], "rb");
 		if (!fo) {
 			fprintf(stderr, "ERROR: Could not open file \"%s\" for reading\n", sdata2[i]);
 			fclose(fn);
