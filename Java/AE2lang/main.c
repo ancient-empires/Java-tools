@@ -28,13 +28,13 @@ int main(int argc, char *argv[]) {
 	// Program title
 	printf("\n=== Ancient Empires II language file text converter v0.1b ===\n\n");
 
-	// Check if the user has entered 3 parameters
+	// check if the user has entered 3 parameters
 	if (argc < 3) {
 		help();
 		return ERROR_ARGS;
 	}
 
-	// Check source and destination file names
+	// check source and destination file names
 	char* srcFilename = argv[1];
 	size_t srcFilenameLen = strlen(srcFilename);
 	char* destFilename = argv[2];
@@ -50,15 +50,15 @@ int main(int argc, char *argv[]) {
 		dat2txt(srcFilename, destFilename);
 		return 0;
 	}
-
 	// .txt to .dat conversion
 	else if (!strncmp(&srcFilename[srcFilenameLen-TXT_LEN], TXT, TXT_LEN)
 		&& !strncmp(&destFilename[destFilenameLen-DAT_LEN], DAT, DAT_LEN)) {
 		txt2dat(srcFilename, destFilename);
 		return 0;
 	}
-
-	// If we got invalid arguments, then just show help, and return 0
-	help();
-	return ERROR_ARGS;
+	// invalid arguments
+	else {
+		help();
+		return ERROR_ARGS;
+	}
 }
