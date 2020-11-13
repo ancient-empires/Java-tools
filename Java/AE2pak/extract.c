@@ -79,13 +79,13 @@ void extract(const char* pakFile, const char* extractDir) {
 	rewind(pakFileDesc);
 	c1 = fgetc(pakFileDesc);
 	c2 = fgetc(pakFileDesc);
-	unsigned int fileDataStartPos = fourBytesToUnsignedInt(0, 0, c1, c2);
+	unsigned int fileDataStartPos = fourBytesToUInt32(0, 0, c1, c2);
 	printf("File data start at byte: %d\n", fileDataStartPos);
 
 	// get number of total files (next 2 bytes)
 	c1 = fgetc(pakFileDesc);
 	c2 = fgetc(pakFileDesc);
-	unsigned int totalFiles = fourBytesToUnsignedInt(0, 0, c1, c2);
+	unsigned int totalFiles = fourBytesToUInt32(0, 0, c1, c2);
 	printf("Total Files announced: %d\n", totalFiles);
 
 	// check unexpected ending of .pak file
@@ -105,7 +105,7 @@ void extract(const char* pakFile, const char* extractDir) {
 		// get filename length (2 bytes)
 		c1 = fgetc(pakFileDesc);
 		c2 = fgetc(pakFileDesc);
-		unsigned int filenameLen = fourBytesToUnsignedInt(0, 0, c1, c2);
+		unsigned int filenameLen = fourBytesToUInt32(0, 0, c1, c2);
 
 		// get filename
 		unsigned int j = 0;
@@ -119,12 +119,12 @@ void extract(const char* pakFile, const char* extractDir) {
 		c2 = fgetc(pakFileDesc);
 		c3 = fgetc(pakFileDesc);
 		c4 = fgetc(pakFileDesc);
-		unsigned int fileDataPos = fourBytesToUnsignedInt(c1, c2, c3, c4) + fileDataStartPos;
+		unsigned int fileDataPos = fourBytesToUInt32(c1, c2, c3, c4) + fileDataStartPos;
 
 		// get file size (2 bytes)
 		c1 = fgetc(pakFileDesc);
 		c2 = fgetc(pakFileDesc);
-		unsigned int fileSize = fourBytesToUnsignedInt(0, 0, c1, c2);
+		unsigned int fileSize = fourBytesToUInt32(0, 0, c1, c2);
 
 		// write to file list (.log file)
 		// the file list will be created in the current working directory

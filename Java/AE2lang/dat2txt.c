@@ -20,7 +20,7 @@ static unsigned int dat2str(FILE* srcFileDesc, FILE* destFileDesc, unsigned int*
 	c2 = fgetc(srcFileDesc);
 	c3 = fgetc(srcFileDesc);
 	c4 = fgetc(srcFileDesc);
-	*totalStrings = fourBytesToUnsignedInt(c1, c2, c3, c4);
+	*totalStrings = fourBytesToUInt32(c1, c2, c3, c4);
 	printf("Number of total strings: %d\n\n", *totalStrings);
 	if (*totalStrings < 1) {
 		// incorrect format
@@ -36,7 +36,7 @@ static unsigned int dat2str(FILE* srcFileDesc, FILE* destFileDesc, unsigned int*
 		// For each text field in the .dat file, the first two bytes indicate string length in bytes.
 		c3 = fgetc(srcFileDesc);
 		c4 = fgetc(srcFileDesc);
-		unsigned int textLen = fourBytesToUnsignedInt(0, 0, c3, c4);
+		unsigned int textLen = fourBytesToUInt32(0, 0, c3, c4);
 
 		// Then process each character of the string, one by one.
 		char* buffer = calloc(textLen + 1, sizeof(char));

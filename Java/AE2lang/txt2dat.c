@@ -47,7 +47,7 @@ static unsigned int str2dat(FILE* srcFileDesc, FILE* destFileDesc, unsigned int*
 				line[lineLen] = '\0';
 
 				// check number of characters in the line
-				unsignedIntToFourBytes(lineLen, &c1, &c2, &c3, &c4);
+				uInt32ToFourBytes(lineLen, &c1, &c2, &c3, &c4);
 				if (c1 || c2) {
 					fprintf(stderr, "ERROR: line content \"%s\" is too long to fit in\n", line);
 					free(line);
@@ -76,7 +76,7 @@ static unsigned int str2dat(FILE* srcFileDesc, FILE* destFileDesc, unsigned int*
 	rewind(destFileDesc);
 
 	// put number of total strings in the first 4 bytes
-	unsignedIntToFourBytes(*stringsCount, &c1, &c2, &c3, &c4);
+	uInt32ToFourBytes(*stringsCount, &c1, &c2, &c3, &c4);
 	fputc(c1, destFileDesc);
 	fputc(c2, destFileDesc);
 	fputc(c3, destFileDesc);

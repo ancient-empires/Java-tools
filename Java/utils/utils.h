@@ -22,10 +22,10 @@
 #define BACKSLASH_STR "\\"
 
 // Represent a 32-bit unsigned integer as four bytes, and modify the four bytes in-place.
-void unsignedIntToFourBytes(const uint32_t i, unsigned char* c1, unsigned char* c2, unsigned char* c3, unsigned char* c4);
+void uInt32ToFourBytes(const uint32_t i, unsigned char* c1, unsigned char* c2, unsigned char* c3, unsigned char* c4);
 
 // Concatenate four bytes into a 32-bit unsigned integer.
-uint32_t fourBytesToUnsignedInt(const unsigned char c1, const unsigned char c2, const unsigned char c3, const unsigned char c4);
+uint32_t fourBytesToUInt32(const unsigned char c1, const unsigned char c2, const unsigned char c3, const unsigned char c4);
 
 // Reverse the input string in-place.
 char* strrev(char* str);
