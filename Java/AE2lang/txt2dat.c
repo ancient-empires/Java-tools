@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <stdint.h>
 
 #include "../utils/utils.h"
 #include "txt2dat.h"
@@ -9,7 +10,7 @@
 // srcFileDesc: the .txt file descriptor (read from)
 // destFileDesc: the .dat file descriptor (write to)
 // return: the total number of strings converted
-static unsigned int str2dat(FILE* srcFileDesc, FILE* destFileDesc, unsigned int* stringsCount) {
+static unsigned int str2dat(FILE* srcFileDesc, FILE* destFileDesc, uint32_t* stringsCount) {
 
 	unsigned char c1, c2, c3, c4;
 
@@ -108,7 +109,7 @@ void txt2dat(char* srcFilename, char* destFilename) {
 	}
 
 	// process all strings in the .txt file, and write to the .dat file
-	unsigned int stringsCount = 0;
+	uint32_t stringsCount = 0;
 	str2dat(srcFileDesc, destFileDesc, &stringsCount);
 
 	// finish
