@@ -31,60 +31,21 @@ void getFilename(char* sdata) {
 	return;
 }
 
-// void pack(void) {
-// 	FILE *fo, *fo3, *fn, *fl;
-// 	unsigned long int i, j, k, fileDataStartPos, totalFiles=0, totalExtracted=0, fileDataPos=0, fileSize, totalErrors=0;
-// 	unsigned char c1, c2, c3, c4;
-// 	char sdata[LARGE_SPACE_SIZE], sdata3[LARGE_SPACE_SIZE];
-// 	char sdata2[LARGE_SPACE_SIZE][LARGE_SPACE_SIZE];
-// 	unsigned int sdata2s[LARGE_SPACE_SIZE];
-// }
-
-int main(int argc, char *argv[]) {
-	FILE *fo, *fo3, *fn;
-	unsigned long int i, j, k, totalFiles=0, fileDataPos=0, totalErrors=0;
+// Create the .pak archive, using files specified in the file list.
+void pack(const char* pakFile, const char* fileListLOG) {
+	FILE *fo3, *fn;
+	unsigned long i, j, k, totalFiles=0, fileDataPos=0, totalErrors=0;
 	unsigned char c1, c2, c3, c4;
 	char sdata[LARGE_SPACE_SIZE];
 	char sdata2[LARGE_SPACE_SIZE][LARGE_SPACE_SIZE];
 	unsigned int sdata2s[LARGE_SPACE_SIZE];
 
-
-	// Program title
-	printf("\n=== Ancient Empires II packer / unpacker v0.11b ===\n\n");
-
-	if (argc < 3) {
-		// invalid arguments
-		help();
-		return ERROR_ARGS;
-	}
-	else if (strcmp(argv[2], "-e") == 0) {
-		// extract mode
-		extract(argv[1], argv[3]);
-		return 0;
-	}
-	else if (strcmp(argv[2], "-p") == 0) {
-		// pack mode
-		goto pack;
-		return 0;
-	}
-	else {
-		// invalid arguments
-		help();
-		return ERROR_ARGS;
-	}
-
-pack:
-	if (!argv[3]) {
-		help();
-		exit(ERROR_ARGS);
-	}
-
 	printf("Packing...\n");
-	fo = fopen(argv[3], "r");
+	FILE* fo = fopen(fileListLOG, "r");
 	if (!fo) {
-		fprintf(stderr, "ERROR: File %s not found.\n", argv[3]);
-		help();
-		}
+		fprintf(stderr, "ERROR: Failed to open file list \"%s\".\n", fileListLOG);
+		exit(ERROR_RW);
+	}
 	rewind(fo);
 	printf("Checking filelist...\n");
 	while(!feof(fo)) {
@@ -115,21 +76,22 @@ pack:
 
 	if (totalErrors > 0) {
 		printf("Sorry, could not found %ld files, fix the problem before retrying.\n", totalErrors);
-		exit(0);
+		exit(ERROR_RW);
 	}
 	else if (totalFiles == 0) {
 		printf("Nothing to pack. Check your files!\n");
-		exit(1);
+		exit(ERROR_RW);
 	}
 	else if (totalFiles > LARGE_SPACE_SIZE) {
 		printf("Sorry, this crappy exe cannot pack more than %d files!\n", LARGE_SPACE_SIZE);
-		exit(1);
+		exit(ERROR_RW);
 	}
 
-	fn = fopen(argv[1], "wb");
+	fn = fopen(pakFile, "wb");
 	if (!fn) {
-		fprintf(stderr, "ERROR: Could not open file \"%s\" for writing\n", argv[1]);
-		exit(1);
+		fprintf(stderr, "ERROR: Could not open .pak file \"%s\" for writing!\n", pakFile);
+		fclose(fn);
+		exit(ERROR_RW);
 	}
 
 
@@ -236,5 +198,36 @@ pack:
 
 
 	printf("\n Uh yeah, its done! %ld errors for %ld (announced)\n", totalErrors, totalFiles);
-	exit(0);
+}
+
+/* Usage:
+	- extract: ./AE2pak.out path/to/pak.pak -e path/to/extracted/files (path to extracted files must be created beforehand)
+	- pack: ./AE2pak.out path/to/pak.pak -p list/of/extracted/files.log
+*/
+int main(int argc, char *argv[]) {
+
+	// Program title
+	printf("\n=== Ancient Empires II packer / unpacker v0.11b ===\n\n");
+
+	// check number of arguments entered by the user
+	if (argc < 3) {
+		help();
+		return ERROR_ARGS;
+	}
+
+	// extract mode
+	if (strcmp(argv[2], "-e") == 0) {
+		extract(argv[1], argv[3]);
+		return 0;
+	}
+	// pack mode
+	else if (strcmp(argv[2], "-p") == 0) {
+		pack(argv[1], argv[3]);
+		return 0;
+	}
+	// invalid arguments
+	else {
+		help();
+		return ERROR_ARGS;
+	}
 }
