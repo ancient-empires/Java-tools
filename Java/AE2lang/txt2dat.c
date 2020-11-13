@@ -10,7 +10,7 @@
 // srcFileDesc: the .txt file descriptor (read from)
 // destFileDesc: the .dat file descriptor (write to)
 // return: the total number of strings converted
-static unsigned int str2dat(FILE* srcFileDesc, FILE* destFileDesc, uint32_t* stringsCount) {
+static uint32_t str2dat(FILE* srcFileDesc, FILE* destFileDesc, uint32_t* stringsCount) {
 
 	unsigned char c1, c2, c3, c4;
 
