@@ -20,18 +20,16 @@
 #define SLASH_STR "/"
 #define BACKSLASH_STR "\\"
 
-// Represent an integer with four bytes
-// Modify the four bytes in-place
+// Represent an unsigned integer with four bytes, and modify the four bytes in-place.
 void unsignedIntToFourBytes(const unsigned int i, unsigned char* c1, unsigned char* c2, unsigned char* c3, unsigned char* c4);
 
-// Concatenate four bytes into an integer
+// Concatenate four bytes into an unsigned integer.
 unsigned int fourBytesToUnsignedInt(const unsigned char c1, const unsigned char c2, const unsigned char c3, const unsigned char c4);
 
-// Reverse the input string in-place
+// Reverse the input string in-place.
 char* strrev(char* str);
 
-// Replace one character with another character
-// Modify the input string in-place
+// Replace one character with another character in the input string, and modify the input string in-place.
 char* strrep(char* str, const char src, const char dest);
 
 #endif

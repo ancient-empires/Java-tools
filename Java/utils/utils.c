@@ -5,8 +5,7 @@
 
 #include "utils.h"
 
-// Represent an integer with four bytes
-// Modify the four bytes in-place
+// Represent an unsigned integer with four bytes, and modify the four bytes in-place.
 void unsignedIntToFourBytes(const unsigned int i, unsigned char* c1, unsigned char* c2, unsigned char* c3, unsigned char* c4) {
 	unsigned int j = i;
 	*c4 = j & 0xFF;
@@ -15,7 +14,7 @@ void unsignedIntToFourBytes(const unsigned int i, unsigned char* c1, unsigned ch
 	*c1 = (j >>= CHAR_BIT) & 0xFF;
 }
 
-// Concatenate four bytes into an integer
+// Concatenate four bytes into an unsigned integer.
 unsigned int fourBytesToUnsignedInt(const unsigned char c1, const unsigned char c2, const unsigned char c3, const unsigned char c4) {
 	unsigned int i = c1;
 	i = (i << CHAR_BIT) + c2;
@@ -24,7 +23,7 @@ unsigned int fourBytesToUnsignedInt(const unsigned char c1, const unsigned char 
 	return i;
 }
 
-// Reverse the input string in-place
+// Reverse the input string in-place.
 char* strrev(char* str) {
 	size_t len = strlen(str);
 	char* buffer = calloc(sizeof(char), len);
@@ -41,8 +40,7 @@ char* strrev(char* str) {
 	return str;
 }
 
-// Replace one character with another character
-// Modify the input string in-place
+// Replace one character with another character in the input string, and modify the input string in-place.
 char* strrep(char* str, const char src, const char dest) {
 	size_t len = strlen(str);
 	for (size_t i = 0; i < len; ++i) {
