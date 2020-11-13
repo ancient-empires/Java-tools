@@ -12,7 +12,7 @@
 static bool extractFile(const char* pakFile, const char* targetFile, unsigned int fileDataPos, unsigned int fileSize) {
 
 	// open .pak file for reading
-	FILE *pakFileDesc = fopen(pakFile, "rb");
+	FILE* pakFileDesc = fopen(pakFile, "rb");
 	if (!pakFileDesc) {
 		fprintf(stderr, "ERROR: Could not open PAK file \"%s\" for extraction!\n", pakFile);
 		fclose(pakFileDesc);
