@@ -90,7 +90,7 @@ static unsigned int str2dat(FILE* srcFileDesc, FILE* destFileDesc, uint32_t* str
 }
 
 // Convert .txt back to .dat
-void txt2dat(char* srcFilename, char* destFilename) {
+void txt2dat(const char* srcFilename, const char* destFilename) {
 	printf("Converting .txt to .dat ...\n\n");
 
 	// check source file (.txt)

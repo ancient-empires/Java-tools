@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <stdint.h>
 
 #include "../utils/utils.h"
 #include "dat2txt.h"
@@ -8,7 +10,7 @@
 // srcFileDesc: the .dat file descriptor (read from)
 // destFileDesc: the .txt file descriptor (write to)
 // return: the number of strings successfully extracted
-static unsigned int dat2str(FILE* srcFileDesc, FILE* destFileDesc, unsigned int* stringsCount, unsigned int* totalStrings) {
+static unsigned int dat2str(FILE* srcFileDesc, FILE* destFileDesc, uint32_t* stringsCount, unsigned int* totalStrings) {
 	*stringsCount = 0;
 	*totalStrings = 0;
 
@@ -73,7 +75,7 @@ static unsigned int dat2str(FILE* srcFileDesc, FILE* destFileDesc, unsigned int*
 }
 
 // Convert .dat to .txt
-void dat2txt(char* srcFilename, char* destFilename) {
+void dat2txt(const char* srcFilename, const char* destFilename) {
 	printf("Converting .dat to .txt ...\n\n");
 
 	// check source file (.dat)

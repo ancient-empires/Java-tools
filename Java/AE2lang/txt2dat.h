@@ -6,6 +6,6 @@
 #define IGNORED_LINE_START CARET
 
 // Convert .txt back to .dat
-void txt2dat(char* srcFilename, char* destFilename);
+void txt2dat(const char* srcFilename, const char* destFilename);
 
 #endif
