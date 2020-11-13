@@ -1,6 +1,8 @@
 #ifndef EXTRACT_H
 #define EXTRACT_H
 
+#include "field_sizes.h"
+
 #define FILE_LIST_LOG "_file_list.log"
 
 // Extract .pak file to extract directory.
