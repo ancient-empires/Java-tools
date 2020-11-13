@@ -2,6 +2,7 @@
 #define UTILS_H
 
 #include <limits.h>
+#include <stdint.h>
 
 #define BYTE_CAP (((unsigned int)1) << CHAR_BIT)
 
@@ -20,11 +21,11 @@
 #define SLASH_STR "/"
 #define BACKSLASH_STR "\\"
 
-// Represent an unsigned integer with four bytes, and modify the four bytes in-place.
-void unsignedIntToFourBytes(const unsigned int i, unsigned char* c1, unsigned char* c2, unsigned char* c3, unsigned char* c4);
+// Represent a 32-bit unsigned integer as four bytes, and modify the four bytes in-place.
+void unsignedIntToFourBytes(const uint32_t i, unsigned char* c1, unsigned char* c2, unsigned char* c3, unsigned char* c4);
 
-// Concatenate four bytes into an unsigned integer.
-unsigned int fourBytesToUnsignedInt(const unsigned char c1, const unsigned char c2, const unsigned char c3, const unsigned char c4);
+// Concatenate four bytes into a 32-bit unsigned integer.
+uint32_t fourBytesToUnsignedInt(const unsigned char c1, const unsigned char c2, const unsigned char c3, const unsigned char c4);
 
 // Reverse the input string in-place.
 char* strrev(char* str);
