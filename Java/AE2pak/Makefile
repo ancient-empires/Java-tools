@@ -47,7 +47,7 @@ $(if $(dir),,$(error $(EXTRACT_ERROR_MSG)))
 endef
 
 .PHONY: extract
-extract:
+extract: all
 	$(call CHECK_EXTRACT_ERROR)
 	mkdir -vp $(dir)
 	./$(TARGET).out $(pak) -e $(dir)
