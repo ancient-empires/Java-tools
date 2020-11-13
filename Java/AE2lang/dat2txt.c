@@ -10,7 +10,7 @@
 // srcFileDesc: the .dat file descriptor (read from)
 // destFileDesc: the .txt file descriptor (write to)
 // return: the number of strings successfully extracted
-static unsigned int dat2str(FILE* srcFileDesc, FILE* destFileDesc, uint32_t* stringsCount, unsigned int* totalStrings) {
+static uint32_t dat2str(FILE* srcFileDesc, FILE* destFileDesc, uint32_t* stringsCount, uint32_t* totalStrings) {
 	*stringsCount = 0;
 	*totalStrings = 0;
 
@@ -32,17 +32,17 @@ static unsigned int dat2str(FILE* srcFileDesc, FILE* destFileDesc, uint32_t* str
 	}
 
 	// Process all strings
-	unsigned int strIdx = 0;
+	uint32_t strIdx = 0;
 	for (; strIdx < *totalStrings; ++strIdx) {
 		// First check string validity.
 		// For each text field in the .dat file, the first two bytes indicate string length in bytes.
 		c3 = fgetc(srcFileDesc);
 		c4 = fgetc(srcFileDesc);
-		unsigned int textLen = fourBytesToUInt32(0, 0, c3, c4);
+		uint32_t textLen = fourBytesToUInt32(0, 0, c3, c4);
 
 		// Then process each character of the string, one by one.
 		char* buffer = calloc(textLen + 1, sizeof(char));
-		unsigned int charIdx = 0;
+		uint32_t charIdx = 0;
 		for (; charIdx < textLen; ++charIdx) {
 			c1 = fgetc(srcFileDesc);
 
@@ -94,7 +94,7 @@ void dat2txt(const char* srcFilename, const char* destFilename) {
 	}
 
 	// process all strings in the .dat file, and write to the .txt file
-	unsigned int stringsCount = 0, totalStrings = 0;
+	uint32_t stringsCount = 0, totalStrings = 0;
 	dat2str(srcFileDesc, destFileDesc, &stringsCount, &totalStrings);
 
 	// finish
