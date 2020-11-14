@@ -1,7 +1,7 @@
 #ifndef EXTRACT_H
 #define EXTRACT_H
 
-#include "field_sizes.h"
+#include "pak_limits.h"
 
 #define FILE_LIST_LOG "_file_list.log"
 
