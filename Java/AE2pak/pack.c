@@ -50,11 +50,10 @@ void pack(const char* pakFile, const char* fileListLOG) {
 	rewind(fileListDesc);
 	while(!feof(fileListDesc)) {
 		// get each line containing a filename
-		char filename[LARGE_SPACE_SIZE];
-		filename[0] = '\0';
-		fgets(filename, LARGE_SPACE_SIZE, fileListDesc);
-		size_t filenameLen = strlen(filename);
-		if ((filenameLen > 0) && ((filename[filenameLen-1] == CR) || (filename[filenameLen-1] == LF))) {
+		char* filename = NULL;
+		size_t n = 0;
+		ssize_t filenameLen = getline(&filename, &n, fileListDesc);
+		if ((filenameLen > 0) && (filename[filenameLen-1] == LF)) {
 			filename[filenameLen-1] = '\0';
 		}
 
@@ -75,9 +74,11 @@ void pack(const char* pakFile, const char* fileListLOG) {
 				++totalFiles;
 			}
 			if (totalFiles > LARGE_SPACE_SIZE) {
+				free(filename);
 				break;
 			}
 		}
+		free(filename);
 	}
 	fclose(fileListDesc);
 
