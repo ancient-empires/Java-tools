@@ -120,7 +120,7 @@ void pack(const char* pakFile, const char* fileListLOG) {
 
 	// write file info for each resource file
 	// included information: filename length (2 bytes), filename, file data starting offset (4 bytes), and file size (2 bytes)
-	uint32_t fileDataPos = 0;
+	uint32_t fileDataStartOffset = 0;
 	for (i = 0; i < totalFiles; ++i) {
 		// get filename (omitting directory name)
 		char filename[LARGE_SPACE_SIZE];
@@ -142,7 +142,10 @@ void pack(const char* pakFile, const char* fileListLOG) {
 		fputs(filename, fn);
 
 		// write starting offset of file data, relative to the start of data for all files (4 bytes)
-		uInt32ToFourBytes(fileDataPos, &c1, &c2, &c3, &c4);
+		// The first file has offset 0.
+		// The second file has offset (0 + size of first file).
+		// The third file has offset (0 + size of first file + size of second file); and so on.
+		uInt32ToFourBytes(fileDataStartOffset, &c1, &c2, &c3, &c4);
 		fputc(c1, fn);
 		fputc(c2, fn);
 		fputc(c3, fn);
@@ -153,10 +156,10 @@ void pack(const char* pakFile, const char* fileListLOG) {
 		uInt32ToFourBytes(fileSize, &c1, &c2, &c3, &c4);
 		fputc(c3, fn);
 		fputc(c4, fn);
-		fileDataPos += fileSize;
+		fileDataStartOffset += fileSize;
 	}
 
-	// Writing the file data starting position (2 bytes)
+	// writing the starting position of the data of ALL files (2 bytes)
 	fseek(fn, 0, SEEK_END);
 	long fileDataStartPos = ftell(fn);
 	uInt32ToFourBytes(fileDataStartPos, &c1, &c2, &c3, &c4);
