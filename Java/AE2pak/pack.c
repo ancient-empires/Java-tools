@@ -7,20 +7,19 @@
 
 #define LARGE_SPACE_SIZE 2048
 
-static void getFilename(char* sdata) {
-	int i, k;
+static void _getFilename(char* sdata) {
 	char sdata2[LARGE_SPACE_SIZE];
-	strcpy(sdata2,sdata);
+	strcpy(sdata2, sdata);
 	strrev(sdata2);
-	k = strlen(sdata2);
-	for (i=0;i<k;i++){
-		if (sdata2[i]=='/'){
-			sdata2[i]=0;
+	size_t filenameLen = strlen(sdata2);
+	for (size_t i = 0; i < filenameLen; ++i){
+		if (sdata2[i] == SLASH){
+			sdata2[i] = 0;
 			break;
 		}
 	}
 	strrev(sdata2);
-	strcpy(sdata,sdata2);
+	strcpy(sdata, sdata2);
 	return;
 }
 
@@ -101,7 +100,7 @@ void pack(const char* pakFile, const char* fileListLOG) {
 
 	for (i = 0; i < totalFiles; ++i) {
 		strcpy(sdata, sdata2[i]);
-		getFilename(sdata);
+		_getFilename(sdata);
 		k = strlen(sdata);
 		c3 = k / 256;
 		j = c3 * 256;
