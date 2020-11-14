@@ -111,56 +111,38 @@ void pack(const char* pakFile, const char* fileListLOG) {
 	putc(c3, fn);
 	putc(c4, fn);
 
-
+	// write file info for each resource file
 	for (i = 0; i < totalFiles; ++i) {
+		// get filename
 		strcpy(sdata, sdata2[i]);
 		_getFilename(sdata);
-		k = strlen(sdata);
-		c3 = k / 256;
-		j = c3 * 256;
-		k = k-j;
-		c4 = k;
 
+		// write filename length (2 byptes)
+		size_t filenameLen = strlen(sdata);
+		uInt32ToFourBytes(filenameLen, &c1, &c2, &c3, &c4);
+		if (c1 || c2) {
+			fprintf(stderr, "ERROR: File path \"%s\" is too long. Check your resouce file directory and try again.\n");
+			exit(ERROR_RW);
+		}
 		putc(c3, fn);
 		putc(c4, fn);
 
+		// write filename
 		fputs(sdata, fn);
 
-
-		// position relative
-		k = fileDataPos;
-		c1 = k / 16777216;
-		j = c1 * 16777216;
-
-		k = k - j;
-		c2 = k / 65536;
-		j = c2 * 65536;
-
-		k = k - j;
-		c3 = k / 256;
-		j = c3 * 256;
-
-		k = k-j;
-		c4 = k;
+		// write starting offset of file data, relative to the start of data for all files (4 bytes)
+		uInt32ToFourBytes(fileDataPos, &c1, &c2, &c3, &c4);
 		putc(c1, fn);
 		putc(c2, fn);
 		putc(c3, fn);
 		putc(c4, fn);
 
-
-		// file size
-		k = resourceFileSizes[i];
-		fileDataPos = (fileDataPos+k);
-
-		c3 = (k/256);
-		j = (c3*256);
-
-		k = (k-j);
-		c4 = k;
-
+		// write file size (2 bytes)
+		uint16_t fileSize = resourceFileSizes[i];
+		uint16_t fileDataPos = fileDataPos + fileSize;
+		uInt32ToFourBytes(fileSize, &c1, &c2, &c3, &c4);
 		putc(c3, fn);
 		putc(c4, fn);
-
 	}
 
 	// Writing the header of the end position of the header
