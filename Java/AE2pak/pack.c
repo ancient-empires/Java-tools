@@ -35,12 +35,10 @@ void pack(const char* pakFile, const char* fileListLOG) {
 
 	printf("Packing...\n");
 
-	// Check file list (.log file)
-
 	uint16_t totalFiles = 0, fileDataPos = 0;
 	unsigned int totalErrors = 0;
 
-	// open file list
+	// Check file list (.log file)
 	printf("\nChecking file list...\n");
 	FILE* fileListDesc = fopen(fileListLOG, "r");
 	if (!fileListDesc) {
@@ -66,15 +64,15 @@ void pack(const char* pakFile, const char* fileListLOG) {
 			if (!resourceFileDesc) {
 				fprintf(stderr, "ERROR: Could not find \"%s\"\n", sdata2[totalFiles]);
 				fclose(resourceFileDesc);
-				totalErrors++;
+				++totalErrors;
 			}
 			else {
-				rewind(resourceFileDesc);
+				// get size of the resource file
 				fseek(resourceFileDesc, 0, SEEK_END);
 				resourceFileSizes[totalFiles] = ftell(resourceFileDesc);
 				fclose(resourceFileDesc);
+				++totalFiles;
 			}
-			totalFiles++;
 			if (totalFiles > LARGE_SPACE_SIZE) {
 				break;
 			}
@@ -181,7 +179,7 @@ void pack(const char* pakFile, const char* fileListLOG) {
 		while(!feof(fo)) {
 			c1=getc(fo);
 			if (!feof(fo)) fputc(c1, fn);
-			j++;
+			++j;
 		}
 		if (j - 1 != resourceFileSizes[i]) {
 			fprintf(stderr, "ERROR: Could not match size of file! j = %ld\n", j);
