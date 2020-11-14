@@ -48,7 +48,7 @@ void pack(const char* pakFile, const char* fileListLOG) {
 	// read each line containing a file path
 	rewind(fileListDesc);
 	unsigned int totalErrors = 0;
-	while(!feof(fileListDesc)) {
+	while (!feof(fileListDesc)) {
 		// get each line containing a filename
 		char* filename = NULL;
 		size_t n = 0;
@@ -182,7 +182,7 @@ void pack(const char* pakFile, const char* fileListLOG) {
 			exit(1);
 		}
 		j=0;
-		while(!feof(fo)) {
+		while (!feof(fo)) {
 			c1=getc(fo);
 			if (!feof(fo)) fputc(c1, pakFileDesc);
 			++j;
