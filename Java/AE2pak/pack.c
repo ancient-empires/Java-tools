@@ -34,7 +34,7 @@ void pack(const char* pakFile, const char* fileListLOG) {
 
 	unsigned char c1, c2, c3, c4;
 
-	uint16_t totalFiles = 0;
+	unsigned int totalFiles = 0;
 
 	// Check file list (.log file)
 	printf("\nChecking file list...\n");
