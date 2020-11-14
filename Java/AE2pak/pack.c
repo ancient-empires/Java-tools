@@ -35,7 +35,8 @@ void pack(const char* pakFile, const char* fileListLOG) {
 
 	printf("Packing...\n");
 
-	uint16_t totalFiles = 0, fileDataPos = 0;
+	uint16_t totalFiles = 0;
+	uint32_t fileDataPos = 0;
 	unsigned int totalErrors = 0;
 
 	// Check file list (.log file)
@@ -143,10 +144,10 @@ void pack(const char* pakFile, const char* fileListLOG) {
 
 		// write file size (2 bytes)
 		uint16_t fileSize = resourceFileSizes[i];
-		uint16_t fileDataPos = fileDataPos + fileSize;
 		uInt32ToFourBytes(fileSize, &c1, &c2, &c3, &c4);
 		fputc(c3, fn);
 		fputc(c4, fn);
+		fileDataPos += fileSize;
 	}
 
 	// Writing the header of the end position of the header
