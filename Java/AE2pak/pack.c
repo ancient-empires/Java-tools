@@ -119,7 +119,7 @@ void pack(const char* pakFile, const char* fileListLOG) {
 
 	// write file info for each resource file
 	for (i = 0; i < totalFiles; ++i) {
-		// get filename
+		// get filename (omitting directory name)
 		char filename[LARGE_SPACE_SIZE];
 		strcpy(filename, sdata2[i]);
 		_getFilename(filename);
