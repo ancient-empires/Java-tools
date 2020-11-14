@@ -8,26 +8,26 @@
 
 #define LARGE_SPACE_SIZE 2048
 
-static void _getFilename(char* sdata) {
-	char sdata2[LARGE_SPACE_SIZE];
-	strcpy(sdata2, sdata);
-	strrev(sdata2);
-	size_t filenameLen = strlen(sdata2);
+static void _getFilename(char* path) {
+	char buffer[LARGE_SPACE_SIZE];
+	strcpy(buffer, path);
+	strrev(buffer);
+	size_t filenameLen = strlen(buffer);
 	for (size_t i = 0; i < filenameLen; ++i){
-		if (sdata2[i] == SLASH){
-			sdata2[i] = 0;
+		if (buffer[i] == SLASH){
+			buffer[i] = '\0';
 			break;
 		}
 	}
-	strrev(sdata2);
-	strcpy(sdata, sdata2);
+	strrev(buffer);
+	strcpy(path, buffer);
 	return;
 }
 
 // Create the .pak archive, using files specified in the file list.
 void pack(const char* pakFile, const char* fileListLOG) {
 	FILE *fn;
-	unsigned long i, j, k, totalFiles=0, fileDataPos=0, totalErrors=0;
+	unsigned long i, j, k;
 	unsigned char c1, c2, c3, c4;
 	char sdata[LARGE_SPACE_SIZE];
 	char sdata2[LARGE_SPACE_SIZE][LARGE_SPACE_SIZE];
@@ -36,6 +36,9 @@ void pack(const char* pakFile, const char* fileListLOG) {
 	printf("Packing...\n");
 
 	// Check file list (.log file)
+
+	uint16_t totalFiles = 0, fileDataPos = 0;
+	unsigned int totalErrors = 0;
 
 	// open file list
 	printf("\nChecking file list...\n");
@@ -81,7 +84,7 @@ void pack(const char* pakFile, const char* fileListLOG) {
 
 	// check errors
 	if (totalErrors > 0) {
-		fprintf(stderr, "ERROR: Could not found %ld files. Fix the problem before retrying.\n", totalErrors);
+		fprintf(stderr, "ERROR: Could not found %d files. Fix the problem before retrying.\n", totalErrors);
 		exit(ERROR_RW);
 	}
 	else if (totalFiles == 0) {
@@ -101,15 +104,18 @@ void pack(const char* pakFile, const char* fileListLOG) {
 		exit(ERROR_RW);
 	}
 
+	// reserve first 2 bytes to write the starting point of file data
+	fseek(fn, DATA_START_BYTES, SEEK_SET);
 
-	rewind(fn);
-	putc(0xFF, fn);
-	putc(0xFF, fn);
-
-	c3 = totalFiles / BYTE_CAP;
-	c4 = totalFiles % BYTE_CAP;
-	putc(c3, fn);
-	putc(c4, fn);
+	// write number of total files (2 bytes)
+	uInt32ToFourBytes(totalFiles, &c1, &c2, &c3, &c4);
+	if (c1 || c2) {
+		fprintf(stderr, "ERROR: The .pak file format can only contain a maximum of %d files.\n", UINT16_MAX);
+		fclose(fn);
+		exit(ERROR_RW);
+	}
+	fputc(c3, fn);
+	fputc(c4, fn);
 
 	// write file info for each resource file
 	for (i = 0; i < totalFiles; ++i) {
@@ -121,28 +127,28 @@ void pack(const char* pakFile, const char* fileListLOG) {
 		size_t filenameLen = strlen(sdata);
 		uInt32ToFourBytes(filenameLen, &c1, &c2, &c3, &c4);
 		if (c1 || c2) {
-			fprintf(stderr, "ERROR: File path \"%s\" is too long. Check your resouce file directory and try again.\n");
+			fprintf(stderr, "ERROR: File path \"%s\" is too long (more than %d characters). Check your resouce file directory and try again.\n",  sdata, UINT16_MAX);
 			exit(ERROR_RW);
 		}
-		putc(c3, fn);
-		putc(c4, fn);
+		fputc(c3, fn);
+		fputc(c4, fn);
 
 		// write filename
 		fputs(sdata, fn);
 
 		// write starting offset of file data, relative to the start of data for all files (4 bytes)
 		uInt32ToFourBytes(fileDataPos, &c1, &c2, &c3, &c4);
-		putc(c1, fn);
-		putc(c2, fn);
-		putc(c3, fn);
-		putc(c4, fn);
+		fputc(c1, fn);
+		fputc(c2, fn);
+		fputc(c3, fn);
+		fputc(c4, fn);
 
 		// write file size (2 bytes)
 		uint16_t fileSize = resourceFileSizes[i];
 		uint16_t fileDataPos = fileDataPos + fileSize;
 		uInt32ToFourBytes(fileSize, &c1, &c2, &c3, &c4);
-		putc(c3, fn);
-		putc(c4, fn);
+		fputc(c3, fn);
+		fputc(c4, fn);
 	}
 
 	// Writing the header of the end position of the header
@@ -157,8 +163,8 @@ void pack(const char* pakFile, const char* fileListLOG) {
 	c4 = k;
 
 	rewind(fn);
-	putc(c3, fn);
-	putc(c4, fn);
+	fputc(c3, fn);
+	fputc(c4, fn);
 
 	// pack files
 	rewind(fn);
@@ -174,7 +180,7 @@ void pack(const char* pakFile, const char* fileListLOG) {
 		j=0;
 		while(!feof(fo)) {
 			c1=getc(fo);
-			if (!feof(fo)) putc(c1, fn);
+			if (!feof(fo)) fputc(c1, fn);
 			j++;
 		}
 		if (j - 1 != resourceFileSizes[i]) {
@@ -185,5 +191,5 @@ void pack(const char* pakFile, const char* fileListLOG) {
 	fclose(fn);
 
 
-	printf("\n Uh yeah, its done! %ld errors for %ld (announced)\n", totalErrors, totalFiles);
+	printf("\n Uh yeah, its done! %d errors for %d (announced)\n", totalErrors, totalFiles);
 }
