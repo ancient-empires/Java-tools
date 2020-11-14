@@ -126,7 +126,7 @@ void pack(const char* pakFile, const char* fileListLOG) {
 		size_t filenameLen = strlen(sdata);
 		uInt32ToFourBytes(filenameLen, &c1, &c2, &c3, &c4);
 		if (c1 || c2) {
-			fprintf(stderr, "ERROR: File path \"%s\" is too long (more than %d characters). Check your resouce file directory and try again.\n",  sdata, UINT16_MAX);
+			fprintf(stderr, "ERROR: Filename \"%s\" is too long (more than %d characters). Check your resouce file directory and try again.\n",  sdata, UINT16_MAX);
 			exit(ERROR_RW);
 		}
 		fputc(c3, fn);
