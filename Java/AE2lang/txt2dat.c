@@ -27,7 +27,7 @@ static uint32_t str2dat(FILE* srcFileDesc, FILE* destFileDesc, uint32_t* strings
 
 	// For the output .dat file, start from the 4th byte (index starts from 0).
 	// The first 4 bytes are reserved for specifying the number of total strings, which will be written finally.
-	fseek(destFileDesc, 4, SEEK_SET);
+	fseek(destFileDesc, TOTAL_NUM_STRS_BYTES, SEEK_SET);
 
 	*stringsCount = 0;
 
