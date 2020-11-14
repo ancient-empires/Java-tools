@@ -79,16 +79,17 @@ void pack(const char* pakFile, const char* fileListLOG) {
 	}
 	fclose(fileListDesc);
 
+	// check errors
 	if (totalErrors > 0) {
-		printf("Sorry, could not found %ld files, fix the problem before retrying.\n", totalErrors);
+		fprintf(stderr, "ERROR: Could not found %ld files. Fix the problem before retrying.\n", totalErrors);
 		exit(ERROR_RW);
 	}
 	else if (totalFiles == 0) {
-		printf("Nothing to pack. Check your files!\n");
+		fprintf(stderr, "ERROR: Nothing to pack. Check your files!\n");
 		exit(ERROR_RW);
 	}
 	else if (totalFiles > LARGE_SPACE_SIZE) {
-		printf("Sorry, this crappy exe cannot pack more than %d files!\n", LARGE_SPACE_SIZE);
+		fprintf(stderr, "ERROR: Sorry, this crappy exe cannot pack more than %d files!\n", LARGE_SPACE_SIZE);
 		exit(ERROR_RW);
 	}
 
