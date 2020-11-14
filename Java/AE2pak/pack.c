@@ -27,7 +27,7 @@ static void _getFilename(char* path) {
 
 // Create the .pak archive, using files specified in the file list.
 void pack(const char* pakFile, const char* fileListLOG) {
-	char sdata2[LARGE_SPACE_SIZE][LARGE_SPACE_SIZE];
+	char resourceFiles[LARGE_SPACE_SIZE][LARGE_SPACE_SIZE];
 	uint16_t resourceFileSizes[LARGE_SPACE_SIZE];
 
 	printf("Packing...\n");
@@ -56,12 +56,12 @@ void pack(const char* pakFile, const char* fileListLOG) {
 			filename[filenameLen-1] = '\0';
 		}
 
-		if ((strcmp(sdata2[totalFiles], filename)) && (filenameLen > 1)) {
+		if ((strcmp(resourceFiles[totalFiles], filename)) && (filenameLen > 1)) {
 			// open the resource file, and check the size
-			strcpy(sdata2[totalFiles], filename);
-			FILE* resourceFileDesc = fopen(sdata2[totalFiles], "rb");
+			strcpy(resourceFiles[totalFiles], filename);
+			FILE* resourceFileDesc = fopen(resourceFiles[totalFiles], "rb");
 			if (!resourceFileDesc) {
-				fprintf(stderr, "ERROR: Could not find resouce file \"%s\"\n", sdata2[totalFiles]);
+				fprintf(stderr, "ERROR: Could not find resouce file \"%s\"\n", resourceFiles[totalFiles]);
 				fclose(resourceFileDesc);
 				++totalErrors;
 			}
@@ -123,7 +123,7 @@ void pack(const char* pakFile, const char* fileListLOG) {
 	for (unsigned int i = 0; i < totalFiles; ++i) {
 		// get filename (omitting directory name)
 		char filename[LARGE_SPACE_SIZE];
-		strcpy(filename, sdata2[i]);
+		strcpy(filename, resourceFiles[i]);
 		_getFilename(filename);
 
 		// write filename length (2 byptes)
@@ -175,9 +175,9 @@ void pack(const char* pakFile, const char* fileListLOG) {
 	totalErrors = 0;
 	for (unsigned int i = 0 ; i < totalFiles; ++i) {
 		// check resource file
-		FILE* resourceFileDesc = fopen(sdata2[i], "rb");
+		FILE* resourceFileDesc = fopen(resourceFiles[i], "rb");
 		if (!resourceFileDesc) {
-			fprintf(stderr, "ERROR: Could not open resource file \"%s\" for reading\n", sdata2[i]);
+			fprintf(stderr, "ERROR: Could not open resource file \"%s\" for reading\n", resourceFiles[i]);
 			fclose(pakFileDesc);
 			fclose(resourceFileDesc);
 			exit(ERROR_RW);
