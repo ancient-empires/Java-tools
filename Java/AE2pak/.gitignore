@@ -1,4 +1,5 @@
-# Log files
+# Generated files during pack / repack
+*.pak
 *.log
 
 # Prerequisites
