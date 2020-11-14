@@ -27,7 +27,6 @@ static void _getFilename(char* path) {
 
 // Create the .pak archive, using files specified in the file list.
 void pack(const char* pakFile, const char* fileListLOG) {
-	FILE *fn;
 	unsigned long i, j;
 	char sdata2[LARGE_SPACE_SIZE][LARGE_SPACE_SIZE];
 	uint16_t resourceFileSizes[LARGE_SPACE_SIZE];
@@ -85,7 +84,7 @@ void pack(const char* pakFile, const char* fileListLOG) {
 
 	// check errors
 	if (totalErrors > 0) {
-		fprintf(stderr, "ERROR: Could not found %d files. Fix the problem before retrying.\n", totalErrors);
+		fprintf(stderr, "ERROR: Cannot find %d files. Fix the problem before retrying.\n", totalErrors);
 		exit(ERROR_RW);
 	}
 	else if (totalFiles == 0) {
@@ -93,30 +92,31 @@ void pack(const char* pakFile, const char* fileListLOG) {
 		exit(ERROR_RW);
 	}
 	else if (totalFiles > LARGE_SPACE_SIZE) {
-		fprintf(stderr, "ERROR: Sorry, this crappy exe cannot pack more than %d files!\n", LARGE_SPACE_SIZE);
+		fprintf(stderr, "ERROR: Sorry, this crappy packer cannot pack more than %d files!\n", LARGE_SPACE_SIZE);
 		exit(ERROR_RW);
 	}
 
 	// create the .pak file
-	fn = fopen(pakFile, "wb");
-	if (!fn) {
-		fprintf(stderr, "ERROR: Could not open .pak file \"%s\" for writing!\n", pakFile);
-		fclose(fn);
+	FILE* pakFileDesc = fopen(pakFile, "wb");
+	if (!pakFileDesc) {
+		fprintf(stderr, "ERROR: Cannot open .pak file \"%s\" for writing!\n", pakFile);
+		fclose(pakFileDesc);
 		exit(ERROR_RW);
 	}
 
 	// reserve first 2 bytes to write the starting point of file data
-	fseek(fn, FILE_DATA_START_POS_MAX, SEEK_SET);
+	fseek(pakFileDesc, FILE_DATA_START_POS_BYTES, SEEK_SET);
 
 	// write number of total files (2 bytes)
 	uInt32ToFourBytes(totalFiles, &c1, &c2, &c3, &c4);
-	if (c1 || c2) {
-		fprintf(stderr, "ERROR: The .pak file format can only contain a maximum of %d files.\n", UINT16_MAX);
-		fclose(fn);
+	if ((totalFiles > TOTAL_NUM_FILES_MAX) || (c1 || c2)) {
+		fprintf(stderr, "ERROR: You have a total of %d files. ", totalFiles);
+		fprintf(stderr, "The .pak archive can only contain a maximum of %d files.\n", TOTAL_NUM_FILES_MAX);
+		fclose(pakFileDesc);
 		exit(ERROR_RW);
 	}
-	fputc(c3, fn);
-	fputc(c4, fn);
+	fputc(c3, pakFileDesc);
+	fputc(c4, pakFileDesc);
 
 	// write file info for each resource file
 	// included information: filename length (2 bytes), filename, file data starting offset (4 bytes), and file size (2 bytes)
@@ -131,60 +131,60 @@ void pack(const char* pakFile, const char* fileListLOG) {
 		size_t filenameLen = strlen(filename);
 		uInt32ToFourBytes(filenameLen, &c1, &c2, &c3, &c4);
 		if (c1 || c2) {
-			fprintf(stderr, "ERROR: Filename \"%s\" is too long (more than %d characters). Check your resouce file directory and try again.\n",  filename, UINT16_MAX);
-			fclose(fn);
+			fprintf(stderr, "ERROR: Filename \"%s\" is too long (more than %d characters). Check your resouce file directory and try again.\n",  filename, FILENAME_LEN_MAX);
+			fclose(pakFileDesc);
 			exit(ERROR_RW);
 		}
-		fputc(c3, fn);
-		fputc(c4, fn);
+		fputc(c3, pakFileDesc);
+		fputc(c4, pakFileDesc);
 
 		// write filename
-		fputs(filename, fn);
+		fputs(filename, pakFileDesc);
 
 		// write starting offset of file data, relative to the start of data for all files (4 bytes)
 		// The first file has offset 0.
 		// The second file has offset (0 + size of first file).
 		// The third file has offset (0 + size of first file + size of second file); and so on.
 		uInt32ToFourBytes(fileDataStartOffset, &c1, &c2, &c3, &c4);
-		fputc(c1, fn);
-		fputc(c2, fn);
-		fputc(c3, fn);
-		fputc(c4, fn);
+		fputc(c1, pakFileDesc);
+		fputc(c2, pakFileDesc);
+		fputc(c3, pakFileDesc);
+		fputc(c4, pakFileDesc);
 
 		// write file size (2 bytes)
 		uint16_t fileSize = resourceFileSizes[i];
 		uInt32ToFourBytes(fileSize, &c1, &c2, &c3, &c4);
-		fputc(c3, fn);
-		fputc(c4, fn);
+		fputc(c3, pakFileDesc);
+		fputc(c4, pakFileDesc);
 		fileDataStartOffset += fileSize;
 	}
 
 	// writing the starting position of the data of ALL files (2 bytes)
-	fseek(fn, 0, SEEK_END);
-	long fileDataStartPos = ftell(fn);
+	fseek(pakFileDesc, 0, SEEK_END);
+	long fileDataStartPos = ftell(pakFileDesc);
 	uInt32ToFourBytes(fileDataStartPos, &c1, &c2, &c3, &c4);
 	if (c1 || c2) {
-		fprintf(stderr, "ERROR: Illegal file data start position: %ld.\n", fileDataStartPos);
+		fprintf(stderr, "ERROR: Illegal file data start position: %ld. ", fileDataStartPos);
 		fprintf(stderr, "(A valid file data starting position is not greater than %d)\n", FILE_DATA_START_POS_MAX);
 	}
-	rewind(fn);
-	fputc(c3, fn);
-	fputc(c4, fn);
+	rewind(pakFileDesc);
+	fputc(c3, pakFileDesc);
+	fputc(c4, pakFileDesc);
 
 	// copy bytes from the resource files to the .pak file
-	fseek(fn, fileDataStartPos, SEEK_SET);
+	fseek(pakFileDesc, fileDataStartPos, SEEK_SET);
 
 	for (i=0;i<totalFiles;i++) {
 		FILE* fo = fopen(sdata2[i], "rb");
 		if (!fo) {
 			fprintf(stderr, "ERROR: Could not open file \"%s\" for reading\n", sdata2[i]);
-			fclose(fn);
+			fclose(pakFileDesc);
 			exit(1);
 		}
 		j=0;
 		while(!feof(fo)) {
 			c1=getc(fo);
-			if (!feof(fo)) fputc(c1, fn);
+			if (!feof(fo)) fputc(c1, pakFileDesc);
 			++j;
 		}
 		if (j - 1 != resourceFileSizes[i]) {
@@ -192,7 +192,7 @@ void pack(const char* pakFile, const char* fileListLOG) {
 		}
 		fclose(fo);
 	}
-	fclose(fn);
+	fclose(pakFileDesc);
 
 
 	printf("\n Uh yeah, its done! %d errors for %d (announced)\n", totalErrors, totalFiles);
