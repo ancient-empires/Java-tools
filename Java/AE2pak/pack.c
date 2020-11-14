@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <stdint.h>
 
 #include "../utils/utils.h"
 #include "pack.h"
@@ -25,43 +26,55 @@ static void _getFilename(char* sdata) {
 
 // Create the .pak archive, using files specified in the file list.
 void pack(const char* pakFile, const char* fileListLOG) {
-	FILE *fo3, *fn;
+	FILE *fn;
 	unsigned long i, j, k, totalFiles=0, fileDataPos=0, totalErrors=0;
 	unsigned char c1, c2, c3, c4;
 	char sdata[LARGE_SPACE_SIZE];
 	char sdata2[LARGE_SPACE_SIZE][LARGE_SPACE_SIZE];
-	unsigned int sdata2s[LARGE_SPACE_SIZE];
+	uint16_t resourceFileSizes[LARGE_SPACE_SIZE];
 
 	printf("Packing...\n");
+
+	// Check file list (.log file)
+
+	// open file list
+	printf("\nChecking file list...\n");
 	FILE* fileListDesc = fopen(fileListLOG, "r");
 	if (!fileListDesc) {
-		fprintf(stderr, "ERROR: Failed to open file list \"%s\".\n", fileListLOG);
+		fprintf(stderr, "\nERROR: Failed to open file list \"%s\".\n\n", fileListLOG);
 		exit(ERROR_RW);
 	}
+
+	// read each line containing a file path
 	rewind(fileListDesc);
-	printf("Checking file list...\n");
 	while(!feof(fileListDesc)) {
-		sdata[0]=0;
+		// get each line containing a filename
+		sdata[0] = 0;
 		fgets(sdata, LARGE_SPACE_SIZE, fileListDesc);
-		k = strlen(sdata);
-		if ((k > 0) && ((sdata[k-1] == CR) || (sdata[k-1] == LF))) {
-			sdata[k-1]=0;
+		size_t filenameLen = strlen(sdata);
+		if ((filenameLen > 0) && ((sdata[filenameLen-1] == CR) || (sdata[filenameLen-1] == LF))) {
+			sdata[filenameLen-1] = 0;
 		}
-		if ((strcmp(sdata2[totalFiles], sdata)) && (k>1)) {
+
+		if ((strcmp(sdata2[totalFiles], sdata)) && (filenameLen > 1)) {
+			// open the resource file, and check the size
 			strcpy(sdata2[totalFiles], sdata);
-			fo3 = fopen(sdata2[totalFiles], "rb");
-			if (!fo3) {
+			FILE* resourceFileDesc = fopen(sdata2[totalFiles], "rb");
+			if (!resourceFileDesc) {
 				fprintf(stderr, "ERROR: Could not find \"%s\"\n", sdata2[totalFiles]);
+				fclose(resourceFileDesc);
 				totalErrors++;
 			}
 			else {
-				rewind(fo3);
-				fseek (fo3, 0, SEEK_END);
-				sdata2s[totalFiles] = ftell(fo3);
-				fclose(fo3);
+				rewind(resourceFileDesc);
+				fseek(resourceFileDesc, 0, SEEK_END);
+				resourceFileSizes[totalFiles] = ftell(resourceFileDesc);
+				fclose(resourceFileDesc);
 			}
 			totalFiles++;
-			if (totalFiles > LARGE_SPACE_SIZE) break;
+			if (totalFiles > LARGE_SPACE_SIZE) {
+				break;
+			}
 		}
 	}
 	fclose(fileListDesc);
@@ -79,6 +92,7 @@ void pack(const char* pakFile, const char* fileListLOG) {
 		exit(ERROR_RW);
 	}
 
+	// create the .pak file
 	fn = fopen(pakFile, "wb");
 	if (!fn) {
 		fprintf(stderr, "ERROR: Could not open .pak file \"%s\" for writing!\n", pakFile);
@@ -88,7 +102,6 @@ void pack(const char* pakFile, const char* fileListLOG) {
 
 
 	rewind(fn);
-	//r�serv�
 	putc(0xFF, fn);
 	putc(0xFF, fn);
 
@@ -135,7 +148,7 @@ void pack(const char* pakFile, const char* fileListLOG) {
 
 
 		// file size
-		k = sdata2s[i];
+		k = resourceFileSizes[i];
 		fileDataPos = (fileDataPos+k);
 
 		c3 = (k/256);
@@ -181,7 +194,7 @@ void pack(const char* pakFile, const char* fileListLOG) {
 			if (!feof(fo)) putc(c1, fn);
 			j++;
 		}
-		if (j - 1 != sdata2s[i]) {
+		if (j - 1 != resourceFileSizes[i]) {
 			fprintf(stderr, "ERROR: Could not match size of file! j = %ld\n", j);
 		}
 		fclose(fo);
