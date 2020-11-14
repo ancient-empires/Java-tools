@@ -27,7 +27,6 @@ static void _getFilename(char* path) {
 
 // Create the .pak archive, using files specified in the file list.
 void pack(const char* pakFile, const char* fileListLOG) {
-	unsigned long i, j;
 	char sdata2[LARGE_SPACE_SIZE][LARGE_SPACE_SIZE];
 	uint16_t resourceFileSizes[LARGE_SPACE_SIZE];
 
@@ -121,7 +120,7 @@ void pack(const char* pakFile, const char* fileListLOG) {
 	// write file info for each resource file
 	// included information: filename length (2 bytes), filename, file data starting offset (4 bytes), and file size (2 bytes)
 	uint32_t fileDataStartOffset = 0;
-	for (i = 0; i < totalFiles; ++i) {
+	for (unsigned int i = 0; i < totalFiles; ++i) {
 		// get filename (omitting directory name)
 		char filename[LARGE_SPACE_SIZE];
 		strcpy(filename, sdata2[i]);
@@ -173,27 +172,35 @@ void pack(const char* pakFile, const char* fileListLOG) {
 
 	// copy bytes from the resource files to the .pak file
 	fseek(pakFileDesc, fileDataStartPos, SEEK_SET);
-
-	for (i=0;i<totalFiles;i++) {
-		FILE* fo = fopen(sdata2[i], "rb");
-		if (!fo) {
-			fprintf(stderr, "ERROR: Could not open file \"%s\" for reading\n", sdata2[i]);
+	totalErrors = 0;
+	for (unsigned int i = 0 ; i < totalFiles; ++i) {
+		// check resource file
+		FILE* resourceFileDesc = fopen(sdata2[i], "rb");
+		if (!resourceFileDesc) {
+			fprintf(stderr, "ERROR: Could not open resource file \"%s\" for reading\n", sdata2[i]);
 			fclose(pakFileDesc);
-			exit(1);
+			fclose(resourceFileDesc);
+			exit(ERROR_RW);
 		}
-		j=0;
-		while (!feof(fo)) {
-			c1=getc(fo);
-			if (!feof(fo)) fputc(c1, pakFileDesc);
-			++j;
+
+		// copy bytes from resource file to .pak file
+		unsigned int j = 0;
+		while (!feof(resourceFileDesc)) {
+			c1 = getc(resourceFileDesc);
+			if (!feof(resourceFileDesc)) {
+				fputc(c1, pakFileDesc);
+				++j;
+			}
 		}
-		if (j - 1 != resourceFileSizes[i]) {
-			fprintf(stderr, "ERROR: Could not match size of file! j = %ld\n", j);
+		if (j != resourceFileSizes[i]) {
+			fprintf(stderr, "ERROR: Could not match size of file! (File size read: %d'; File size expected: %d)\n", j, resourceFileSizes[i]);
+			++totalErrors;
 		}
-		fclose(fo);
+
+		fclose(resourceFileDesc);
 	}
 	fclose(pakFileDesc);
 
 
-	printf("\n Uh yeah, its done! %d errors for %d (announced)\n", totalErrors, totalFiles);
+	printf("\nUh yeah, its done! %d errors for %d (announced)\n", totalErrors, totalFiles);
 }
