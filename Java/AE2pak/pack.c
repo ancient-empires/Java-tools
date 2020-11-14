@@ -29,7 +29,6 @@ void pack(const char* pakFile, const char* fileListLOG) {
 	FILE *fn;
 	unsigned long i, j, k;
 	unsigned char c1, c2, c3, c4;
-	char sdata[LARGE_SPACE_SIZE];
 	char sdata2[LARGE_SPACE_SIZE][LARGE_SPACE_SIZE];
 	uint16_t resourceFileSizes[LARGE_SPACE_SIZE];
 
@@ -51,19 +50,20 @@ void pack(const char* pakFile, const char* fileListLOG) {
 	rewind(fileListDesc);
 	while(!feof(fileListDesc)) {
 		// get each line containing a filename
-		sdata[0] = 0;
-		fgets(sdata, LARGE_SPACE_SIZE, fileListDesc);
-		size_t filenameLen = strlen(sdata);
-		if ((filenameLen > 0) && ((sdata[filenameLen-1] == CR) || (sdata[filenameLen-1] == LF))) {
-			sdata[filenameLen-1] = 0;
+		char filename[LARGE_SPACE_SIZE];
+		filename[0] = '\0';
+		fgets(filename, LARGE_SPACE_SIZE, fileListDesc);
+		size_t filenameLen = strlen(filename);
+		if ((filenameLen > 0) && ((filename[filenameLen-1] == CR) || (filename[filenameLen-1] == LF))) {
+			filename[filenameLen-1] = '\0';
 		}
 
-		if ((strcmp(sdata2[totalFiles], sdata)) && (filenameLen > 1)) {
+		if ((strcmp(sdata2[totalFiles], filename)) && (filenameLen > 1)) {
 			// open the resource file, and check the size
-			strcpy(sdata2[totalFiles], sdata);
+			strcpy(sdata2[totalFiles], filename);
 			FILE* resourceFileDesc = fopen(sdata2[totalFiles], "rb");
 			if (!resourceFileDesc) {
-				fprintf(stderr, "ERROR: Could not find \"%s\"\n", sdata2[totalFiles]);
+				fprintf(stderr, "ERROR: Could not find resouce file \"%s\"\n", sdata2[totalFiles]);
 				fclose(resourceFileDesc);
 				++totalErrors;
 			}
@@ -119,21 +119,22 @@ void pack(const char* pakFile, const char* fileListLOG) {
 	// write file info for each resource file
 	for (i = 0; i < totalFiles; ++i) {
 		// get filename
-		strcpy(sdata, sdata2[i]);
-		_getFilename(sdata);
+		char filename[LARGE_SPACE_SIZE];
+		strcpy(filename, sdata2[i]);
+		_getFilename(filename);
 
 		// write filename length (2 byptes)
-		size_t filenameLen = strlen(sdata);
+		size_t filenameLen = strlen(filename);
 		uInt32ToFourBytes(filenameLen, &c1, &c2, &c3, &c4);
 		if (c1 || c2) {
-			fprintf(stderr, "ERROR: Filename \"%s\" is too long (more than %d characters). Check your resouce file directory and try again.\n",  sdata, UINT16_MAX);
+			fprintf(stderr, "ERROR: Filename \"%s\" is too long (more than %d characters). Check your resouce file directory and try again.\n",  filename, UINT16_MAX);
 			exit(ERROR_RW);
 		}
 		fputc(c3, fn);
 		fputc(c4, fn);
 
 		// write filename
-		fputs(sdata, fn);
+		fputs(filename, fn);
 
 		// write starting offset of file data, relative to the start of data for all files (4 bytes)
 		uInt32ToFourBytes(fileDataPos, &c1, &c2, &c3, &c4);
