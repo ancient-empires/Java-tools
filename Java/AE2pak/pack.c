@@ -165,6 +165,8 @@ void pack(const char* pakFile, const char* fileListLOG) {
 	if (c1 || c2) {
 		fprintf(stderr, "ERROR: Illegal file data start position: %ld. ", fileDataStartPos);
 		fprintf(stderr, "(A valid file data starting position is not greater than %d)\n", FILE_DATA_START_POS_MAX);
+		fclose(pakFileDesc);
+		exit(ERROR_RW);
 	}
 	rewind(pakFileDesc);
 	fputc(c3, pakFileDesc);
