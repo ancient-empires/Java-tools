@@ -82,7 +82,7 @@ static unsigned int checkAllFiles(const char* fileListLOG, unsigned int* pTotalF
 		}
 
 		// check file size
-		const char errorHeader[] = "Found errors when checking these files:";
+		const char errorHeader[] = "ERROR: Found errors when checking these files:";
 		long fileSize = getFileSize(filePath);
 		if (fileSize < 0) {
 			// invalid file
@@ -90,7 +90,7 @@ static unsigned int checkAllFiles(const char* fileListLOG, unsigned int* pTotalF
 			if (*pTotalErrors == 1) {
 				fprintf(stderr, "%s\n", errorHeader);
 			}
-			fprintf(stderr, "[%d] Invalid file path: \"%s\"\n", *pTotalErrors - 1, filePath);
+			fprintf(stderr, "[%u] Invalid file path: \"%s\"\n", *pTotalErrors - 1, filePath);
 		}
 		else if (fileSize > FILE_SIZE_MAX) {
 			// file size is too large
@@ -98,7 +98,7 @@ static unsigned int checkAllFiles(const char* fileListLOG, unsigned int* pTotalF
 			if (*pTotalErrors == 1) {
 				fprintf(stderr, "%s\n", errorHeader);
 			}
-			fprintf(stderr, "[%d] File size is too large: \"%s\" (%ld bytes)\n", *pTotalErrors - 1, filePath, fileSize);
+			fprintf(stderr, "[%u] File size is too large: \"%s\" (%ld bytes)\n", *pTotalErrors - 1, filePath, fileSize);
 		}
 		else {
 			// file is valid, and file size is valid
@@ -111,15 +111,27 @@ static unsigned int checkAllFiles(const char* fileListLOG, unsigned int* pTotalF
 		free(filePath);
 	}
 
-	// if there are more than one error found, abort the execution
+	// abort the program if there are any errors
 	if (*pTotalErrors > 0) {
-		fprintf(stderr, "\nPlease check your file list (%s), and then try again.\n", fileListLOG);
+		fprintf(stderr, "\nPlease check your file list (%s), and then try again.\n\n", fileListLOG);
+		exit(ERROR_RW);
+	}
+	else if (*pTotalFileInfoLen >= FILE_DATA_START_POS_MAX) {
+		fprintf(stderr, "ERROR: File info is too long (%u bytes).\n", *pTotalFileInfoLen);
+		fprintf(stderr, "The maximum length of file info is %u bytes.\n", FILE_DATA_START_POS_MAX - 1);
+		fprintf(stderr, "Please reduce the length of filenames, and then try again.\n\n");
+		exit(ERROR_RW);
+	}
+	else if (*pTotalFiles > TOTAL_NUM_FILES_MAX) {
+		fprintf(stderr, "ERROR: Too many resource files to pack.\n");
+		fprintf(stderr, "You have %u resource files.\n", *pTotalFiles);
+		fprintf(stderr, "The .pak archive can only hold a maximum of %u resource files.\n\n", TOTAL_NUM_FILES_MAX);
 		exit(ERROR_RW);
 	}
 	else {
-		printf("Successfully checked %d files.\n", *pTotalFiles);
-		printf("Total errors: %d\n", *pTotalErrors);
-		printf("Total file info length: %d\n\n", *pTotalFileInfoLen);
+		printf("Successfully checked %u files.\n", *pTotalFiles);
+		printf("Total errors: %u\n", *pTotalErrors);
+		printf("Total file info length: %u\n\n", *pTotalFileInfoLen);
 		return *pTotalFiles;
 	}
 }
@@ -135,5 +147,10 @@ void pack(const char* pakFile, const char* fileListLOG) {
 	// check all files present in the file list .log file.
 	checkAllFiles(fileListLOG, &totalFiles, &totalErrors, &totalFileInfoLen);
 
-	printf("\nUh yeah, its done! %d errors for %d announced files.\n", totalErrors, totalFiles);
+	// process all files
+	fileinfo_t* allFilesInfo = calloc(totalFiles, sizeof(fileinfo_t));
+
+	free(allFilesInfo);
+
+	printf("\nUh yeah, its done! %u errors for %u announced files.\n", totalErrors, totalFiles);
 }
