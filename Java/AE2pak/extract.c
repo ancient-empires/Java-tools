@@ -14,7 +14,7 @@ static bool extractFile(const char* pakFile, const char* targetFile, unsigned in
 	// open .pak file for reading
 	FILE* pakFileDesc = fopen(pakFile, "rb");
 	if (!pakFileDesc) {
-		fprintf(stderr, "ERROR: Could not open PAK file \"%s\" for extraction!\n", pakFile);
+		fprintf(stderr, "ERROR: Could not open .pak file \"%s\" for extraction!\n", pakFile);
 		return false;
 	}
 	fseek(pakFileDesc, fileDataPos, SEEK_SET);
@@ -22,7 +22,7 @@ static bool extractFile(const char* pakFile, const char* targetFile, unsigned in
 	// open target file for writing
 	FILE* targetFileDesc = fopen(targetFile, "wb");
 	if (!targetFileDesc) {
-		fprintf(stderr, "ERROR: Could not open \"%s\" for writing !\n", targetFile);
+		fprintf(stderr, "ERROR: Could not open resource file \"%s\" for writing!\n", targetFile);
 		fclose(pakFileDesc);
 		return false;
 	}
@@ -31,7 +31,7 @@ static bool extractFile(const char* pakFile, const char* targetFile, unsigned in
 	for (unsigned int i = 0; i < fileSize; ++i) {
 		unsigned char c = fgetc(pakFileDesc);
 		if (feof(pakFileDesc)) {
-			fprintf(stderr, "ERROR: EOF reached in PAK file \"%s\" when extracting! Please check your file!", pakFile);
+			fprintf(stderr, "ERROR: EOF reached in .pak file \"%s\" when extracting! Please check your file!", pakFile);
 			fclose(pakFileDesc);
 			fclose(targetFileDesc);
 			return false;
@@ -54,7 +54,7 @@ void extract(const char* pakFile, const char* extractDir) {
 	// open .pak file for reading
 	FILE* pakFileDesc = fopen(pakFile, "rb");
 	if (!pakFileDesc) {
-		fprintf(stderr, "ERROR: PAK file \"%s\" not found.\n", pakFile);
+		fprintf(stderr, "ERROR: .pak file \"%s\" not found.\n", pakFile);
 		exit(ERROR_RW);
 	}
 
@@ -76,13 +76,13 @@ void extract(const char* pakFile, const char* extractDir) {
 	c1 = fgetc(pakFileDesc);
 	c2 = fgetc(pakFileDesc);
 	unsigned int fileDataStartPos = fourBytesToUInt32(0, 0, c1, c2);
-	printf("File data start at byte: %d\n", fileDataStartPos);
+	printf("File data start at byte: %u\n", fileDataStartPos);
 
 	// get number of total files (next 2 bytes)
 	c1 = fgetc(pakFileDesc);
 	c2 = fgetc(pakFileDesc);
 	unsigned int totalFiles = fourBytesToUInt32(0, 0, c1, c2);
-	printf("Total Files announced: %d\n", totalFiles);
+	printf("Total Files announced: %u\n", totalFiles);
 
 	// check unexpected ending of .pak file
 	if (feof(pakFileDesc)) {
@@ -157,7 +157,7 @@ void extract(const char* pakFile, const char* extractDir) {
 	fclose(fileListDesc);
 
 	printf("\nUh yeah, it's done!\n");
-	printf("Total files: %d\n", totalFiles);
-	printf("Total extracted: %d\n", totalExtracted);
-	printf("Total errors: %d\n\n", totalErrors);
+	printf("Total files: %u\n", totalFiles);
+	printf("Total extracted: %u\n", totalExtracted);
+	printf("Total errors: %u\n\n", totalErrors);
 }
