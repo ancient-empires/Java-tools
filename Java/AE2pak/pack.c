@@ -15,6 +15,9 @@
 // If failed to open the file list, or if one or more errors encountered when checking resource files, then abort the program with exit code ERROR_RW.
 // Otherwise, return total number of files that are successfully checked.
 static unsigned int checkAllFiles(const char* fileListLOG, unsigned int* pTotalFiles, unsigned int *pTotalErrors, unsigned int *pTotalFileInfoLen) {
+
+	printf("Checking all files...\n\n");
+
 	*pTotalFiles = 0;
 	*pTotalErrors = 0;
 
@@ -116,5 +119,5 @@ void pack(const char* pakFile, const char* fileListLOG) {
 
 	free(allFilesInfo);
 
-	printf("\nUh yeah, its done! %u errors for %u announced files.\n", totalErrors, totalFiles);
+	printf("\nUh yeah, its done! %u errors for %u announced files.\n\n", totalErrors, totalFiles);
 }
