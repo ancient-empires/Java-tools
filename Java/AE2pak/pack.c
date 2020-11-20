@@ -10,6 +10,14 @@
 
 #define LARGE_SPACE_SIZE 2048
 
+typedef struct fileinfo {
+	uint16_t filenameLen;
+	char* filePath;
+	char* filename;
+	uint32_t fileDataStartOffset;
+	uint16_t fileSize;
+} fileinfo_t;
+
 static void _getFilename(char* path) {
 	char buffer[LARGE_SPACE_SIZE];
 	strcpy(buffer, path);
