@@ -118,7 +118,7 @@ static unsigned int checkAllFiles(const char* fileListLOG, unsigned int* pTotalF
 	}
 	else if (*pTotalFileInfoLen >= FILE_DATA_START_POS_MAX) {
 		fprintf(stderr, "ERROR: File info is too long (%u bytes).\n", *pTotalFileInfoLen);
-		fprintf(stderr, "The maximum length of file info is %u bytes.\n", FILE_DATA_START_POS_MAX - 1);
+		fprintf(stderr, "The maximum allowed length of file info is %u bytes.\n", FILE_DATA_START_POS_MAX - 1);
 		fprintf(stderr, "Please reduce the length of filenames, and then try again.\n\n");
 		exit(ERROR_RW);
 	}
