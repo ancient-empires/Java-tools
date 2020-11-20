@@ -82,7 +82,7 @@ void pack(const char* pakFile, const char* fileListLOG) {
 
 	// check errors
 	if (totalErrors > 0) {
-		fprintf(stderr, "ERROR: Cannot find %d files. Fix the problem before retrying.\n", totalErrors);
+		fprintf(stderr, "ERROR: Cannot find %u files. Fix the problem before retrying.\n", totalErrors);
 		exit(ERROR_RW);
 	}
 	else if (totalFiles == 0) {
@@ -90,7 +90,7 @@ void pack(const char* pakFile, const char* fileListLOG) {
 		exit(ERROR_RW);
 	}
 	else if (totalFiles >= LARGE_SPACE_SIZE) {
-		fprintf(stderr, "ERROR: Sorry, this crappy packer cannot pack more than %d files!\n", LARGE_SPACE_SIZE);
+		fprintf(stderr, "ERROR: Sorry, this crappy packer cannot pack more than %u files!\n", LARGE_SPACE_SIZE);
 		exit(ERROR_RW);
 	}
 
@@ -107,8 +107,8 @@ void pack(const char* pakFile, const char* fileListLOG) {
 	// write number of total files (2 bytes)
 	uInt32ToFourBytes(totalFiles, &c1, &c2, &c3, &c4);
 	if ((totalFiles > TOTAL_NUM_FILES_MAX) || (c1 || c2)) {
-		fprintf(stderr, "ERROR: You have a total of %d files. ", totalFiles);
-		fprintf(stderr, "The .pak archive can only contain a maximum of %d files.\n", TOTAL_NUM_FILES_MAX);
+		fprintf(stderr, "ERROR: You have a total of %u files. ", totalFiles);
+		fprintf(stderr, "The .pak archive can only contain a maximum of %u files.\n", TOTAL_NUM_FILES_MAX);
 		fclose(pakFileDesc);
 		exit(ERROR_RW);
 	}
@@ -128,7 +128,7 @@ void pack(const char* pakFile, const char* fileListLOG) {
 		size_t filenameLen = strlen(filename);
 		uInt32ToFourBytes(filenameLen, &c1, &c2, &c3, &c4);
 		if (c1 || c2) {
-			fprintf(stderr, "ERROR: Filename \"%s\" is too long (more than %d characters). Check your resouce file directory and try again.\n",  filename, FILENAME_LEN_MAX);
+			fprintf(stderr, "ERROR: Filename \"%s\" is too long (more than %u characters). Check your resouce file directory and try again.\n",  filename, FILENAME_LEN_MAX);
 			fclose(pakFileDesc);
 			exit(ERROR_RW);
 		}
@@ -162,7 +162,7 @@ void pack(const char* pakFile, const char* fileListLOG) {
 	uInt32ToFourBytes(fileDataStartPos, &c1, &c2, &c3, &c4);
 	if (c1 || c2) {
 		fprintf(stderr, "ERROR: Illegal file data start position: %ld. ", fileDataStartPos);
-		fprintf(stderr, "(A valid file data starting position is not greater than %d)\n", FILE_DATA_START_POS_MAX);
+		fprintf(stderr, "(A valid file data starting position is not greater than %u)\n", FILE_DATA_START_POS_MAX);
 		fclose(pakFileDesc);
 		exit(ERROR_RW);
 	}
@@ -192,7 +192,7 @@ void pack(const char* pakFile, const char* fileListLOG) {
 			}
 		}
 		if (j != resourceFileSizes[i]) {
-			fprintf(stderr, "ERROR: Could not match size of file! (File size read: %d'; File size expected: %d)\n", j, resourceFileSizes[i]);
+			fprintf(stderr, "ERROR: Could not match size of file! (File size read: %u; File size expected: %u)\n", j, resourceFileSizes[i]);
 			++totalErrors;
 		}
 
@@ -201,5 +201,5 @@ void pack(const char* pakFile, const char* fileListLOG) {
 	fclose(pakFileDesc);
 
 
-	printf("\nUh yeah, its done! %d errors for %d (announced)\n", totalErrors, totalFiles);
+	printf("\nUh yeah, its done! %u errors for %u (announced)\n", totalErrors, totalFiles);
 }
