@@ -11,7 +11,8 @@
 
 #define LARGE_SPACE_SIZE 2048
 
-// Check all the files that are listed in the file list .log file
+// Check all the files that are listed in the file list .log file.
+// Update total resource files, total errors, and total file info length.
 // If failed to open the file list, or if one or more errors encountered when checking resource files, then abort the program with exit code ERROR_RW.
 // Otherwise, return total number of files that are successfully checked.
 static unsigned int checkAllFiles(const char* fileListLOG, unsigned int* pTotalResourceFiles, unsigned int *pTotalErrors, unsigned int *pTotalFileInfoLen) {
