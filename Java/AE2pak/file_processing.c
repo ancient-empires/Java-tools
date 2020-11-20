@@ -1,9 +1,14 @@
 #include <stdio.h>
+#include <string.h>
 
 #include "../utils/utils.h"
+#include "pak_limits.h"
+#include "path_processing.h"
+#include "file_processing.h"
 
-// get the size of the file at specified path
-// in case of error, return ERROR_RW
+// Get the size of the file at specified path.
+// In case of error, return ERROR_RW.
+// Otherwise, return the size of file in bytes.
 long getFileSize(const char* filePath) {
 	FILE* fileDesc = fopen(filePath, "rb");
 	if (!fileDesc) {
@@ -14,4 +19,31 @@ long getFileSize(const char* filePath) {
 	long fileSize = ftell(fileDesc);
 	fclose(fileDesc);
 	return fileSize;
+}
+
+// Save file info, and store it in a struct.
+fileinfo_t saveFileInfo(char* filePath, uint16_t fileSize) {
+	fileinfo_t fileInfo;
+
+	fileInfo.filePath = filePath;
+	fileInfo.filename = getFilename(filePath);
+	fileInfo.filenameLen = strlen(fileInfo.filename);
+	fileInfo.fileDataStartOffset = 0;
+	fileInfo.fileSize = fileSize;
+
+	return fileInfo;
+}
+
+// Get the length to store the information for each resource file in the .pak file.
+// Each resource file is represented as follows at the beginning section of the file:
+// 1. filename length (2 bytes)
+// 2. filename
+// 3. file data start offset (4 bytes)
+// 4. file size (2 bytes)
+unsigned int getFileInfoLen(const fileinfo_t* pFileInfo) {
+	unsigned int totalLen = FILENAME_LEN_BYTES;
+	totalLen += strlen(pFileInfo->filename);
+	totalLen += FILE_DATA_START_OFFSET_BYTES;
+	totalLen += FILE_SIZE_BYTES;
+	return totalLen;
 }

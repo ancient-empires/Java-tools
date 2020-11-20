@@ -11,42 +11,6 @@
 
 #define LARGE_SPACE_SIZE 2048
 
-typedef struct fileinfo {
-	uint16_t filenameLen;
-	char* filePath;
-	char* filename;
-	uint32_t fileDataStartOffset;
-	uint16_t fileSize;
-} fileinfo_t;
-
-// Save file info, and store it in a struct.
-static fileinfo_t saveFileInfo(char* filePath, uint16_t fileSize) {
-	fileinfo_t fileInfo;
-
-	fileInfo.filePath = filePath;
-	fileInfo.filename = getFilename(filePath);
-	fileInfo.filenameLen = strlen(fileInfo.filename);
-	fileInfo.fileDataStartOffset = 0;
-	fileInfo.fileSize = fileSize;
-
-	return fileInfo;
-}
-
-/* Get the length to store the information for each resource file in the .pak file.
-	Each resource file is represented as follows at the beginning section of the file:
-		1. filename length
-		2. filename
-		3. file data start offset
-		4. file size
-*/
-static unsigned int getFileInfoLen(const fileinfo_t* pFileInfo) {
-	unsigned int totalLen = FILENAME_LEN_BYTES;
-	totalLen += strlen(pFileInfo->filename);
-	totalLen += FILE_DATA_START_OFFSET_BYTES;
-	totalLen += FILE_SIZE_BYTES;
-	return totalLen;
-}
-
 // Check all the files that are listed in the file list .log file
 // If failed to open the file list, or if one or more errors encountered when checking resource files, then abort the program with exit code ERROR_RW.
 // Otherwise, return total number of files that are successfully checked.
