@@ -71,12 +71,15 @@ static unsigned int checkAllFiles(const char* fileListLOG, unsigned int* pTotalR
 		}
 		else {
 			// file is valid, and file size is valid
-			++(*pTotalResourceFiles);
 
-			fileinfo_t fileInfo = saveFileInfo(filePath, fileSize);
+			// save file info
+			fileinfo_t fileInfo;
+			unsigned long fileDataStartOffset = (totalResourceFileSize <= FILE_DATA_START_OFFSET_MAX) ? totalResourceFileSize : FILE_DATA_START_OFFSET_MAX;
+			fileInfo = saveFileInfo(filePath, fileDataStartOffset, fileSize);
+
+			++(*pTotalResourceFiles);
 			unsigned int fileInfoLen = getFileInfoLen(&fileInfo);
 			*pTotalFileInfoLen += fileInfoLen;
-
 			totalResourceFileSize += fileSize;
 		}
 
