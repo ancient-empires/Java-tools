@@ -17,6 +17,7 @@ typedef struct fileinfo {
 long getFileSize(const char* filePath);
 
 // Save file info, and store it in a struct.
+// The file size must be provided in advance.
 fileinfo_t saveFileInfo(char* filePath, uint16_t fileSize);
 
 // Get the length to store the information for each resource file in the .pak file.

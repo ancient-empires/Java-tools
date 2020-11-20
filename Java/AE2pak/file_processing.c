@@ -22,6 +22,7 @@ long getFileSize(const char* filePath) {
 }
 
 // Save file info, and store it in a struct.
+// The file size must be provided in advance.
 fileinfo_t saveFileInfo(char* filePath, uint16_t fileSize) {
 	fileinfo_t fileInfo;
 
