@@ -85,6 +85,7 @@ static unsigned int checkAllFiles(const char* fileListLOG, unsigned int* pTotalF
 		const char errorHeader[] = "Found errors when checking these files:";
 		long fileSize = getFileSize(filePath);
 		if (fileSize < 0) {
+			// invalid file
 			++(*pTotalErrors);
 			if (*pTotalErrors == 1) {
 				fprintf(stderr, "%s\n", errorHeader);
@@ -92,6 +93,7 @@ static unsigned int checkAllFiles(const char* fileListLOG, unsigned int* pTotalF
 			fprintf(stderr, "[%d] Invalid file path: \"%s\"\n", *pTotalErrors - 1, filePath);
 		}
 		else if (fileSize > FILE_SIZE_MAX) {
+			// file size is too large
 			++(*pTotalErrors);
 			if (*pTotalErrors == 1) {
 				fprintf(stderr, "%s\n", errorHeader);
@@ -99,6 +101,7 @@ static unsigned int checkAllFiles(const char* fileListLOG, unsigned int* pTotalF
 			fprintf(stderr, "[%d] File size is too large: \"%s\" (%ld bytes)\n", *pTotalErrors - 1, filePath, fileSize);
 		}
 		else {
+			// file is valid, and file size is valid
 			++(*pTotalFiles);
 			fileinfo_t fileInfo = saveFileInfo(filePath, fileSize);
 			unsigned int fileInfoLen = getFileInfoLen(&fileInfo);
