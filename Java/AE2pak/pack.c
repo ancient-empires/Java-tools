@@ -4,8 +4,9 @@
 #include <stdint.h>
 
 #include "../utils/utils.h"
-#include "pack.h"
 #include "pak_limits.h"
+#include "file_processing.h"
+#include "pack.h"
 
 #define LARGE_SPACE_SIZE 2048
 
@@ -34,8 +35,6 @@ void pack(const char* pakFile, const char* fileListLOG) {
 
 	unsigned char c1, c2, c3, c4;
 
-	unsigned int totalFiles = 0;
-
 	// Check file list (.log file)
 	printf("\nChecking file list...\n");
 	FILE* fileListDesc = fopen(fileListLOG, "r");
@@ -45,8 +44,9 @@ void pack(const char* pakFile, const char* fileListLOG) {
 	}
 
 	// read each line containing a file path
-	rewind(fileListDesc);
 	unsigned int totalErrors = 0;
+	unsigned int fileIndex = 0;
+	rewind(fileListDesc);
 	while (!feof(fileListDesc)) {
 		// get each line containing a filename
 		char* filename = NULL;
@@ -56,23 +56,20 @@ void pack(const char* pakFile, const char* fileListLOG) {
 			filename[filenameLen-1] = '\0';
 		}
 
-		if ((strcmp(resourceFiles[totalFiles], filename)) && (filenameLen > 1)) {
-			// open the resource file, and check the size
-			strcpy(resourceFiles[totalFiles], filename);
-			FILE* resourceFileDesc = fopen(resourceFiles[totalFiles], "rb");
-			if (!resourceFileDesc) {
-				fprintf(stderr, "ERROR: Could not find resouce file \"%s\"\n", resourceFiles[totalFiles]);
-				fclose(resourceFileDesc);
+		if ((strcmp(resourceFiles[fileIndex], filename)) && (filenameLen > 1)) {
+			// open the resource file, and check file size
+			strcpy(resourceFiles[fileIndex], filename);
+			long fileSize = getFileSize(resourceFiles[fileIndex]);
+			resourceFileSizes[fileIndex] = fileSize;
+			if (fileSize < 0) {
+				// failed to get file size
+				fprintf(stderr, "ERROR: Could not find resouce file \"%s\"\n", resourceFiles[fileIndex]);
 				++totalErrors;
 			}
-			else {
-				// get size of the resource file
-				fseek(resourceFileDesc, 0, SEEK_END);
-				resourceFileSizes[totalFiles] = ftell(resourceFileDesc);
-				fclose(resourceFileDesc);
-				++totalFiles;
-			}
-			if (totalFiles > LARGE_SPACE_SIZE) {
+			++fileIndex;
+
+			if (fileIndex >= LARGE_SPACE_SIZE) {
+				// too many files to handle
 				free(filename);
 				break;
 			}
@@ -80,6 +77,8 @@ void pack(const char* pakFile, const char* fileListLOG) {
 		free(filename);
 	}
 	fclose(fileListDesc);
+
+	unsigned int totalFiles = fileIndex;
 
 	// check errors
 	if (totalErrors > 0) {
@@ -90,7 +89,7 @@ void pack(const char* pakFile, const char* fileListLOG) {
 		fprintf(stderr, "ERROR: Nothing to pack. Check your files!\n");
 		exit(ERROR_RW);
 	}
-	else if (totalFiles > LARGE_SPACE_SIZE) {
+	else if (totalFiles >= LARGE_SPACE_SIZE) {
 		fprintf(stderr, "ERROR: Sorry, this crappy packer cannot pack more than %d files!\n", LARGE_SPACE_SIZE);
 		exit(ERROR_RW);
 	}
