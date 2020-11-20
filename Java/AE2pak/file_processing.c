@@ -23,13 +23,13 @@ long getFileSize(const char* filePath) {
 
 // Save file info, and store it in a struct.
 // The file data start offset and file size must be provided in advance.
-fileinfo_t saveFileInfo(char* filePath, uint32_t fileDataStartOffset, uint16_t fileSize) {
+fileinfo_t saveFileInfo(char* filePath, uint16_t fileSize) {
 	fileinfo_t fileInfo;
 
 	fileInfo.filePath = filePath;
 	fileInfo.filename = getFilename(filePath);
 	fileInfo.filenameLen = strlen(fileInfo.filename);
-	fileInfo.fileDataStartOffset = fileDataStartOffset;
+	fileInfo.fileDataStartOffset = 0;
 	fileInfo.fileSize = fileSize;
 
 	return fileInfo;

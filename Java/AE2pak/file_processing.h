@@ -18,7 +18,7 @@ long getFileSize(const char* filePath);
 
 // Save file info, and store it in a struct.
 // The file data start offset and file size must be provided in advance.
-fileinfo_t saveFileInfo(char* filePath, uint32_t fileDataStartOffset, uint16_t fileSize);
+fileinfo_t saveFileInfo(char* filePath, uint16_t fileSize);
 
 // Get the length to store the information for each resource file in the .pak file.
 // Each resource file is represented as follows at the beginning section of the file:
