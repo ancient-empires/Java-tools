@@ -40,7 +40,7 @@ static unsigned int checkAllFiles(const char* fileListLOG, unsigned int* pTotalF
 			break;
 		}
 		size_t filePathLen = strlen(filePath);
-		if (filePathLen >= 1) {
+		if ((filePathLen >= 1) && (filePath[filePathLen - 1] == LF)) {
 			// replace line ending from '\n' to '\0'
 			filePath[filePathLen - 1] = '\0';
 		}
