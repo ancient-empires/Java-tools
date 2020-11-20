@@ -18,6 +18,21 @@ typedef struct fileinfo {
 	uint16_t fileSize;
 } fileinfo_t;
 
+/* Get the length to store the information for each resource file in the .pak file.
+	Each resource file is represented as follows at the beginning section of the file:
+		1. filename length
+		2. filename
+		3. file data start offset
+		4. file size
+*/
+static unsigned int getFileInfoLength(const fileinfo_t* pFileInfo) {
+	unsigned int totalLength = FILENAME_LEN_BYTES;
+	totalLength += strlen(pFileInfo->filename);
+	totalLength += FILE_DATA_START_OFFSET_BYTES;
+	totalLength += FILE_SIZE_BYTES;
+	return totalLength;
+}
+
 static void _getFilename(char* path) {
 	char buffer[LARGE_SPACE_SIZE];
 	strcpy(buffer, path);
