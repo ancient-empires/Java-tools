@@ -16,25 +16,26 @@ char* Unix2WindowsPath(char* path) {
 	return path;
 }
 
-// // Get filename from path, and modify path in-place.
-// char* getFilename(char** pPath) {
-//
-// 	Windows2UnixPath(*pPath);
-//
-// 	char* lastSlash = strrchr(*pPath, SLASH);
-// 	if (!lastSlash) {
-// 		// if slash is not found, then just use the whole path as filename
-// 		return *pPath;
-// 	}
-//
-// 	// find start of filename (after the last '/')
-// 	char* filenameStart = lastSlash + 1;
-//
-// 	// overwrite original path
-// 	size_t filenameLen = strlen(filenameStart);
-// 	memmove(*pPath, filenameStart, filenameLen);
-//
-// 	// reallocate path
-// 	*pPath = realloc(*pPath, filenameLen * sizeof(char));
-// 	return *pPath;
-// }
+// Get filename from path.
+// Return the pointer to character at which the file path starts.
+// Return NULL if filePath is NULL.
+char* getFilename(char* filePath) {
+
+	if (!filePath) {
+		return NULL;
+	}
+
+	// convert to Unix path (modify filePath in-place)
+	Windows2UnixPath(filePath);
+
+	char* lastSlash = strrchr(filePath, SLASH);
+	if (!lastSlash) {
+		// if slash is not found, then just use the whole path as filename
+		return filePath;
+	}
+	else {
+		// get the start of filename (after the last '/')
+		char* filenameStart = lastSlash + 1;
+		return filenameStart;
+	}
+}
