@@ -114,6 +114,18 @@ static unsigned int checkAllFiles(const char* fileListLOG, unsigned int* pTotalR
 	}
 }
 
+static int compareResourceFilesInfo(const void* firstFileInfo, const void* secondFileInfo) {
+	char* firstFilename = ((fileinfo_t*)firstFileInfo)->filename;
+	char* secondFilename = ((fileinfo_t*)secondFileInfo)->filename;
+	return strcmp(firstFilename, secondFilename);
+}
+
+// sort all resource files by filename
+static fileinfo_t* sortAllResourceFiles(fileinfo_t* allResourceFilesInfo, unsigned int numFiles) {
+	qsort(allResourceFilesInfo, numFiles, sizeof(fileinfo_t), compareResourceFilesInfo);
+	return allResourceFilesInfo;
+}
+
 // Create the .pak archive, using files specified in the file list .log file.
 void pack(const char* pakFile, const char* fileListLOG) {
 	unsigned int totalResourceFiles = 0;
@@ -127,6 +139,7 @@ void pack(const char* pakFile, const char* fileListLOG) {
 
 	// process all files
 	fileinfo_t* allResourceFilesInfo = calloc(totalResourceFiles, sizeof(fileinfo_t));
+	sortAllResourceFiles(allResourceFilesInfo, totalResourceFiles);
 
 	free(allResourceFilesInfo);
 
