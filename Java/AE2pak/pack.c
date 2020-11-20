@@ -31,6 +31,8 @@ static unsigned int checkAllFiles(const char* fileListLOG, unsigned int* pTotalF
 		exit(ERROR_RW);
 	}
 
+	const char errorHeader[] = "ERROR: Found errors when checking these files:";
+
 	// get all lines, each line containing a single file path
 	while (!feof(fileListDesc)) {
 		// get file path
@@ -49,7 +51,6 @@ static unsigned int checkAllFiles(const char* fileListLOG, unsigned int* pTotalF
 		}
 
 		// check file size
-		const char errorHeader[] = "ERROR: Found errors when checking these files:";
 		long fileSize = getFileSize(filePath);
 		if (fileSize < 0) {
 			// invalid file
