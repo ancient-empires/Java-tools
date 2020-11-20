@@ -98,7 +98,6 @@ void pack(const char* pakFile, const char* fileListLOG) {
 	FILE* pakFileDesc = fopen(pakFile, "wb");
 	if (!pakFileDesc) {
 		fprintf(stderr, "ERROR: Cannot open .pak file \"%s\" for writing!\n", pakFile);
-		fclose(pakFileDesc);
 		exit(ERROR_RW);
 	}
 
@@ -180,7 +179,6 @@ void pack(const char* pakFile, const char* fileListLOG) {
 		if (!resourceFileDesc) {
 			fprintf(stderr, "ERROR: Could not open resource file \"%s\" for reading\n", resourceFiles[i]);
 			fclose(pakFileDesc);
-			fclose(resourceFileDesc);
 			exit(ERROR_RW);
 		}
 

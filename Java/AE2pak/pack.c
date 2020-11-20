@@ -5,6 +5,7 @@
 
 #include "../utils/utils.h"
 #include "pak_limits.h"
+#include "path_processing.h"
 #include "file_processing.h"
 #include "pack.h"
 
@@ -18,6 +19,19 @@ typedef struct fileinfo {
 	uint16_t fileSize;
 } fileinfo_t;
 
+// Save file info, and store it in a struct.
+static fileinfo_t saveFileInfo(char* filePath, uint16_t fileSize) {
+	fileinfo_t fileInfo;
+
+	fileInfo.filePath = filePath;
+	fileInfo.filename = getFilename(filePath);
+	fileInfo.filenameLen = strlen(fileInfo.filename);
+	fileInfo.fileDataStartOffset = 0;
+	fileInfo.fileSize = fileSize;
+
+	return fileInfo;
+}
+
 /* Get the length to store the information for each resource file in the .pak file.
 	Each resource file is represented as follows at the beginning section of the file:
 		1. filename length
@@ -25,36 +39,22 @@ typedef struct fileinfo {
 		3. file data start offset
 		4. file size
 */
-static unsigned int getFileInfoLength(const fileinfo_t* pFileInfo) {
-	unsigned int totalLength = FILENAME_LEN_BYTES;
-	totalLength += strlen(pFileInfo->filename);
-	totalLength += FILE_DATA_START_OFFSET_BYTES;
-	totalLength += FILE_SIZE_BYTES;
-	return totalLength;
+static unsigned int getFileInfoLen(const fileinfo_t* pFileInfo) {
+	unsigned int totalLen = FILENAME_LEN_BYTES;
+	totalLen += strlen(pFileInfo->filename);
+	totalLen += FILE_DATA_START_OFFSET_BYTES;
+	totalLen += FILE_SIZE_BYTES;
+	return totalLen;
 }
-
-// static void _getFilename(char* path) {
-// 	char buffer[LARGE_SPACE_SIZE];
-// 	strcpy(buffer, path);
-// 	strrev(buffer);
-// 	size_t filenameLen = strlen(buffer);
-// 	for (size_t i = 0; i < filenameLen; ++i){
-// 		if (buffer[i] == SLASH){
-// 			buffer[i] = '\0';
-// 			break;
-// 		}
-// 	}
-// 	strrev(buffer);
-// 	strcpy(path, buffer);
-// 	return;
-// }
 
 // Check all the files that are listed in the file list .log file
 // If failed to open the file list, or if one or more errors encountered when checking resource files, then abort the program with exit code ERROR_RW.
 // Otherwise, return total number of files that are successfully checked.
-static unsigned int checkAllFiles(const char* fileListLOG, unsigned int* pTotalFiles, unsigned int *pTotalErrors) {
+static unsigned int checkAllFiles(const char* fileListLOG, unsigned int* pTotalFiles, unsigned int *pTotalErrors, unsigned int *pTotalFileInfoLen) {
 	*pTotalFiles = 0;
 	*pTotalErrors = 0;
+
+	*pTotalFileInfoLen = FILE_DATA_START_POS_BYTES + TOTAL_NUM_FILES_BYTES;
 
 	// open the .log file
 	FILE* fileListDesc = fopen(fileListLOG, "r");
@@ -70,6 +70,16 @@ static unsigned int checkAllFiles(const char* fileListLOG, unsigned int* pTotalF
 		char* filePath = NULL;
 		size_t n = 0;
 		getline(&filePath, &n, fileListDesc);
+		if (feof(fileListDesc)) {
+			fclose(fileListDesc);
+			free(filePath);
+			break;
+		}
+		size_t filePathLen = strlen(filePath);
+		if (filePathLen >= 1) {
+			// replace line ending from '\n' to '\0'
+			filePath[filePathLen - 1] = '\0';
+		}
 
 		// check file size
 		const char errorHeader[] = "Found errors when checking these files:";
@@ -90,6 +100,9 @@ static unsigned int checkAllFiles(const char* fileListLOG, unsigned int* pTotalF
 		}
 		else {
 			++(*pTotalFiles);
+			fileinfo_t fileInfo = saveFileInfo(filePath, fileSize);
+			unsigned int fileInfoLen = getFileInfoLen(&fileInfo);
+			*pTotalFileInfoLen += fileInfoLen;
 		}
 
 		free(filePath);
@@ -97,11 +110,13 @@ static unsigned int checkAllFiles(const char* fileListLOG, unsigned int* pTotalF
 
 	// if there are more than one error found, abort the execution
 	if (*pTotalErrors > 0) {
-		fprintf(stderr, "Please check your file list (%s), and then try again.\n", fileListLOG);
+		fprintf(stderr, "\nPlease check your file list (%s), and then try again.\n", fileListLOG);
 		exit(ERROR_RW);
 	}
 	else {
 		printf("Successfully checked %d files.\n", *pTotalFiles);
+		printf("Total errors: %d\n", *pTotalErrors);
+		printf("Total file info length: %d\n\n", *pTotalFileInfoLen);
 		return *pTotalFiles;
 	}
 }
@@ -110,9 +125,12 @@ static unsigned int checkAllFiles(const char* fileListLOG, unsigned int* pTotalF
 void pack(const char* pakFile, const char* fileListLOG) {
 	unsigned int totalFiles = 0;
 	unsigned int totalErrors = 0;
+	unsigned int totalFileInfoLen = 0;
+
+	printf("Packing...\n\n");
 
 	// check all files present in the file list .log file.
-	checkAllFiles(fileListLOG, &totalFiles, &totalErrors);
+	checkAllFiles(fileListLOG, &totalFiles, &totalErrors, &totalFileInfoLen);
 
-	printf("\nUh yeah, its done! %d errors for %d (announced)\n", totalErrors, totalFiles);
+	printf("\nUh yeah, its done! %d errors for %d announced files.\n", totalErrors, totalFiles);
 }

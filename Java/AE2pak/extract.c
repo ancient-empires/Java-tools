@@ -15,7 +15,6 @@ static bool extractFile(const char* pakFile, const char* targetFile, unsigned in
 	FILE* pakFileDesc = fopen(pakFile, "rb");
 	if (!pakFileDesc) {
 		fprintf(stderr, "ERROR: Could not open PAK file \"%s\" for extraction!\n", pakFile);
-		fclose(pakFileDesc);
 		return false;
 	}
 	fseek(pakFileDesc, fileDataPos, SEEK_SET);
@@ -25,7 +24,6 @@ static bool extractFile(const char* pakFile, const char* targetFile, unsigned in
 	if (!targetFileDesc) {
 		fprintf(stderr, "ERROR: Could not open \"%s\" for writing !\n", targetFile);
 		fclose(pakFileDesc);
-		fclose(targetFileDesc);
 		return false;
 	}
 
@@ -57,7 +55,6 @@ void extract(const char* pakFile, const char* extractDir) {
 	FILE* pakFileDesc = fopen(pakFile, "rb");
 	if (!pakFileDesc) {
 		fprintf(stderr, "ERROR: PAK file \"%s\" not found.\n", pakFile);
-		fclose(pakFileDesc);
 		exit(ERROR_RW);
 	}
 
@@ -66,9 +63,8 @@ void extract(const char* pakFile, const char* extractDir) {
 	char fileListLOG[] = FILE_LIST_LOG;
 	FILE* fileListDesc = fopen(fileListLOG, "wb");
 	if (!fileListDesc) {
-		fprintf(stderr, "ERROR: \"%s\" cannot be created for writing.\n", fileListLOG);
 		fclose(pakFileDesc);
-		fclose(fileListDesc);
+		fprintf(stderr, "ERROR: file list \"%s\" cannot be created for writing.\n", fileListLOG);
 		exit(ERROR_RW);
 	}
 	printf("\nStoring file list in log file: \"%s\"\n\n", fileListLOG);

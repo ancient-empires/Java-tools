@@ -7,7 +7,6 @@
 long getFileSize(const char* filePath) {
 	FILE* fileDesc = fopen(filePath, "rb");
 	if (!fileDesc) {
-		fclose(fileDesc);
 		return ERROR_RW;
 	}
 
