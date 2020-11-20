@@ -114,7 +114,7 @@ void txt2dat(const char* srcFilename, const char* destFilename) {
 
 	// finish
 	printf("Uh yeah, it's done!\n");
-	printf("Total strings: %d\n\n", stringsCount);
+	printf("Total strings: %u\n\n", stringsCount);
 	fclose(srcFileDesc);
 	fclose(destFileDesc);
 }

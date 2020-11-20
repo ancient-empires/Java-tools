@@ -23,11 +23,12 @@ static uint32_t dat2str(FILE* srcFileDesc, FILE* destFileDesc, uint32_t* strings
 	c3 = fgetc(srcFileDesc);
 	c4 = fgetc(srcFileDesc);
 	*totalStrings = fourBytesToUInt32(c1, c2, c3, c4);
-	printf("Number of total strings: %d\n\n", *totalStrings);
+	printf("Number of total strings: %u\n\n", *totalStrings);
 	if (*totalStrings < 1) {
 		// incorrect format
 		fclose(srcFileDesc);
-		fprintf(stderr, "ERROR: incorrect format:\ntotalStrings: %d (announced in first 4 bytes)\n\n", *totalStrings);
+		fprintf(stderr, "ERROR: incorrect format\n");
+		fprintf(stderr, "Number of total strings: %u (announced in first 4 bytes)\n\n", *totalStrings);
 		exit(ERROR_RW);
 	}
 
@@ -49,7 +50,7 @@ static uint32_t dat2str(FILE* srcFileDesc, FILE* destFileDesc, uint32_t* strings
 			// Check if reached the end of file unexpectedly.
 			if (feof(srcFileDesc)) {
 				long currentPos = ftell(srcFileDesc);
-				fprintf(stderr, "ERROR: Reached end of file unexpectedly when reading text No. %d at offset %ld.\n", strIdx, currentPos);
+				fprintf(stderr, "ERROR: Reached end of file unexpectedly when reading text No. %u at offset %ld.\n", strIdx, currentPos);
 				free(buffer);
 				fclose(srcFileDesc);
 				fclose(destFileDesc);
@@ -99,7 +100,8 @@ void dat2txt(const char* srcFilename, const char* destFilename) {
 
 	// finish
 	printf("Uh yeah, its done!\n");
-	printf("Announced: %d; Extracted: %d\n\n", totalStrings, stringsCount);
+	printf("Announced: %u\n", totalStrings);
+	printf("Extracted: %u\n\n", stringsCount);
 	fclose(srcFileDesc);
 	fclose(destFileDesc);
 }
