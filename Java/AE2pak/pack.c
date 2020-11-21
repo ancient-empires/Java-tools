@@ -86,13 +86,21 @@ static unsigned int checkAllFiles(const char* fileListLOG, unsigned int* pTotalR
 			// save file info
 			fileinfo_t fileInfo = saveFileInfo(filePath, fileSize);
 
-			// check if filename is too long
 			if (fileInfo.filenameLen > FILENAME_LEN_MAX) {
+				// check if filename is too long
 				++(*pTotalErrors);
 				if (*pTotalErrors == 1) {
 					fprintf(stderr, "%s\n", errorHeader);
 				}
 				fprintf(stderr, "[%u] Filename is too long: \"%s\" (file path: %s) (maximum allowed filename length: %u)\n", *pTotalErrors - 1, fileInfo.filename, filePath, FILENAME_LEN_MAX);
+			}
+			else if (fileInfo.filenameLen <= 0) {
+				// check if filename is empty
+				++(*pTotalErrors);
+				if (*pTotalErrors == 1) {
+					fprintf(stderr, "%s\n", errorHeader);
+				}
+				fprintf(stderr, "[%u] Filename is empty: \"%s\" (file path: %s)\n", *pTotalErrors - 1, fileInfo.filename, filePath);
 			}
 			else {
 				++(*pTotalResourceFiles);
