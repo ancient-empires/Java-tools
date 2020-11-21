@@ -15,14 +15,12 @@ UTILS := utils
 all: $(TARGETS)
 
 .PHONY: $(AE1MAP)
-$(AE1MAP): AE1map20090913.rar
-	unrar x -yo $^
-	ln -rsf $^ $@/
+$(AE1MAP): AE1map20090913.zip
+	unzip -o $^
 
 .PHONY: $(AE2MAP)
 $(AE2MAP): AE2map081111.zip
 	unzip -o $^
-	ln -rsf $^ $@/
 
 .PHONY: $(AE2LANG)
 $(AE2LANG):
