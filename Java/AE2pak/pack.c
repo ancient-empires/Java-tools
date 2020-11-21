@@ -158,6 +158,7 @@ static fileinfo_t* readAllResourceFilesInfo(const char* fileListLOG, const unsig
 	return allResourceFilesInfo;
 }
 
+// Free the dynamic array of all resource files info, which is previously created by the readAllResourceFilesInfo() function.
 static void freeAllResourceFilesInfo(fileinfo_t* allResourceFilesInfo, const unsigned int totalResourceFiles) {
 	for (unsigned int i = 0; i < totalResourceFiles; ++i) {
 		free(allResourceFilesInfo[i].filePath);
