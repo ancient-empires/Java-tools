@@ -13,6 +13,7 @@ UTILS := utils
 
 AE1MAP_zip := AE1map20090913.zip
 AE2MAP_zip := AE2map081111.zip
+AE2MAP_test := AE2testmap.zip
 
 .PHONY: all
 all: $(TARGETS)
@@ -22,8 +23,9 @@ $(AE1MAP): $(AE1MAP_zip)
 	unzip -o $<
 
 .PHONY: $(AE2MAP)
-$(AE2MAP): $(AE2MAP_zip)
+$(AE2MAP): $(AE2MAP_zip) $(AE2MAP_test)
 	unzip -o $<
+	unzip -o $(word 2,$^) -d $(AE2MAP)
 
 .PHONY: $(AE2LANG)
 $(AE2LANG):
