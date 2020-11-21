@@ -216,6 +216,7 @@ void pack(const char* pakFile, const char* fileListLOG) {
 	fputc(c3, pakFileDesc);
 	fputc(c4, pakFileDesc);
 
+	// write the header info part of all files
 	unsigned int fileDataStartOffset = 0;
 	for (unsigned int i = 0; i < totalResourceFiles; ++i) {
 		// set the file data start offset of each resource file
