@@ -189,7 +189,7 @@ void pack(const char* pakFile, const char* fileListLOG) {
 	// check all resource files present in the file list .log file.
 	checkAllFiles(fileListLOG, &totalResourceFiles, &totalErrors, &totalFileInfoLen);
 
-	// process all resource files
+	// read the information of all resource files
 	fileinfo_t* allResourceFilesInfo = readAllResourceFilesInfo(fileListLOG, totalResourceFiles);
 
 	// sort all the resource files
@@ -216,14 +216,20 @@ void pack(const char* pakFile, const char* fileListLOG) {
 	fputc(c3, pakFileDesc);
 	fputc(c4, pakFileDesc);
 
-	// set the file data start offset of each resource file
 	unsigned int fileDataStartOffset = 0;
 	for (unsigned int i = 0; i < totalResourceFiles; ++i) {
+		// set the file data start offset of each resource file
 		fileinfo_t* pFileInfo = &allResourceFilesInfo[i];
 		setFileDataStartOffset(pFileInfo, fileDataStartOffset);
-		printf("\"%s\" (size: %u bytes, start offset: %u) \n", pFileInfo->filePath, pFileInfo->fileSize, pFileInfo->fileDataStartOffset);
-		fileDataStartOffset += pFileInfo->fileSize;
+
+		// write the file header info into the .pak file
+		unsigned int fileInfoLen = 0;
+		char* fileInfoStr = getFileInfoStr(pFileInfo, &fileInfoLen);
+		fwrite(fileInfoStr, sizeof(char), fileInfoLen, pakFileDesc);
+		free(fileInfoStr);
 	}
+
+	// TODO: copy bytes from each resource file to the .pak file
 
 	// clean up
 	freeAllResourceFilesInfo(allResourceFilesInfo, totalResourceFiles);

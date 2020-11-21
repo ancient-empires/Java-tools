@@ -53,9 +53,12 @@ unsigned int getFileInfoLen(const fileinfo_t* pFileInfo) {
 }
 
 // Generate the header string for the file info struct.
+// Update pFileInfoLen with the length to store the file info (excluding '\0' at the end).
 // This will allocate a new string to store the struct.
 // The user should call free() afterwards.
-char* getFileInfoStr(const fileinfo_t* pFileInfo) {
+char* getFileInfoStr(const fileinfo_t* pFileInfo, unsigned int* pFileInfoLen) {
+	*pFileInfoLen = getFileInfoLen(pFileInfo);
+
 	char* fileInfoStr = calloc(getFileInfoLen(pFileInfo) + 1, sizeof(char));
 	char* pos = fileInfoStr;
 
