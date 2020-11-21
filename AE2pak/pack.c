@@ -142,7 +142,7 @@ static unsigned int checkAllFiles(const char* fileListLOG, unsigned int* pTotalR
 	else {
 		printf("Successfully checked %u files.\n", *pTotalResourceFiles);
 		printf("Total errors: %u\n", *pTotalErrors);
-		printf("Total file info length: %u\n\n", *pTotalFileInfoLen);
+		printf("Total file info length: %u\n", *pTotalFileInfoLen);
 		return *pTotalResourceFiles;
 	}
 }
@@ -153,6 +153,8 @@ static unsigned int checkAllFiles(const char* fileListLOG, unsigned int* pTotalR
 // This function allocates dynamic memory to store all the files.
 // The user must call free() to free the memory afterwards.
 static fileinfo_t* readAllResourceFilesInfo(const char* fileListLOG, const unsigned int totalResourceFiles) {
+	printf("\nReading information of all resource files...\n");
+
 	fileinfo_t* allResourceFilesInfo = calloc(totalResourceFiles, sizeof(fileinfo_t));
 
 	FILE* fileListDesc = fopen(fileListLOG, "r");
@@ -162,6 +164,8 @@ static fileinfo_t* readAllResourceFilesInfo(const char* fileListLOG, const unsig
 		allResourceFilesInfo[i] = saveFileInfo(filePath, fileSize);
 	}
 	fclose(fileListDesc);
+
+	printf("\nSuccessfully gathered information for all %u resource files.\n", totalResourceFiles);
 
 	return allResourceFilesInfo;
 }
@@ -241,6 +245,8 @@ void pack(const char* pakFile, const char* fileListLOG) {
 
 	unsigned char c1, c2, c3, c4;
 
+	printf("\nWriting info section...\n");
+
 	// write the file data start position
 	const unsigned int fileDataStartPos = totalFileInfoLen;
 	uInt32ToFourBytes(fileDataStartPos, &c1, &c2, &c3, &c4);
@@ -267,13 +273,19 @@ void pack(const char* pakFile, const char* fileListLOG) {
 		free(fileInfoStr);
 	}
 
+	printf("\nWriting info section completed.\n");
+
 	// copy bytes from each resource file to the .pak file
+	printf("\nCopying data from %u resource files into \"%s\"...\n", totalResourceFiles, pakFile);
 	copyData(pakFileDesc, allResourceFilesInfo, totalResourceFiles, fileDataStartPos);
+	printf("\nSuccessfully added %u resource files into \"%s\".\n", totalResourceFiles, pakFile);
 
 	// clean up
 	freeAllResourceFilesInfo(allResourceFilesInfo, totalResourceFiles);
 	fclose(pakFileDesc);
 
 	// finish
-	printf("\nUh yeah, its done! %u errors for %u announced files.\n\n", totalErrors, totalResourceFiles);
+	printf("\nUh yeah, its done!\n");
+	printf("Total files packed: %u\n", totalResourceFiles);
+	printf("Total errors: %u\n\n", totalErrors);
 }
