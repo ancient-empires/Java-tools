@@ -142,6 +142,7 @@ void extract(const char* pakFile, const char* extractDir) {
 	fclose(pakFileDesc);
 
 	printf("\nUh yeah, it's done!\n");
+	printf("Extracted to: \%s\"\n", extractDir);
 	printf("Total files: %u\n", totalFiles);
 	printf("Total extracted: %u\n", totalExtracted);
 	printf("Total errors: %u\n\n", totalErrors);
