@@ -140,7 +140,7 @@ static unsigned int checkAllFiles(const char* fileListLOG, unsigned int* pTotalR
 }
 
 // Get the information of all resource files.
-// This function does NOT check errors.
+// NOTE: This function does NOT check errors.
 // Hence, it shall only be called after calling checkAllFiles().
 // This function allocates dynamic memory to store all the files.
 // The user must call free() to free the memory afterwards.
@@ -175,8 +175,34 @@ static int compareResourceFilesInfo(const void* firstFileInfo, const void* secon
 }
 
 // Sort all resource files by filename.
-static void sortAllResourceFiles(fileinfo_t* allResourceFilesInfo, unsigned int numFiles) {
-	qsort(allResourceFilesInfo, numFiles, sizeof(fileinfo_t), compareResourceFilesInfo);
+static void sortAllResourceFiles(fileinfo_t* allResourceFilesInfo, unsigned int numResourceFiles) {
+	qsort(allResourceFilesInfo, numResourceFiles, sizeof(fileinfo_t), compareResourceFilesInfo);
+}
+
+// Copy data from all the resource files to the .pak file.
+// NOTE: This function does NOT check errors.
+// Hence, it shall only be called after calling checkAllFiles().
+// Also, allResourceFilesInfo must have been sorted by filename using sortAllResourceFiles(). Otherwise the program will not output the correct result.
+static void copyData(FILE* pakFileDesc, const fileinfo_t* allResourceFilesInfo, const unsigned int totalResourceFiles, const unsigned int fileDataStartPos) {
+	// set start position for writing
+	fseek(pakFileDesc, fileDataStartPos, SEEK_SET);
+
+	// read and copy all resource files
+	for (unsigned int i = 0; i < totalResourceFiles; ++i) {
+		// open resource file
+		const char* resourceFile = allResourceFilesInfo[i].filePath;
+		FILE* resourceFileDesc = fopen(resourceFile, "r");
+
+		// copy data
+		const long fileSize = getFileSize(resourceFile);
+		for (long j = 0; j < fileSize; ++j) {
+			char c = fgetc(resourceFileDesc);
+			fputc(c, pakFileDesc);
+		}
+
+		// close resource file
+		fclose(resourceFileDesc);
+	}
 }
 
 // Create the .pak archive, using file paths specified in the file list .log file.
@@ -187,14 +213,15 @@ void pack(const char* pakFile, const char* fileListLOG) {
 
 	printf("Packing...\n\n");
 
-	// check all resource files present in the file list .log file.
+	// Check all resource files present in the file list .log file
+	// Update the number of total resource files, total errors, and total file info length.
 	checkAllFiles(fileListLOG, &totalResourceFiles, &totalErrors, &totalFileInfoLen);
 
 	// read the information of all resource files
 	fileinfo_t* allResourceFilesInfo = readAllResourceFilesInfo(fileListLOG, totalResourceFiles);
 
-	// sort all the resource files
-	// the .pak file is organized by ascending filenames
+	// Sort all the resource files
+	// The .pak file must be organized by ascending filenames.
 	sortAllResourceFiles(allResourceFilesInfo, totalResourceFiles);
 
 	// open the .pak file for writing
@@ -232,7 +259,8 @@ void pack(const char* pakFile, const char* fileListLOG) {
 		free(fileInfoStr);
 	}
 
-	// TODO: copy bytes from each resource file to the .pak file
+	// copy bytes from each resource file to the .pak file
+	copyData(pakFileDesc, allResourceFilesInfo, totalResourceFiles, fileDataStartPos);
 
 	// clean up
 	freeAllResourceFilesInfo(allResourceFilesInfo, totalResourceFiles);
