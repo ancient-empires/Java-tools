@@ -3,7 +3,6 @@ TARGET := AE2pak
 ALL := all
 EXTRACT := extract
 PACK := pack
-CLEAN := clean
 
 src := main.c ../utils/utils.c path_processing.c file_processing.c extract.c pack.c
 objs := $(src:.c=.o)
@@ -86,16 +85,18 @@ $(EXTRACT)_ae2:
 
 # clean up extracted files
 
-.PHONY: $(CLEAN)_ae1
-$(CLEAN)_ae1:
+CLEAN_RES := clean
+
+.PHONY: $(CLEAN_RES)_all_extracted
+$(CLEAN_RES)_all_extracted: $(CLEAN_RES)_ae1 $(CLEAN_RES)_ae2
+
+.PHONY: $(CLEAN_RES)_ae1
+$(CLEAN_RES)_ae1:
 	-rm -rfv $(AE1pak_dir) $(AE1_filelist)
 
-.PHONY: $(CLEAN)_ae2
-$(CLEAN)_ae2:
+.PHONY: $(CLEAN_RES)_ae2
+$(CLEAN_RES)_ae2:
 	-rm -rfv $(AE2pak_dir) $(AE2_filelist)
-
-.PHONY: $(clean)_all
-$(CLEAN)_ae2: $(CLEAN)_ae1 $(CLEAN)_ae2
 
 
 # pack .pak
