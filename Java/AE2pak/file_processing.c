@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 
 #include "../utils/utils.h"
 #include "pak_limits.h"
@@ -49,4 +50,42 @@ unsigned int getFileInfoLen(const fileinfo_t* pFileInfo) {
 	totalLen += FILE_DATA_START_OFFSET_BYTES;
 	totalLen += FILE_SIZE_BYTES;
 	return totalLen;
+}
+
+// Generate the header string for the file info struct.
+// This will allocate a new string to store the struct.
+// The user should call free() afterwards.
+char* getFileInfoStr(const fileinfo_t* pFileInfo) {
+	char* fileInfoStr = calloc(getFileInfoLen(pFileInfo) + 1, sizeof(char));
+	char* pos = fileInfoStr;
+
+	unsigned char c1, c2, c3, c4;
+
+	// save filename length
+	unsigned int filenameLen = pFileInfo->filenameLen;
+	uInt32ToFourBytes(filenameLen, &c1, &c2, &c3, &c4);
+	char filenameLenStr[FILENAME_LEN_BYTES] = {c3, c4};
+	strncpy(pos, filenameLenStr, FILENAME_LEN_BYTES);
+	pos += FILENAME_LEN_BYTES;
+
+	// save filename
+	const char* filename = pFileInfo->filename;
+	strncpy(pos, filename, filenameLen);
+	pos += filenameLen;
+
+	// save file data start offset
+	unsigned int fileDataStartOffset = pFileInfo->fileDataStartOffset;
+	uInt32ToFourBytes(fileDataStartOffset, &c1, &c2, &c3, &c4);
+	char fileDataStartOffsetStr[FILE_DATA_START_OFFSET_BYTES] = {c1, c2, c3, c4};
+	strncpy(pos, fileDataStartOffsetStr, FILE_DATA_START_OFFSET_BYTES);
+	pos += FILE_DATA_START_OFFSET_BYTES;
+
+	// save file size
+	unsigned int fileSize = pFileInfo->fileSize;
+	uInt32ToFourBytes(fileSize, &c1, &c2, &c3, &c4);
+	char fileSizeStr[FILE_SIZE_BYTES] = {c3, c4};
+	strncpy(pos, fileSizeStr, FILE_SIZE_BYTES);
+	pos += FILE_SIZE_BYTES;
+
+	return fileInfoStr;
 }
