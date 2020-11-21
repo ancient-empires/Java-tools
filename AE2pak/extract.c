@@ -9,7 +9,7 @@
 
 // Extract single file (internal use only)
 // Return true if successfully extracted; otherwise return false.
-static bool extractFile(const char* pakFile, const char* targetFile, unsigned int fileDataPos, unsigned int fileSize) {
+static bool extractFile(const char* pakFile, const char* resourceFile, unsigned int fileDataPos, unsigned int fileSize) {
 
 	// open .pak file for reading
 	FILE* pakFileDesc = fopen(pakFile, "rb");
@@ -20,9 +20,9 @@ static bool extractFile(const char* pakFile, const char* targetFile, unsigned in
 	fseek(pakFileDesc, fileDataPos, SEEK_SET);
 
 	// open target file for writing
-	FILE* targetFileDesc = fopen(targetFile, "wb");
-	if (!targetFileDesc) {
-		fprintf(stderr, "ERROR: Could not open resource file \"%s\" for writing!\n\n", targetFile);
+	FILE* resourceFileDesc = fopen(resourceFile, "wb");
+	if (!resourceFileDesc) {
+		fprintf(stderr, "ERROR: Could not open resource file \"%s\" for writing!\n\n", resourceFile);
 		fclose(pakFileDesc);
 		return false;
 	}
@@ -33,14 +33,14 @@ static bool extractFile(const char* pakFile, const char* targetFile, unsigned in
 		if (feof(pakFileDesc)) {
 			fprintf(stderr, "ERROR: EOF reached in .pak file \"%s\" when extracting! Please check your file!\n\n", pakFile);
 			fclose(pakFileDesc);
-			fclose(targetFileDesc);
+			fclose(resourceFileDesc);
 			return false;
 		}
-		fputc(c, targetFileDesc);
+		fputc(c, resourceFileDesc);
 	}
 
 	fclose(pakFileDesc);
-	fclose(targetFileDesc);
+	fclose(resourceFileDesc);
 	return true;
 }
 
