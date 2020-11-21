@@ -11,15 +11,18 @@ AE2PAK := AE2pak
 
 UTILS := utils
 
+AE1MAP_zip := AE1map20090913.zip
+AE2MAP_zip := AE2map081111.zip
+
 .PHONY: all
 all: $(TARGETS)
 
 .PHONY: $(AE1MAP)
-$(AE1MAP): AE1map20090913.zip
+$(AE1MAP): $(AE1MAP_zip)
 	unzip -o $^
 
 .PHONY: $(AE2MAP)
-$(AE2MAP): AE2map081111.zip
+$(AE2MAP): $(AE2MAP_zip)
 	unzip -o $^
 
 .PHONY: $(AE2LANG)
