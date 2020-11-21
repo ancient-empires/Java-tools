@@ -59,7 +59,13 @@ unsigned int getFileInfoLen(const fileinfo_t* pFileInfo) {
 char* getFileInfoStr(const fileinfo_t* pFileInfo, unsigned int* pFileInfoLen) {
 	*pFileInfoLen = getFileInfoLen(pFileInfo);
 
-	char* fileInfoStr = calloc(getFileInfoLen(pFileInfo) + 1, sizeof(char));
+	char* fileInfoStr = calloc(*pFileInfoLen + 1, sizeof(char));
+	if (!fileInfoStr) {
+		fprintf(stderr, "ERROR: failed to allocate file info string for file \"%s\".\n", pFileInfo->filePath);
+		free(fileInfoStr);
+		exit(ERROR_RW);
+	}
+
 	char* pos = fileInfoStr;
 
 	unsigned char c1, c2, c3, c4;
