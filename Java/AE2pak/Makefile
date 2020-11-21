@@ -40,7 +40,7 @@ endif
 # extract .pak
 
 # check error for extraction
-EXTRACT_ERROR_MSG := ERROR: Invalid .pak file and / or extract directory
+EXTRACT_ERROR_MSG := ERROR: Invalid .pak file and/or extract directory
 define CHECK_EXTRACT_ERROR =
 $(if $(pak),,$(error $(EXTRACT_ERROR_MSG)))
 $(if $(dir),,$(error $(EXTRACT_ERROR_MSG)))
@@ -51,3 +51,17 @@ extract: all
 	$(call CHECK_EXTRACT_ERROR)
 	mkdir -vp $(dir)
 	./$(TARGET).out $(pak) -e $(dir)
+
+# pack .pak
+
+# check error for extraction
+PACK_ERROR_MSG := ERROR: Invalid .pak file and/or file list .log
+define CHECK_PACK_ERROR =
+$(if $(pak),,$(error $(PACK_ERROR_MSG)))
+$(if $(filelist),,$(error $(PACK_ERROR_MSG)))
+endef
+
+.PHONY: pack
+pack: all
+	$(call CHECK_PACK_ERROR)
+	./$(TARGET).out $(pak) -p $(filelist)

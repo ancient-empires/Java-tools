@@ -16,4 +16,9 @@ $ make
 $ make extract pak=<path/to/pak.pak> dir=<path/to/extract/dir>
 ```
 
-**NOTE: The output directory must be created beforehand. Otherwise, you will be unable to see the extracted files.**
+**NOTE: The output directory must be created beforehand. Otherwise, you will be unable to obtain the extracted files.**
+
+### Pack .pak archive from the file list .log file
+```
+$ make pack pak=<path/to/pak.pak> filelist=<path/to/file/list.log>
+```
