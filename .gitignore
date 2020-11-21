@@ -1,9 +1,3 @@
 # AE1map and AE2map directories
 AE1map/
 AE2map/
-
-# AE1map splited files
-AE1map-??zip
-
-# AE1map concatenated zip
-AE1map.zip
