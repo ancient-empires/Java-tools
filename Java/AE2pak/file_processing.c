@@ -53,7 +53,7 @@ unsigned int getFileInfoLen(const fileinfo_t* pFileInfo) {
 }
 
 // Generate the header string for the file info struct.
-// Update pFileInfoLen with the length to store the file info (excluding '\0' at the end).
+// Update pFileInfoLen with the length to store the file info (obtained using the getFileInfoLen() function, excluding '\0' at the end).
 // If pFileInfoLen is NULL, then the function will do nothing on the pointer.
 // This will allocate a new string to store the struct.
 // The user should call free() afterwards.
