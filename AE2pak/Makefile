@@ -1,10 +1,15 @@
 TARGET := AE2pak
 
+ALL := all
+EXTRACT := extract
+PACK := pack
+CLEAN := clean
+
 src := main.c ../utils/utils.c path_processing.c file_processing.c extract.c pack.c
 objs := $(src:.c=.o)
 
-.PHONY: all
-all: $(TARGET).out
+.PHONY: $(ALL)
+$(ALL): $(TARGET).out
 
 # common parts
 common := ../common/Makefile
@@ -37,18 +42,17 @@ ifeq ($(R),1)
 	done
 endif
 
-# extract .pak
 
-EXTRACT := extract
+# extract .pak
 
 AE1data := data/AE1
 AE1pak_pak := $(AE1data)/1.pak
-AE1pak_dir := $(AE1data)/1
+AE1pak_dir := $(AE1data)/AE1_extracted
 AE1pak_filelist := AE1_filelist.log
 
 AE2data := data/AE2
 AE2pak_pak := $(AE2data)/1.pak
-AE2pak_dir := $(AE2data)/1
+AE2pak_dir := $(AE2data)/AE2_extracted
 AE2pak_filelist := AE2_filelist.log
 
 # check error for extraction
@@ -64,17 +68,35 @@ check_extract_error:
 	$(call CHECK_EXTRACT_ERROR)
 
 .PHONY: $(EXTRACT)
-$(EXTRACT): all check_extract_error
+$(EXTRACT): $(ALL) check_extract_error
 	mkdir -vp $(dir)
 	./$(TARGET).out $(pak) -e $(dir) $(filelist)
 
-.PHONY: extract_ae1
-extract_ae1:
+.PHONY: $(EXTRACT)_all
+$(EXTRACT)_all: $(EXTRACT)_ae1 $(EXTRACT)_ae2
+
+.PHONY: $(EXTRACT)_ae1
+$(EXTRACT)_ae1:
 	$(MAKE) $(EXTRACT) pak=$(AE1pak_pak) dir=$(AE1pak_dir) filelist=$(AE1pak_filelist)
 
-.PHONY: extract_ae2
-extract_ae2:
+.PHONY: $(EXTRACT)_ae2
+$(EXTRACT)_ae2:
 	$(MAKE) $(EXTRACT) pak=$(AE2pak_pak) dir=$(AE2pak_dir) filelist=$(AE2pak_filelist)
+
+
+# clean up extracted files
+
+.PHONY: $(CLEAN)_ae1
+$(CLEAN)_ae1:
+	-rm -rfv $(AE1pak_dir) $(AE1_filelist)
+
+.PHONY: $(CLEAN)_ae2
+$(CLEAN)_ae2:
+	-rm -rfv $(AE2pak_dir) $(AE2_filelist)
+
+.PHONY: $(clean)_all
+$(CLEAN)_ae2: $(CLEAN)_ae1 $(CLEAN)_ae2
+
 
 # pack .pak
 
@@ -86,6 +108,6 @@ $(if $(filelist),,$(error $(PACK_ERROR_MSG)))
 endef
 
 .PHONY: pack
-pack: all
+pack: $(ALL)
 	$(call CHECK_PACK_ERROR)
 	./$(TARGET).out $(pak) -p $(filelist)
