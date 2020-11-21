@@ -19,11 +19,28 @@ all: $(TARGETS)
 
 .PHONY: $(AE1MAP)
 $(AE1MAP): $(AE1MAP_zip)
-	unzip -o $^
+	unzip -o $<
+
+# split AE1map zip to publish on Byblo
+AE1_split_prefix := AE1map-
+AE1_split_suffix := zip
+.PHONY: split_$(AE1MAP)
+split_$(AE1MAP): $(AE1MAP_zip)
+	split --verbose -d -a 2 --additional-suffix=$(AE1_split_suffix) -n 3 $< $(AE1_split_prefix)
+
+# concatenate AE1map
+.PHONY: concat_$(AE1MAP)
+concat_$(AE1MAP):
+	cat AE1map-??zip > $(AE1MAP).zip
+
+# remove splitted and concatenated AE1map zip
+clean_split_concat_$(AE1MAP):
+	-rm -rfv $(AE1_split_prefix)??$(AE1_split_suffix)
+	-rm -rfv $(AE1MAP).zip
 
 .PHONY: $(AE2MAP)
 $(AE2MAP): $(AE2MAP_zip)
-	unzip -o $^
+	unzip -o $<
 
 .PHONY: $(AE2LANG)
 $(AE2LANG):
@@ -34,7 +51,7 @@ $(AE2PAK):
 	$(MAKE) -C $@/
 
 .PHONY: clean
-clean:
+clean: clean_split_$(AE1MAP)
 	-rm -rfv $(AE1MAP) $(AE2MAP)
 	$(MAKE) -C $(AE2LANG)/ $@
 	$(MAKE) -C $(AE2PAK)/ $@
