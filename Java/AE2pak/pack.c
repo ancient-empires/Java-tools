@@ -9,7 +9,23 @@
 #include "file_processing.h"
 #include "pack.h"
 
-#define LARGE_SPACE_SIZE 2048
+// In the file list .log file, each line contains a single path.
+// This function allocates a new string to store the file path.
+// The user must call free() to free the memory afterwards.
+static char* getFilePath(FILE* fileListDesc) {
+	// get file path
+	char* filePath = NULL;
+	size_t n = 0;
+	getline(&filePath, &n, fileListDesc);
+	if (filePath) {
+		size_t filePathLen = strlen(filePath);
+		if ((filePathLen >= 1) && (filePath[filePathLen-1] == LF)) {
+			// replace line ending from '\n' to '\0'
+			filePath[filePathLen - 1] = '\0';
+		}
+	}
+	return filePath;
+}
 
 // Check all the files that are listed in the file list .log file.
 // Update total resource files, total errors, and total file info length.
@@ -38,18 +54,11 @@ static unsigned int checkAllFiles(const char* fileListLOG, unsigned int* pTotalR
 	// get all lines, each line containing a single file path
 	while (!feof(fileListDesc)) {
 		// get file path
-		char* filePath = NULL;
-		size_t n = 0;
-		getline(&filePath, &n, fileListDesc);
+		char* filePath = getFilePath(fileListDesc);
 		if (feof(fileListDesc)) {
 			fclose(fileListDesc);
 			free(filePath);
 			break;
-		}
-		size_t filePathLen = strlen(filePath);
-		if ((filePathLen >= 1) && (filePath[filePathLen - 1] == LF)) {
-			// replace line ending from '\n' to '\0'
-			filePath[filePathLen - 1] = '\0';
 		}
 
 		// check file size
@@ -115,20 +124,33 @@ static unsigned int checkAllFiles(const char* fileListLOG, unsigned int* pTotalR
 	}
 }
 
-// Compare two fileinfo_t structs by the filename.
-// This is used to sort all fileinfo_t structs in an array.
-static int compareResourceFilesInfo(const void* firstFileInfo, const void* secondFileInfo) {
-	char* firstFilename = ((fileinfo_t*)firstFileInfo)->filename;
-	char* secondFilename = ((fileinfo_t*)secondFileInfo)->filename;
-	return strcmp(firstFilename, secondFilename);
-}
+// Get the information of all resource files.
+// This function does NOT check errors.
+// Hence, it shall only be called after calling checkAllFiles().
+// This function allocates dynamic memory to store all the files.
+// The user must call free() to free the memory afterwards.
+static fileinfo_t* readAllResourceFilesInfo(const char* fileListLOG, const unsigned int totalResourceFiles) {
+	fileinfo_t* allResourceFilesInfo = calloc(totalResourceFiles, sizeof(fileinfo_t));
 
-// Sort all resource files by filename.
-// Return the pointer to the array of all resource files.
-static fileinfo_t* sortAllResourceFiles(fileinfo_t* allResourceFilesInfo, unsigned int numFiles) {
-	qsort(allResourceFilesInfo, numFiles, sizeof(fileinfo_t), compareResourceFilesInfo);
+	// TODO: read in all files
+
 	return allResourceFilesInfo;
 }
+
+// // Compare two fileinfo_t structs by the filename.
+// // This is used to sort all fileinfo_t structs in an array.
+// static int compareResourceFilesInfo(const void* firstFileInfo, const void* secondFileInfo) {
+// 	char* firstFilename = ((fileinfo_t*)firstFileInfo)->filename;
+// 	char* secondFilename = ((fileinfo_t*)secondFileInfo)->filename;
+// 	return strcmp(firstFilename, secondFilename);
+// }
+//
+// // Sort all resource files by filename.
+// // Return the pointer to the array of all resource files.
+// static fileinfo_t* sortAllResourceFiles(fileinfo_t* allResourceFilesInfo, unsigned int numFiles) {
+// 	qsort(allResourceFilesInfo, numFiles, sizeof(fileinfo_t), compareResourceFilesInfo);
+// 	return allResourceFilesInfo;
+// }
 
 // Create the .pak archive, using files specified in the file list .log file.
 void pack(const char* pakFile, const char* fileListLOG) {
@@ -142,13 +164,11 @@ void pack(const char* pakFile, const char* fileListLOG) {
 	checkAllFiles(fileListLOG, &totalResourceFiles, &totalErrors, &totalFileInfoLen);
 
 	// process all files
-	fileinfo_t* allResourceFilesInfo = calloc(totalResourceFiles, sizeof(fileinfo_t));
-
-	// TODO: read in all files
+	fileinfo_t* allResourceFilesInfo = readAllResourceFilesInfo(fileListLOG, totalResourceFiles);
 
 	// sort all the files
 	// the .pak file is organized by ascending filenames
-	sortAllResourceFiles(allResourceFilesInfo, totalResourceFiles);
+	// sortAllResourceFiles(allResourceFilesInfo, totalResourceFiles);
 
 	free(allResourceFilesInfo);
 
