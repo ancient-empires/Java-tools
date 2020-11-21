@@ -46,12 +46,12 @@ endif
 
 AE1data := data/AE1
 AE1pak_pak := $(AE1data)/1.pak
-AE1pak_dir := $(AE1data)/AE1_extracted
+AE1pak_dir := $(AE1data)/extracted
 AE1pak_filelist := AE1_filelist.log
 
 AE2data := data/AE2
 AE2pak_pak := $(AE2data)/1.pak
-AE2pak_dir := $(AE2data)/AE2_extracted
+AE2pak_dir := $(AE2data)/extracted
 AE2pak_filelist := AE2_filelist.log
 
 # check error for extraction
@@ -101,13 +101,17 @@ $(CLEAN_RES)_ae2:
 # pack .pak
 
 # check error for extraction
-PACK_ERROR_MSG := ERROR: Invalid .pak file and/or file list .log
+PACK_ERROR_MSG := ERROR: Invalid .pak file and/or pack directory
 define CHECK_PACK_ERROR =
 $(if $(pak),,$(error $(PACK_ERROR_MSG)))
-$(if $(filelist),,$(error $(PACK_ERROR_MSG)))
+$(if $(dir),,$(error $(PACK_ERROR_MSG)))
 endef
 
-.PHONY: pack
-pack: $(ALL)
+.PHONY: $(PACK)
+$(PACK): $(ALL)
 	$(call CHECK_PACK_ERROR)
-	./$(TARGET).out $(pak) -p $(filelist)
+# use a temporary file to hold the file list
+	$(eval filelist := $(shell mktemp --suffix=.log))
+	find $(dir)/* | sort >> $(filelist)
+	-./$(TARGET).out $(pak) -p $(filelist)
+	-rm -rfv $(filelist)
