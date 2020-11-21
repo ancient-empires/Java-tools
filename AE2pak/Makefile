@@ -55,11 +55,10 @@ AE2pak_dir := $(AE2data)/AE2_extracted
 AE2pak_filelist := AE2_filelist.log
 
 # check error for extraction
-EXTRACT_ERROR_MSG := ERROR: Invalid .pak file and/or extract directory and/or filelist .log file
+EXTRACT_ERROR_MSG := ERROR: Invalid .pak file and/or extract directory
 define CHECK_EXTRACT_ERROR =
 $(if $(pak),,$(error $(EXTRACT_ERROR_MSG)))
 $(if $(dir),,$(error $(EXTRACT_ERROR_MSG)))
-$(if $(filelist),,$(error $(EXTRACT_ERROR_MSG)))
 endef
 
 .PHONY: check_extract_error
@@ -69,18 +68,18 @@ check_extract_error:
 .PHONY: $(EXTRACT)
 $(EXTRACT): $(ALL) check_extract_error
 	mkdir -vp $(dir)
-	./$(TARGET).out $(pak) -e $(dir) $(filelist)
+	./$(TARGET).out $(pak) -e $(dir)
 
 .PHONY: $(EXTRACT)_all
 $(EXTRACT)_all: $(EXTRACT)_ae1 $(EXTRACT)_ae2
 
 .PHONY: $(EXTRACT)_ae1
 $(EXTRACT)_ae1:
-	$(MAKE) $(EXTRACT) pak=$(AE1pak_pak) dir=$(AE1pak_dir) filelist=$(AE1pak_filelist)
+	$(MAKE) $(EXTRACT) pak=$(AE1pak_pak) dir=$(AE1pak_dir)
 
 .PHONY: $(EXTRACT)_ae2
 $(EXTRACT)_ae2:
-	$(MAKE) $(EXTRACT) pak=$(AE2pak_pak) dir=$(AE2pak_dir) filelist=$(AE2pak_filelist)
+	$(MAKE) $(EXTRACT) pak=$(AE2pak_pak) dir=$(AE2pak_dir)
 
 
 # clean up extracted files

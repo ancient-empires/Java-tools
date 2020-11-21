@@ -47,7 +47,7 @@ static bool extractFile(const char* pakFile, const char* resourceFile, unsigned 
 // Extract .pak file to extract directory.
 // The extract directory must exist beforehand, or the program will NOT work.
 // Write the .log file containing the list of all extracted files as specified in the argument.
-void extract(const char* pakFile, const char* extractDir, const char* fileListLOG) {
+void extract(const char* pakFile, const char* extractDir) {
 
 	printf("Extracting...\n");
 
@@ -57,15 +57,6 @@ void extract(const char* pakFile, const char* extractDir, const char* fileListLO
 		fprintf(stderr, "ERROR: .pak file \"%s\" not found!\n\n", pakFile);
 		exit(ERROR_RW);
 	}
-
-	// open the file list .log file for writing
-	FILE* fileListDesc = fopen(fileListLOG, "wb");
-	if (!fileListDesc) {
-		fclose(pakFileDesc);
-		fprintf(stderr, "ERROR: file list \"%s\" cannot be created for writing!\n\n", fileListLOG);
-		exit(ERROR_RW);
-	}
-	printf("\nStoring file list in log file: \"%s\"\n\n", fileListLOG);
 
 	unsigned char c1, c2, c3, c4;
 
@@ -87,7 +78,6 @@ void extract(const char* pakFile, const char* extractDir, const char* fileListLO
 		fclose(pakFileDesc);
 		fprintf(stderr, "ERROR: Unexpected end of .pak file:\n\"%s\"\n\n", pakFile);
 		fclose(pakFileDesc);
-		fclose(fileListDesc);
 		exit(ERROR_RW);
 	}
 
@@ -120,9 +110,7 @@ void extract(const char* pakFile, const char* extractDir, const char* fileListLO
 		c2 = fgetc(pakFileDesc);
 		unsigned int fileSize = fourBytesToUInt32(0, 0, c1, c2);
 
-		// write to file list (.log file)
-		// the file list will be created in the current working directory
-		// the extracted file paths are relative to the current working directory
+		// get the path of the extracted file, relative to current working directory
 		size_t extractDirLen = strlen(extractDir);
 		char* extractedFilePath = calloc(extractDirLen + 1 /* '/' character */ + filenameLen + 1, sizeof(char));
 		strcpy(extractedFilePath, extractDir);
@@ -138,13 +126,13 @@ void extract(const char* pakFile, const char* extractDir, const char* fileListLO
 
 		// extract file
 		if (extractFile(pakFile, extractedFilePath, fileDataPos, fileSize)) {
-			// write to file list if extraction is successful
-			fprintf(fileListDesc, "%s\n", extractedFilePath);
+			// success
+			++totalExtracted;
 		}
 		else {
+			// failed
 			++totalErrors;
 		}
-		++totalExtracted;
 
 		free(filename);
 		free(extractedFilePath);
@@ -152,7 +140,6 @@ void extract(const char* pakFile, const char* extractDir, const char* fileListLO
 
 	// finish
 	fclose(pakFileDesc);
-	fclose(fileListDesc);
 
 	printf("\nUh yeah, it's done!\n");
 	printf("Total files: %u\n", totalFiles);

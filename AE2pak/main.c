@@ -9,8 +9,8 @@
 // Show help if user enters invalid arguments
 void help(void) {
 	fprintf(stderr, "Please use the following syntax:\n");
-	fprintf(stderr, "- extract: ./AE2pak.out filename.pak -e <directory/of/extracted/files> <path/to/file/list.log>\n");
-	fprintf(stderr, "- pack: ./AE2pak.out filename.pak -p _filelist.log\n\n");
+	fprintf(stderr, "- extract: ./AE2pak.out filename.pak -e <directory/of/extracted/files>\n");
+	fprintf(stderr, "- pack: ./AE2pak.out filename.pak -p  <path/to/file/list.log>\n\n");
 }
 
 /* Usage:
@@ -30,11 +30,7 @@ int main(int argc, char *argv[]) {
 
 	// extract mode
 	if (strcmp(argv[2], "-e") == 0) {
-		if (argc < 4) {
-			help();
-			return ERROR_ARGS;
-		}
-		extract(argv[1], argv[3], argv[4]);
+		extract(argv[1], argv[3]);
 		return 0;
 	}
 	// pack mode
