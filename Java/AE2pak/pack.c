@@ -168,7 +168,7 @@ static void sortAllResourceFiles(fileinfo_t* allResourceFilesInfo, unsigned int 
 	qsort(allResourceFilesInfo, numFiles, sizeof(fileinfo_t), compareResourceFilesInfo);
 }
 
-// Create the .pak archive, using files specified in the file list .log file.
+// Create the .pak archive, using file paths specified in the file list .log file.
 void pack(const char* pakFile, const char* fileListLOG) {
 	unsigned int totalResourceFiles = 0;
 	unsigned int totalErrors = 0;
@@ -176,19 +176,23 @@ void pack(const char* pakFile, const char* fileListLOG) {
 
 	printf("Packing...\n\n");
 
-	// check all files present in the file list .log file.
+	// check all resource files present in the file list .log file.
 	checkAllFiles(fileListLOG, &totalResourceFiles, &totalErrors, &totalFileInfoLen);
 
-	// process all files
+	// process all resource files
 	fileinfo_t* allResourceFilesInfo = readAllResourceFilesInfo(fileListLOG, totalResourceFiles);
 
-	// sort all the files
+	// sort all the resource files
 	// the .pak file is organized by ascending filenames
 	sortAllResourceFiles(allResourceFilesInfo, totalResourceFiles);
 
+	// set the file data start offset of each resource file
+	unsigned int fileDataStartOffset = 0;
 	for (unsigned int i = 0; i < totalResourceFiles; ++i) {
-		const fileinfo_t* fileInfo = &allResourceFilesInfo[i];
-		printf("%s (%d bytes)\n", fileInfo->filePath, fileInfo->fileSize);
+		fileinfo_t* pFileInfo = &allResourceFilesInfo[i];
+		setFileDataStartOffset(pFileInfo, fileDataStartOffset);
+		printf("\"%s\" (size: %u bytes, start offset: %u) \n", pFileInfo->filePath, pFileInfo->fileSize, pFileInfo->fileDataStartOffset);
+		fileDataStartOffset += pFileInfo->fileSize;
 	}
 
 	freeAllResourceFilesInfo(allResourceFilesInfo, totalResourceFiles);
