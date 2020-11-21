@@ -9,6 +9,7 @@
 #include "file_processing.h"
 #include "pack.h"
 
+// Get the file paths in the file list .log file.
 // In the file list .log file, each line contains a single path.
 // This function allocates a new string to store the file path.
 // The user must call free() to free the memory afterwards.
@@ -116,6 +117,10 @@ static unsigned int checkAllFiles(const char* fileListLOG, unsigned int* pTotalR
 		fprintf(stderr, "Please try again with less files to pack.\n\n");
 		exit(ERROR_RW);
 	}
+	else if (*pTotalResourceFiles <= 0) {
+		fprintf(stderr, "ERROR: No files to pack. Please check your file list .log file (%s).\n", fileListLOG);
+		exit(ERROR_RW);
+	}
 	else {
 		printf("Successfully checked %u files.\n", *pTotalResourceFiles);
 		printf("Total errors: %u\n", *pTotalErrors);
@@ -132,25 +137,36 @@ static unsigned int checkAllFiles(const char* fileListLOG, unsigned int* pTotalR
 static fileinfo_t* readAllResourceFilesInfo(const char* fileListLOG, const unsigned int totalResourceFiles) {
 	fileinfo_t* allResourceFilesInfo = calloc(totalResourceFiles, sizeof(fileinfo_t));
 
-	// TODO: read in all files
+	FILE* fileListDesc = fopen(fileListLOG, "r");
+	for (unsigned int i = 0; i < totalResourceFiles; ++i) {
+		char* filePath = getFilePath(fileListDesc);
+		long fileSize = getFileSize(filePath);
+		allResourceFilesInfo[i] = saveFileInfo(filePath, fileSize);
+	}
+	fclose(fileListDesc);
 
 	return allResourceFilesInfo;
 }
 
-// // Compare two fileinfo_t structs by the filename.
-// // This is used to sort all fileinfo_t structs in an array.
-// static int compareResourceFilesInfo(const void* firstFileInfo, const void* secondFileInfo) {
-// 	char* firstFilename = ((fileinfo_t*)firstFileInfo)->filename;
-// 	char* secondFilename = ((fileinfo_t*)secondFileInfo)->filename;
-// 	return strcmp(firstFilename, secondFilename);
-// }
-//
-// // Sort all resource files by filename.
-// // Return the pointer to the array of all resource files.
-// static fileinfo_t* sortAllResourceFiles(fileinfo_t* allResourceFilesInfo, unsigned int numFiles) {
-// 	qsort(allResourceFilesInfo, numFiles, sizeof(fileinfo_t), compareResourceFilesInfo);
-// 	return allResourceFilesInfo;
-// }
+static void freeAllResourceFilesInfo(fileinfo_t* allResourceFilesInfo, const unsigned int totalResourceFiles) {
+	for (unsigned int i = 0; i < totalResourceFiles; ++i) {
+		free(allResourceFilesInfo[i].filePath);
+	}
+	free(allResourceFilesInfo);
+}
+
+// Compare two fileinfo_t structs by the filename.
+// This is used to sort all fileinfo_t structs in an array.
+static int compareResourceFilesInfo(const void* firstFileInfo, const void* secondFileInfo) {
+	char* firstFilename = ((fileinfo_t*)firstFileInfo)->filename;
+	char* secondFilename = ((fileinfo_t*)secondFileInfo)->filename;
+	return strcmp(firstFilename, secondFilename);
+}
+
+// Sort all resource files by filename.
+static void sortAllResourceFiles(fileinfo_t* allResourceFilesInfo, unsigned int numFiles) {
+	qsort(allResourceFilesInfo, numFiles, sizeof(fileinfo_t), compareResourceFilesInfo);
+}
 
 // Create the .pak archive, using files specified in the file list .log file.
 void pack(const char* pakFile, const char* fileListLOG) {
@@ -168,9 +184,14 @@ void pack(const char* pakFile, const char* fileListLOG) {
 
 	// sort all the files
 	// the .pak file is organized by ascending filenames
-	// sortAllResourceFiles(allResourceFilesInfo, totalResourceFiles);
+	sortAllResourceFiles(allResourceFilesInfo, totalResourceFiles);
 
-	free(allResourceFilesInfo);
+	for (unsigned int i = 0; i < totalResourceFiles; ++i) {
+		const fileinfo_t* fileInfo = &allResourceFilesInfo[i];
+		printf("%s (%d bytes)\n", fileInfo->filePath, fileInfo->fileSize);
+	}
+
+	freeAllResourceFilesInfo(allResourceFilesInfo, totalResourceFiles);
 
 	printf("\nUh yeah, its done! %u errors for %u announced files.\n\n", totalErrors, totalResourceFiles);
 }
