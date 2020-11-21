@@ -239,12 +239,12 @@ void pack(const char* pakFile, const char* fileListLOG) {
 	fputc(c3, pakFileDesc);
 	fputc(c4, pakFileDesc);
 
-	// write the number of total files
+	// write the total number of resource files
 	uInt32ToFourBytes(totalResourceFiles, &c1, &c2, &c3, &c4);
 	fputc(c3, pakFileDesc);
 	fputc(c4, pakFileDesc);
 
-	// write the header info part of all files
+	// write the header info part of all resource files
 	unsigned int fileDataStartOffset = 0;
 	for (unsigned int i = 0; i < totalResourceFiles; ++i) {
 		// set the file data start offset of each resource file
