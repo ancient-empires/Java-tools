@@ -223,6 +223,7 @@ void pack(const char* pakFile, const char* fileListLOG) {
 		// set the file data start offset of each resource file
 		fileinfo_t* pFileInfo = &allResourceFilesInfo[i];
 		setFileDataStartOffset(pFileInfo, fileDataStartOffset);
+		fileDataStartOffset += pFileInfo->fileSize;
 
 		// write the file header info into the .pak file
 		unsigned int fileInfoLen = 0;
