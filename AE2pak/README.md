@@ -13,7 +13,7 @@ $ make
 
 ### Extract .pak archive
 ```
-$ make extract pak=<path/to/pak.pak> dir=<path/to/extract/dir>
+$ make extract pak=<path/to/pak.pak> dir=<path/to/extract/dir> filelist=<path/to/file/list.log>
 ```
 
 **NOTE: The output directory must be created beforehand. Otherwise, you will be unable to obtain the extracted files.**
