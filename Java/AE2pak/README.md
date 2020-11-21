@@ -22,3 +22,8 @@ $ make extract pak=<path/to/pak.pak> dir=<path/to/extract/dir>
 ```
 $ make pack pak=<path/to/pak.pak> filelist=<path/to/file/list.log>
 ```
+
+### Clean up
+```
+$ make clean
+```
