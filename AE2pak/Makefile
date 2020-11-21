@@ -41,14 +41,14 @@ endif
 
 EXTRACT := extract
 
-AE1data := data/AE1/
+AE1data := data/AE1
 AE1pak_pak := $(AE1data)/1.pak
-AE1pak_dir := $(AE1data)/1/
+AE1pak_dir := $(AE1data)/1
 AE1pak_filelist := AE1_filelist.log
 
-AE2data := data/AE2/
+AE2data := data/AE2
 AE2pak_pak := $(AE2data)/1.pak
-AE2pak_dir := $(AE2data)/1/
+AE2pak_dir := $(AE2data)/1
 AE2pak_filelist := AE2_filelist.log
 
 # check error for extraction
