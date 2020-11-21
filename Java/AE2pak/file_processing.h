@@ -31,11 +31,12 @@ fileinfo_t saveFileInfo(char* filePath, uint16_t fileSize);
 // Return the pointer to the file info struct.
 fileinfo_t* setFileDataStartOffset(fileinfo_t* pFileInfo, uint32_t offset);
 
-// Get the length to store the header information for each resource file in the .pak file.
+// Get the length to store the header information for each resource file in the .pak file. (excluding the '\0' at the end, since '\0' is not written to the .pak file)
 unsigned int getFileInfoLen(const fileinfo_t* pFileInfo);
 
 // Generate the header string for the file info struct.
 // Update pFileInfoLen with the length to store the file info (excluding '\0' at the end).
+// If pFileInfoLen is NULL, then the function will do nothing on the pointer.
 // This will allocate a new string to store the struct.
 // The user should call free() afterwards.
 char* getFileInfoStr(const fileinfo_t* pFileInfo, unsigned int* pFileInfoLen);

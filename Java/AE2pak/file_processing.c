@@ -43,7 +43,7 @@ fileinfo_t* setFileDataStartOffset(fileinfo_t* pFileInfo, uint32_t offset) {
 	return pFileInfo;
 }
 
-// Get the length to store the header information for each resource file in the .pak file.
+// Get the length to store the header information for each resource file in the .pak file. (excluding the '\0' at the end, since '\0' is not written to the .pak file)
 unsigned int getFileInfoLen(const fileinfo_t* pFileInfo) {
 	unsigned int totalLen = FILENAME_LEN_BYTES;
 	totalLen += strlen(pFileInfo->filename);
@@ -54,12 +54,18 @@ unsigned int getFileInfoLen(const fileinfo_t* pFileInfo) {
 
 // Generate the header string for the file info struct.
 // Update pFileInfoLen with the length to store the file info (excluding '\0' at the end).
+// If pFileInfoLen is NULL, then the function will do nothing on the pointer.
 // This will allocate a new string to store the struct.
 // The user should call free() afterwards.
 char* getFileInfoStr(const fileinfo_t* pFileInfo, unsigned int* pFileInfoLen) {
-	*pFileInfoLen = getFileInfoLen(pFileInfo);
+	// get length of file information (excluding the '\0')
+	unsigned int fileInfoLen = getFileInfoLen(pFileInfo);
+	if (pFileInfoLen) {
+		*pFileInfoLen = fileInfoLen;
+	}
 
-	char* fileInfoStr = calloc(*pFileInfoLen + 1, sizeof(char));
+	// allocate file info string
+	char* fileInfoStr = calloc(fileInfoLen + 1, sizeof(char));
 	if (!fileInfoStr) {
 		fprintf(stderr, "ERROR: failed to allocate file info string for file \"%s\".\n", pFileInfo->filePath);
 		free(fileInfoStr);
