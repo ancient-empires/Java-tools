@@ -3,6 +3,13 @@
 
 #include "../utils/utils.h"
 
+// This header file provides utilities to pack the resource files into the .pak file.
+// Each resource file is represented as follows at the beginning section of the file:
+// 1. filename length (2 bytes)
+// 2. filename
+// 3. file data start offset (4 bytes)
+// 4. file size (2 bytes)
+
 typedef struct fileinfo {
 	uint16_t filenameLen;
 	char* filePath;
@@ -24,12 +31,7 @@ fileinfo_t saveFileInfo(char* filePath, uint16_t fileSize);
 // Return the pointer to the file info struct.
 fileinfo_t* setFileDataStartOffset(fileinfo_t* pFileInfo, uint32_t offset);
 
-// Get the length to store the information for each resource file in the .pak file.
-// Each resource file is represented as follows at the beginning section of the file:
-// 1. filename length (2 bytes)
-// 2. filename
-// 3. file data start offset (4 bytes)
-// 4. file size (2 bytes)
+// Get the length to store the header information for each resource file in the .pak file.
 unsigned int getFileInfoLen(const fileinfo_t* pFileInfo);
 
 #endif
