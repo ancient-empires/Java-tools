@@ -196,6 +196,26 @@ void pack(const char* pakFile, const char* fileListLOG) {
 	// the .pak file is organized by ascending filenames
 	sortAllResourceFiles(allResourceFilesInfo, totalResourceFiles);
 
+	// open the .pak file for writing
+	FILE* pakFileDesc = fopen(pakFile, "wb");
+	if (!pakFileDesc) {
+		fprintf(stderr, "ERROR: Unable to write to .pak file: \"%s\".\n", pakFile);
+		exit(ERROR_RW);
+	}
+
+	unsigned char c1, c2, c3, c4;
+
+	// write the file data start position
+	const unsigned int fileDataStartPos = totalFileInfoLen;
+	uInt32ToFourBytes(fileDataStartPos, &c1, &c2, &c3, &c4);
+	fputc(c3, pakFileDesc);
+	fputc(c4, pakFileDesc);
+
+	// write the number of total files
+	uInt32ToFourBytes(totalResourceFiles, &c1, &c2, &c3, &c4);
+	fputc(c3, pakFileDesc);
+	fputc(c4, pakFileDesc);
+
 	// set the file data start offset of each resource file
 	unsigned int fileDataStartOffset = 0;
 	for (unsigned int i = 0; i < totalResourceFiles; ++i) {
@@ -205,7 +225,10 @@ void pack(const char* pakFile, const char* fileListLOG) {
 		fileDataStartOffset += pFileInfo->fileSize;
 	}
 
+	// clean up
 	freeAllResourceFilesInfo(allResourceFilesInfo, totalResourceFiles);
+	fclose(pakFileDesc);
 
+	// finish
 	printf("\nUh yeah, its done! %u errors for %u announced files.\n\n", totalErrors, totalResourceFiles);
 }
