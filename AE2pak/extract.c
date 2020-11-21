@@ -14,7 +14,7 @@ static bool extractFile(const char* pakFile, const char* targetFile, unsigned in
 	// open .pak file for reading
 	FILE* pakFileDesc = fopen(pakFile, "rb");
 	if (!pakFileDesc) {
-		fprintf(stderr, "ERROR: Could not open .pak file \"%s\" for extraction!\n", pakFile);
+		fprintf(stderr, "ERROR: Could not open .pak file \"%s\" for extraction!\n\n", pakFile);
 		return false;
 	}
 	fseek(pakFileDesc, fileDataPos, SEEK_SET);
@@ -22,7 +22,7 @@ static bool extractFile(const char* pakFile, const char* targetFile, unsigned in
 	// open target file for writing
 	FILE* targetFileDesc = fopen(targetFile, "wb");
 	if (!targetFileDesc) {
-		fprintf(stderr, "ERROR: Could not open resource file \"%s\" for writing!\n", targetFile);
+		fprintf(stderr, "ERROR: Could not open resource file \"%s\" for writing!\n\n", targetFile);
 		fclose(pakFileDesc);
 		return false;
 	}
@@ -31,7 +31,7 @@ static bool extractFile(const char* pakFile, const char* targetFile, unsigned in
 	for (unsigned int i = 0; i < fileSize; ++i) {
 		unsigned char c = fgetc(pakFileDesc);
 		if (feof(pakFileDesc)) {
-			fprintf(stderr, "ERROR: EOF reached in .pak file \"%s\" when extracting! Please check your file!", pakFile);
+			fprintf(stderr, "ERROR: EOF reached in .pak file \"%s\" when extracting! Please check your file!\n\n", pakFile);
 			fclose(pakFileDesc);
 			fclose(targetFileDesc);
 			return false;
@@ -46,25 +46,23 @@ static bool extractFile(const char* pakFile, const char* targetFile, unsigned in
 
 // Extract .pak file to extract directory.
 // The extract directory must exist beforehand, or the program will NOT work.
-// Write the .log file containing the list of all extracted files in current working directory.
-void extract(const char* pakFile, const char* extractDir) {
+// Write the .log file containing the list of all extracted files as specified in the argument.
+void extract(const char* pakFile, const char* extractDir, const char* fileListLOG) {
 
 	printf("Extracting...\n");
 
 	// open .pak file for reading
 	FILE* pakFileDesc = fopen(pakFile, "rb");
 	if (!pakFileDesc) {
-		fprintf(stderr, "ERROR: .pak file \"%s\" not found.\n", pakFile);
+		fprintf(stderr, "ERROR: .pak file \"%s\" not found!\n\n", pakFile);
 		exit(ERROR_RW);
 	}
 
 	// open the file list .log file for writing
-	// the .log file will be in current working directory
-	char fileListLOG[] = FILE_LIST_LOG;
 	FILE* fileListDesc = fopen(fileListLOG, "wb");
 	if (!fileListDesc) {
 		fclose(pakFileDesc);
-		fprintf(stderr, "ERROR: file list \"%s\" cannot be created for writing.\n", fileListLOG);
+		fprintf(stderr, "ERROR: file list \"%s\" cannot be created for writing!\n\n", fileListLOG);
 		exit(ERROR_RW);
 	}
 	printf("\nStoring file list in log file: \"%s\"\n\n", fileListLOG);
@@ -87,7 +85,7 @@ void extract(const char* pakFile, const char* extractDir) {
 	// check unexpected ending of .pak file
 	if (feof(pakFileDesc)) {
 		fclose(pakFileDesc);
-		fprintf(stderr, "ERROR: Unexpected end of .pak file:\n\"%s\"\n", pakFile);
+		fprintf(stderr, "ERROR: Unexpected end of .pak file:\n\"%s\"\n\n", pakFile);
 		fclose(pakFileDesc);
 		fclose(fileListDesc);
 		exit(ERROR_RW);
