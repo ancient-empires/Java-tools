@@ -14,13 +14,13 @@ This repository provides essential tools to extract and manipulate the resources
 	* [Byblo thread](https://byblo.proboards.com/thread/77/tool-ae2map-tester-batch) [[Archive](https://bit.ly/ae2testmap-thread)]
 	* [Download from Byblo (zip)](http://users.skynet.be/fb119101/ae2/tools/AE2testmap.zip) [[Archive](https://bit.ly/ae2testmap-download)]
 
-## Language file converter
+## DAT language file converter
 
 * **AE2lang**: `lang.dat` extractor (binary → text) / packer (text → binary).
 	* [Byblo thread](https://byblo.proboards.com/thread/23/tool-ae2lang-language-file-converter) [[Archive](https://bit.ly/ae2lang-thread)]
 	* [Download from Byblo (zip)](http://users.skynet.be/fb119101/ae2/tools/AE2lang01b.zip) [[Archive](https://bit.ly/ae2lang-download)]
 
-## PAK archive converter
+## PAK resource archive converter
 
 * **AE2pak**: `1.pak` extractor / packer.
 	* [Byblo thread](https://byblo.proboards.com/thread/25/tool-ae2pak-packer-unpacker-file) [[Archive](https://bit.ly/ae2pak-thread)]
