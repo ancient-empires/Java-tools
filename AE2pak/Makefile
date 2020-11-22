@@ -47,12 +47,12 @@ endif
 AE1data := data/AE1
 AE1pak_pak := $(AE1data)/1.pak
 AE1pak_dir := $(AE1data)/extracted
-AE1pak_filelist := AE1_filelist.log
+AE1pak_filelist := $(AE1data)/filelist.log
 
 AE2data := data/AE2
 AE2pak_pak := $(AE2data)/1.pak
 AE2pak_dir := $(AE2data)/extracted
-AE2pak_filelist := AE2_filelist.log
+AE2pak_filelist := $(AE2data)/filelist.log
 
 # check error for extraction
 EXTRACT_ERROR_MSG := ERROR: Invalid .pak file and/or extract directory and/or file list
