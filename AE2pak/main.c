@@ -9,7 +9,7 @@
 // Show help if user enters invalid arguments
 void help(void) {
 	fprintf(stderr, "Please use the following syntax:\n");
-	fprintf(stderr, "- extract: ./AE2pak.out filename.pak -e <directory/of/extracted/files> <path/to/file/list.log>\n");
+	fprintf(stderr, "- extract: ./AE2pak.out filename.pak -e <directory/of/extracted/files> <path/to/filelist.log>\n");
 	fprintf(stderr, "- pack: ./AE2pak.out filename.pak -p  <path/to/file/list.log>\n\n");
 }
 

@@ -44,7 +44,7 @@ static unsigned int checkAllFiles(const char* fileListLOG, unsigned int* pTotalR
 
 	// open the .log file
 	FILE* fileListDesc = fopen(fileListLOG, "r");
-	if (!fileListLOG) {
+	if (!fileListDesc) {
 		fprintf(stderr, "Invalid file list: \"%s\"\n", fileListLOG);
 		exit(ERROR_RW);
 	}
