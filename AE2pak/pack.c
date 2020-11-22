@@ -46,7 +46,6 @@ static unsigned int checkAllFiles(const char* fileListLOG, unsigned int* pTotalR
 	FILE* fileListDesc = fopen(fileListLOG, "r");
 	if (!fileListLOG) {
 		fprintf(stderr, "Invalid file list: \"%s\"\n", fileListLOG);
-		fclose(fileListDesc);
 		exit(ERROR_RW);
 	}
 
@@ -178,23 +177,9 @@ static void freeAllResourceFilesInfo(fileinfo_t* allResourceFilesInfo, const uns
 	free(allResourceFilesInfo);
 }
 
-// Compare two fileinfo_t structs by the filename.
-// This is used to sort all fileinfo_t structs in an array.
-static int compareResourceFilesInfo(const void* firstFileInfo, const void* secondFileInfo) {
-	char* firstFilename = ((fileinfo_t*)firstFileInfo)->filename;
-	char* secondFilename = ((fileinfo_t*)secondFileInfo)->filename;
-	return strcmp(firstFilename, secondFilename);
-}
-
-// Sort all resource files by filename.
-static void sortAllResourceFiles(fileinfo_t* allResourceFilesInfo, unsigned int numResourceFiles) {
-	qsort(allResourceFilesInfo, numResourceFiles, sizeof(fileinfo_t), compareResourceFilesInfo);
-}
-
 // Copy data from all the resource files to the .pak file.
 // NOTE: This function does NOT check errors.
 // Hence, it shall only be called after calling checkAllFiles().
-// Also, allResourceFilesInfo must have been sorted by filename using sortAllResourceFiles(). Otherwise the program will not output the correct result.
 static void copyData(FILE* pakFileDesc, const fileinfo_t* allResourceFilesInfo, const unsigned int totalResourceFiles, const unsigned int fileDataStartPos) {
 	// set start position for writing
 	fseek(pakFileDesc, fileDataStartPos, SEEK_SET);
@@ -231,10 +216,6 @@ void pack(const char* pakFile, const char* fileListLOG) {
 
 	// read the information of all resource files
 	fileinfo_t* allResourceFilesInfo = readAllResourceFilesInfo(fileListLOG, totalResourceFiles);
-
-	// Sort all the resource files
-	// The .pak file must be organized by ascending filenames.
-	sortAllResourceFiles(allResourceFilesInfo, totalResourceFiles);
 
 	// open the .pak file for writing
 	FILE* pakFileDesc = fopen(pakFile, "wb");
