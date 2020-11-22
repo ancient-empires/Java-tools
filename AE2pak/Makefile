@@ -115,3 +115,23 @@ $(PACK): $(ALL)
 	find $(dir)/* | sort >> $(filelist)
 	-./$(TARGET).out $(pak) -p $(filelist)
 	-rm -rfv $(filelist)
+
+define PACK_PROCEDURE =
+$(eval tempPAK := $(shell mktemp --suffix=.pak))
+$(MAKE) $(PACK) pak=$(tempPAK) dir=$(1)
+echo $(shell diff $(tempPAK) $(2)) >> /dev/null
+if [ $(.SHELLSTATUS) != 0 ]; then \
+	echo "PAK validation FAILED"; \
+	exit 1; \
+else \
+	mv $(tempPAK) $(2); \
+fi
+endef
+
+.PHONY: $(PACK)_ae1
+$(PACK)_ae1:
+	$(call PACK_PROCEDURE,$(AE1pak_dir),$(AE1pak_pak))
+
+.PHONY: $(PACK)_ae2
+$(PACK)_ae2:
+	$(call PACK_PROCEDURE,$(AE2pak_dir),$(AE2pak_pak))

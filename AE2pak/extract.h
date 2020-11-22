@@ -7,6 +7,6 @@
 
 // Extract .pak file to extract directory.
 // The extract directory must exist beforehand, or the program will NOT work.
-void extract(const char* pakFile, const char* extractDir);
+void extract(const char* pakFile, const char* extractDir, const char* fileListLOG);
 
 #endif
