@@ -1,3 +1,5 @@
+makeTarget=pack
+
 if [[ $# < 2 ]]; then
 	echo "ERROR: Too few arguments."
 	echo "Usage: bash $0 <path/to/1.pak> <path/to/filelist.log>"
@@ -9,7 +11,7 @@ refPak=$1
 fileListLOG=$2
 
 tempPak=$(mktemp --suffix=.pak)
-make pack pak="$tempPak" filelist="$fileListLOG"
+make $makeTarget pak="$tempPak" filelist="$fileListLOG"
 
 # .pak validation
 test -f "$refPak"
@@ -19,6 +21,7 @@ if [[ $refPakExists == 0 ]]; then
 	diffCode=$?
 	if [[ $diffCode != 0 ]]; then
 		echo -e "ERROR: validation failed for .pak file \"$tempPak\""
+		rm $tempPak
 		exit 1
 	fi
 fi
