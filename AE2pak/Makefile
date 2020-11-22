@@ -111,12 +111,17 @@ endef
 .PHONY: $(PACK)
 $(PACK): $(ALL)
 	$(call CHECK_PACK_ERROR)
-	-./$(TARGET).out $(pak) -p $(filelist)
+	./$(TARGET).out $(pak) -p $(filelist)
+
+pack_check_exec := pack_check.sh
+
+.PHONY: $(PACK)_all
+$(PACK)_all: $(PACK)_ae1 $(PACK)_ae2
 
 .PHONY: $(PACK)_ae1
 $(PACK)_ae1:
-# TODO
+	bash $(pack_check_exec) $(AE1pak_pak) $(AE1pak_filelist)
 
 .PHONY: $(PACK)_ae2
 $(PACK)_ae2:
-# TODO
+	bash $(pack_check_exec) $(AE2pak_pak) $(AE2pak_filelist)
