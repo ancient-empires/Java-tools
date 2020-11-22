@@ -20,7 +20,7 @@ $ make extract pak=<path/to/pak.pak> dir=<path/to/extract/dir>
 
 ### Pack .pak archive from the file list .log file
 ```
-$ make pack pak=<path/to/pak.pak> dir=<path/to/resource/dir>
+$ make pack pak=<path/to/pak.pak> dir=<path/to/resource/dir> filelist=<path/to/file/list.log>
 ```
 
 ### Clean up

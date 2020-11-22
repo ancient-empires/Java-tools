@@ -55,10 +55,11 @@ AE2pak_dir := $(AE2data)/extracted
 AE2pak_filelist := AE2_filelist.log
 
 # check error for extraction
-EXTRACT_ERROR_MSG := ERROR: Invalid .pak file and/or extract directory
+EXTRACT_ERROR_MSG := ERROR: Invalid .pak file and/or extract directory and/or file list
 define CHECK_EXTRACT_ERROR =
 $(if $(pak),,$(error $(EXTRACT_ERROR_MSG)))
 $(if $(dir),,$(error $(EXTRACT_ERROR_MSG)))
+$(if $(filelist),,$(error $(EXTRACT_ERROR_MSG)))
 endef
 
 .PHONY: check_extract_error
@@ -68,18 +69,18 @@ check_extract_error:
 .PHONY: $(EXTRACT)
 $(EXTRACT): $(ALL) check_extract_error
 	mkdir -vp $(dir)
-	./$(TARGET).out $(pak) -e $(dir)
+	./$(TARGET).out $(pak) -e $(dir) $(filelist)
 
 .PHONY: $(EXTRACT)_all
 $(EXTRACT)_all: $(EXTRACT)_ae1 $(EXTRACT)_ae2
 
 .PHONY: $(EXTRACT)_ae1
 $(EXTRACT)_ae1:
-	$(MAKE) $(EXTRACT) pak=$(AE1pak_pak) dir=$(AE1pak_dir)
+	$(MAKE) $(EXTRACT) pak=$(AE1pak_pak) dir=$(AE1pak_dir) filelist=$(AE1pak_filelist)
 
 .PHONY: $(EXTRACT)_ae2
 $(EXTRACT)_ae2:
-	$(MAKE) $(EXTRACT) pak=$(AE2pak_pak) dir=$(AE2pak_dir)
+	$(MAKE) $(EXTRACT) pak=$(AE2pak_pak) dir=$(AE2pak_dir) filelist=$(AE2pak_filelist)
 
 
 # clean up extracted files
@@ -101,37 +102,21 @@ $(CLEAN_RES)_ae2:
 # pack .pak
 
 # check error for extraction
-PACK_ERROR_MSG := ERROR: Invalid .pak file and/or pack directory
+PACK_ERROR_MSG := ERROR: Invalid .pak file and/or file list
 define CHECK_PACK_ERROR =
 $(if $(pak),,$(error $(PACK_ERROR_MSG)))
-$(if $(dir),,$(error $(PACK_ERROR_MSG)))
+$(if $(filelist),,$(error $(PACK_ERROR_MSG)))
 endef
 
 .PHONY: $(PACK)
 $(PACK): $(ALL)
 	$(call CHECK_PACK_ERROR)
-# use a temporary file to hold the file list
-	$(eval filelist := $(shell mktemp --suffix=.log))
-	find $(dir)/* | sort >> $(filelist)
 	-./$(TARGET).out $(pak) -p $(filelist)
-	-rm -rfv $(filelist)
-
-define PACK_PROCEDURE =
-$(eval tempPAK := $(shell mktemp --suffix=.pak))
-$(MAKE) $(PACK) pak=$(tempPAK) dir=$(1)
-echo $(shell diff $(tempPAK) $(2)) >> /dev/null
-if [ $(.SHELLSTATUS) != 0 ]; then \
-	echo "PAK validation FAILED"; \
-	exit 1; \
-else \
-	mv $(tempPAK) $(2); \
-fi
-endef
 
 .PHONY: $(PACK)_ae1
 $(PACK)_ae1:
-	$(call PACK_PROCEDURE,$(AE1pak_dir),$(AE1pak_pak))
+# TODO
 
 .PHONY: $(PACK)_ae2
 $(PACK)_ae2:
-	$(call PACK_PROCEDURE,$(AE2pak_dir),$(AE2pak_pak))
+# TODO
