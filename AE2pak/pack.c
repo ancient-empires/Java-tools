@@ -229,13 +229,13 @@ void pack(const char* pakFile, const char* fileListLOG) {
 
 	printf("\nWriting info section...\n");
 
-	// write the file data start position
+	// write the file data start position (first 2 bytes)
 	const unsigned int fileDataStartPos = totalFileInfoLen;
 	uInt32ToFourBytes(fileDataStartPos, &c1, &c2, &c3, &c4);
 	fputc(c3, pakFileDesc);
 	fputc(c4, pakFileDesc);
 
-	// write the total number of resource files
+	// write the total number of resource files (next 2 bytes)
 	uInt32ToFourBytes(totalResourceFiles, &c1, &c2, &c3, &c4);
 	fputc(c3, pakFileDesc);
 	fputc(c4, pakFileDesc);
