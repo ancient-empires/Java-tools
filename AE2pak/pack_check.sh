@@ -26,5 +26,5 @@ if [[ $refPakExists == 0 ]]; then
 	fi
 fi
 
-mv "$tempPak" "$targetPak"
+mv -v "$tempPak" "$targetPak"
 echo -e "Generated .pak file \"$targetPak\""
