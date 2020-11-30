@@ -10,7 +10,7 @@
 // srcFileDesc: the .txt file descriptor (read from)
 // destFileDesc: the .dat file descriptor (write to)
 // return: the total number of strings converted
-static uint32_t str2dat(FILE* srcFileDesc, FILE* destFileDesc, uint32_t* stringsCount) {
+static uint32_t str2dat(FILE* srcFileDesc, FILE* destFileDesc, uint32_t* pStringsCount) {
 
 	unsigned char c1, c2, c3, c4;
 
@@ -29,7 +29,7 @@ static uint32_t str2dat(FILE* srcFileDesc, FILE* destFileDesc, uint32_t* strings
 	// The first 4 bytes are reserved for specifying the number of total strings, which will be written finally.
 	fseek(destFileDesc, TOTAL_NUM_STRS_BYTES, SEEK_SET);
 
-	*stringsCount = 0;
+	*pStringsCount = 0;
 
 	while (!feof(srcFileDesc)) {
 		char* line = NULL;
@@ -68,7 +68,7 @@ static uint32_t str2dat(FILE* srcFileDesc, FILE* destFileDesc, uint32_t* strings
 				// write back text field
 				fputs(line, destFileDesc);
 
-				++(*stringsCount);
+				++(*pStringsCount);
 			}
 		}
 		free(line);
@@ -80,13 +80,13 @@ static uint32_t str2dat(FILE* srcFileDesc, FILE* destFileDesc, uint32_t* strings
 	rewind(destFileDesc);
 
 	// put number of total strings in the first 4 bytes
-	uInt32ToFourBytes(*stringsCount, &c1, &c2, &c3, &c4);
+	uInt32ToFourBytes(*pStringsCount, &c1, &c2, &c3, &c4);
 	fputc(c1, destFileDesc);
 	fputc(c2, destFileDesc);
 	fputc(c3, destFileDesc);
 	fputc(c4, destFileDesc);
 
-	return *stringsCount;
+	return *pStringsCount;
 }
 
 // Convert .txt back to .dat
