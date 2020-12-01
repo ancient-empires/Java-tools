@@ -92,11 +92,11 @@ $(CLEAN_RES)_all_extracted: $(CLEAN_RES)_ae1 $(CLEAN_RES)_ae2
 
 .PHONY: $(CLEAN_RES)_ae1
 $(CLEAN_RES)_ae1:
-	-rm -rfv $(AE1pak_dir) $(AE1_filelist)
+	-rm -rfv $(AE1pak_dir) $(AE1pak_filelist)
 
 .PHONY: $(CLEAN_RES)_ae2
 $(CLEAN_RES)_ae2:
-	-rm -rfv $(AE2pak_dir) $(AE2_filelist)
+	-rm -rfv $(AE2pak_dir) $(AE2pak_filelist)
 
 
 # pack .pak
