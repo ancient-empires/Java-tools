@@ -37,7 +37,6 @@ $(AE2PAK):
 
 .PHONY: clean
 clean:
-	-rm -rfv $(AE1MAP) $(AE2MAP)
 	$(MAKE) -C $(AE2LANG)/ $@
 	$(MAKE) -C $(AE2PAK)/ $@
 	$(MAKE) -C $(UTILS)/ $@
