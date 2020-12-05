@@ -33,12 +33,9 @@ deps := $(src:.c=.d)
 clean:
 	$(CLEAN)
 # Use R=1 to recursively clean up generated files in other directories
+# Use R=1 to remove generated object files in other directories as well
 ifeq ($(R),1)
-	for d in $(dir $(objs)); do \
-		if [ "$$d" != ./ ]; then \
-			$(MAKE) "$@" -C "$$d"; \
-		fi; \
-	done
+	rm -rfv $(objs)
 endif
 
 
