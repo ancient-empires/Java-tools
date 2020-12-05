@@ -14,6 +14,7 @@ $(ALL): $(TARGET).out
 common := ../common/Makefile
 -include $(common)
 
+# executable file
 $(TARGET).out: $(objs)
 	$(CC) $^ -o "$@"
 
@@ -32,7 +33,6 @@ deps := $(src:.c=.d)
 .PHONY: clean
 clean:
 	$(CLEAN)
-# Use R=1 to recursively clean up generated files in other directories
 # Use R=1 to remove generated object files in other directories as well
 ifeq ($(R),1)
 	rm -rfv $(objs)

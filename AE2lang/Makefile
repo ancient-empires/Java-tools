@@ -10,6 +10,7 @@ all: $(TARGET).out
 common := ../common/Makefile
 -include $(common)
 
+# executable file
 $(TARGET).out: $(objs)
 	$(CC) $^ -o "$@"
 
