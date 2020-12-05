@@ -16,9 +16,23 @@ $ make
 $ make dat2txt dat=<path/to/dat.dat> txt=<path/to/txt.txt>
 ```
 
+#### Shortcut: Convert .dat to .txt for AE1 and AE2
+```
+$ make dat2txt_ae1 # convert for AE1
+$ make dat2txt_ae2 # convert for AE2
+$ make dat2txt_all # convert for both series, which will call the two commands above automatically
+```
+
 ### Convert from .txt to .dat
 ```
 $ make txt2dat dat=<path/to/dat.dat> txt=<path/to/txt.txt>
+```
+
+#### Shortcut: Convert .txt to .dat for AE1 and AE2
+```
+$ make txt2dat_ae1 # convert for AE1
+$ make txt2dat_ae2 # convert for AE2
+$ make txt2dat_all # convert for both series, which will call the two commands above automatically
 ```
 
 ### Clean up
