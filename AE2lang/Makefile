@@ -1,3 +1,5 @@
+# Compile and link
+
 TARGET := AE2lang
 
 src := main.c ../utils/utils.c dat2txt.c txt2dat.c
@@ -24,10 +26,10 @@ deps := $(src:.c=.d)
 .PHONY: clean
 clean:
 	$(CLEAN)
-# Use R=1 to remove generated object files in other directories as well
-ifeq ($(R),1)
-	rm -rfv $(objs)
-endif
+	rm -rfv $(objs) $(deps)
+
+
+# Convesions
 
 # Check variables "dat" and "txt" before making conversions
 ERROR_MSG := ERROR: Invalid .dat and/or .txt file

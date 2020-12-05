@@ -1,3 +1,5 @@
+# Compile and link
+
 TARGET := AE2pak
 
 ALL := all
@@ -28,10 +30,7 @@ deps := $(src:.c=.d)
 .PHONY: clean
 clean:
 	$(CLEAN)
-# Use R=1 to remove generated object files in other directories as well
-ifeq ($(R),1)
-	rm -rfv $(objs)
-endif
+	rm -rfv $(objs) $(deps)
 
 
 # extract .pak
