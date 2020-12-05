@@ -19,12 +19,7 @@ deps := $(src:.c=.d)
 -include $(deps)
 
 %.o: %.c
-	if [ "$(@D)" = . ]; then \
-		$(CC_WRITE_DEP); \
-	else \
-		# Generate targets in other directories \
-		$(MAKE) "$@" -C "$(@D)" CFLAGS="$(CFLAGS)"; \
-	fi
+	$(CC_WRITE_DEP)
 
 .PHONY: clean
 clean:

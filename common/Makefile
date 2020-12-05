@@ -4,7 +4,7 @@
 CFLAGS := -g -Wall -Werror
 
 # automatic prerequisite generation
-DEPFLAGS = -MMD -MF $(@:.o=.d)
+DEPFLAGS = -MMD -MF "$(@:.o=.d)"
 CC_WRITE_DEP = $(CC) $(CFLAGS) -c $< -o "$@" $(DEPFLAGS)
 
 # clean up
