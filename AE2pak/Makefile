@@ -2,8 +2,6 @@
 
 TARGET := AE2pak
 
-PACK := pack
-
 src := main.c ../utils/utils.c path_processing.c file_processing.c extract.c pack.c
 objs := $(src:.c=.o)
 
@@ -95,20 +93,20 @@ $(if $(pak),,$(error $(PACK_ERROR_MSG)))
 $(if $(filelist),,$(error $(PACK_ERROR_MSG)))
 endef
 
-.PHONY: $(PACK)
-$(PACK): all
+.PHONY: pack
+pack: all
 	$(call CHECK_PACK_ERROR)
 	./$(TARGET).out $(pak) -p $(filelist)
 
 pack_check_exec := pack_check.sh
 
-.PHONY: $(PACK)_all
-$(PACK)_all: $(PACK)_ae1 $(PACK)_ae2
+.PHONY: pack_all
+pack_all: pack_ae1 pack_ae2
 
-.PHONY: $(PACK)_ae1
-$(PACK)_ae1:
+.PHONY: pack_ae1
+pack_ae1:
 	bash $(pack_check_exec) $(AE1pak_pak) $(AE1pak_filelist)
 
-.PHONY: $(PACK)_ae2
-$(PACK)_ae2:
+.PHONY: pack_ae2
+pack_ae2:
 	bash $(pack_check_exec) $(AE2pak_pak) $(AE2pak_filelist)
