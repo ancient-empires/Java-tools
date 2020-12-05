@@ -2,15 +2,13 @@
 
 TARGET := AE2pak
 
-ALL := all
-EXTRACT := extract
 PACK := pack
 
 src := main.c ../utils/utils.c path_processing.c file_processing.c extract.c pack.c
 objs := $(src:.c=.o)
 
-.PHONY: $(ALL)
-$(ALL): $(TARGET).out
+.PHONY: all
+all: $(TARGET).out
 
 # common parts
 common := ../common/Makefile
@@ -33,7 +31,7 @@ clean:
 	rm -rfv $(objs) $(deps)
 
 
-# extract .pak
+# Extract .pak
 
 AE1data := data/AE1
 AE1pak_pak := $(AE1data)/1.pak
@@ -57,40 +55,38 @@ endef
 check_extract_error:
 	$(call CHECK_EXTRACT_ERROR)
 
-.PHONY: $(EXTRACT)
-$(EXTRACT): $(ALL) check_extract_error
+.PHONY: extract
+extract: all check_extract_error
 	mkdir -vp $(dir)
 	./$(TARGET).out $(pak) -e $(dir) $(filelist)
 
-.PHONY: $(EXTRACT)_all
-$(EXTRACT)_all: $(EXTRACT)_ae1 $(EXTRACT)_ae2
+.PHONY: extract_all
+extract_all: extract_ae1 extract_ae2
 
-.PHONY: $(EXTRACT)_ae1
-$(EXTRACT)_ae1:
-	$(MAKE) $(EXTRACT) pak=$(AE1pak_pak) dir=$(AE1pak_dir) filelist=$(AE1pak_filelist)
+.PHONY: extract_ae1
+extract_ae1:
+	$(MAKE) extract pak=$(AE1pak_pak) dir=$(AE1pak_dir) filelist=$(AE1pak_filelist)
 
-.PHONY: $(EXTRACT)_ae2
-$(EXTRACT)_ae2:
-	$(MAKE) $(EXTRACT) pak=$(AE2pak_pak) dir=$(AE2pak_dir) filelist=$(AE2pak_filelist)
+.PHONY: extract_ae2
+extract_ae2:
+	$(MAKE) extract pak=$(AE2pak_pak) dir=$(AE2pak_dir) filelist=$(AE2pak_filelist)
 
 
-# clean up extracted files
+# Clean up extracted files
 
-CLEAN_RES := clean
+.PHONY: clean_all_extracted
+clean_all_extracted: clean_ae1 clean_ae2
 
-.PHONY: $(CLEAN_RES)_all_extracted
-$(CLEAN_RES)_all_extracted: $(CLEAN_RES)_ae1 $(CLEAN_RES)_ae2
-
-.PHONY: $(CLEAN_RES)_ae1
-$(CLEAN_RES)_ae1:
+.PHONY: clean_ae1
+clean_ae1:
 	-rm -rfv $(AE1pak_dir) $(AE1pak_filelist)
 
-.PHONY: $(CLEAN_RES)_ae2
-$(CLEAN_RES)_ae2:
+.PHONY: clean_ae2
+clean_ae2:
 	-rm -rfv $(AE2pak_dir) $(AE2pak_filelist)
 
 
-# pack .pak
+# Pack .pak
 
 # check error for extraction
 PACK_ERROR_MSG := ERROR: Invalid .pak file and/or file list
@@ -100,7 +96,7 @@ $(if $(filelist),,$(error $(PACK_ERROR_MSG)))
 endef
 
 .PHONY: $(PACK)
-$(PACK): $(ALL)
+$(PACK): all
 	$(call CHECK_PACK_ERROR)
 	./$(TARGET).out $(pak) -p $(filelist)
 
