@@ -1,5 +1,7 @@
 #include <cstdio>
 
+#include "units.hpp"
+
 class MyClass {
 	public:
 		static void print() {
