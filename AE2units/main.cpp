@@ -1,6 +1,7 @@
 #include <cstdio>
 
 #include "units.hpp"
+#include "UnitProcessor.hpp"
 
 class MyClass {
 	public:
