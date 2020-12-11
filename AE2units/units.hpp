@@ -10,6 +10,7 @@
 	Hence it is impossible to add or remove units from the game.
 */
 
+// Unit names are taken from Ancient Empires 1, for compatibility purposes.
 static const std::vector<std::string> unitNames = {
 	"soldier",
 	"archer",
@@ -20,7 +21,7 @@ static const std::vector<std::string> unitNames = {
 	"golem",
 	"catapult",
 	"wyvern",   // Dragon
-	"king",
+	"king",     // Galamar / Valadorn / Demon Lord / Saeth
 	"skeleton",
 	"crystall", // new unit in Ancient Empires 2
 };
