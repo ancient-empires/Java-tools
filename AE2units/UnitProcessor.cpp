@@ -31,22 +31,23 @@ public:
 
 	/* Output the unit data to a .unit file.
 		Sample format (soldier.unit):
+		==============================
+		MoveRange 5
+		Attack 50 55
+		Defence 5
+		AttackRange 2 1
+		Cost 250
 
-			MoveRange 5
-			Attack 50 55
-			Defence 5
-			AttackRange 2 1
-			Cost 250
+		CharCount 5
 
-			CharCount 5
+		CharPos 0 30 63
+		CharPos 1 30 101
+		CharPos 2 8 80
+		CharPos 3 8 121
+		CharPos 4 8 41
 
-			CharPos 0 30 63
-			CharPos 1 30 101
-			CharPos 2 8 80
-			CharPos 3 8 121
-			CharPos 4 8 41
-
-			HasProperty 6
+		HasProperty 6
+		==============================
 	*/
 	friend std::ostream& operator<<(std::ostream& outputStream, const UnitProcessor::UnitInfo& unitInfo) {
 		// section 1: basic information
