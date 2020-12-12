@@ -29,7 +29,54 @@ public:
 
 	std::vector<char> properties;
 
+	/* Output the unit data to a .unit file.
+		Sample format (soldier.unit):
+
+			MoveRange 5
+			Attack 50 55
+			Defence 5
+			AttackRange 2 1
+			Cost 250
+
+			CharCount 5
+
+			CharPos 0 30 63
+			CharPos 1 30 101
+			CharPos 2 8 80
+			CharPos 3 8 121
+			CharPos 4 8 41
+
+			HasProperty 6
+	*/
 	friend std::ostream& operator<<(std::ostream& outputStream, const UnitProcessor::UnitInfo& unitInfo) {
+		// section 1: basic information
+		outputStream << "MoveRange " << unitInfo.moveRange << std::endl;
+		outputStream << "Attack "
+			<< unitInfo.minAttack << " " << unitInfo.maxAttack << std::endl;
+		outputStream << "Defence " << unitInfo.defense << std::endl;
+		outputStream << "AttackRange "
+			<< unitInfo.maxAttackRange << " "
+			<< unitInfo.minAttackRange << std::endl;
+		outputStream << "Cost " << unitInfo.price << std::endl;
+
+		// section 2: fight animation information
+		unsigned int numChars = unitInfo.charPos.size();
+		std::cout << std::endl;
+		std::cout << "CharCount " << numChars << std::endl << std::endl;
+		for (unsigned int i = 0; i < numChars; ++i) {
+			const auto& coord = unitInfo.charPos.at(i);
+			std::cout << "CharPos " << i << " "
+				<< coord.first << " " << coord.second << std::endl;
+		}
+
+		// section 3: unit properties
+		if (!unitInfo.properties.empty()) {
+			std::cout << std::endl;
+			for (const auto& property: unitInfo.properties) {
+				std::cout << "HasProperty " << property << std::endl;
+			}
+		}
+
 		return outputStream;
 	}
 };
