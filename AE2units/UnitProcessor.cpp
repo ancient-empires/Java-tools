@@ -74,22 +74,22 @@ public:
 
 		// section 2: fight animation information
 		unsigned int numChars = unitInfo.charPos.size();
-		std::cout << std::endl;
-		std::cout << "CharCount " << numChars << std::endl;
+		outputStream << std::endl;
+		outputStream << "CharCount " << numChars << std::endl;
 		if (numChars > 0) {
-			std::cout << std::endl;
+			outputStream << std::endl;
 			for (unsigned int i = 0; i < numChars; ++i) {
 				const auto& coord = unitInfo.charPos.at(i);
-				std::cout << "CharPos " << i << " "
+				outputStream << "CharPos " << i << " "
 					<< coord.first << " " << coord.second << std::endl;
 			}
 		}
 
 		// section 3: unit properties
 		if (!unitInfo.properties.empty()) {
-			std::cout << std::endl;
+			outputStream << std::endl;
 			for (const auto& property: unitInfo.properties) {
-				std::cout << "HasProperty " << property << std::endl;
+				outputStream << "HasProperty " << property << std::endl;
 			}
 		}
 
@@ -104,13 +104,61 @@ void UnitProcessor::extract(const std::string& unitsBinFile, const std::string& 
 	// initialize input file stream
 	std::ifstream inputStream;
 	inputStream.open(unitsBinFile);
+	inputStream.exceptions(std::ifstream::failbit | std::ifstream::badbit | std::ifstream::eofbit);
 
 	// initialize all output file streams
+	std::vector<std::string> unitFilePaths(numUnits);
 	std::vector<std::ofstream> outputStreams(numUnits);
 	for (unsigned int i = 0; i < numUnits; ++i) {
-		std::string unitFilePath = extractDir + unitNames.at(i) + unitExt;
-		outputStreams.at(i).open(unitFilePath);
+		unitFilePaths.at(i) = extractDir + unitNames.at(i) + unitExt;
+		outputStreams.at(i).open(unitFilePaths.at(i));
 	}
 
-	std::cout << units.at(0) << std::endl;
+	// process all unit data
+	unsigned int i = 0;
+	for (; i < numUnits; ++i) {
+		auto& unit = units.at(i);
+		auto& outputStream = outputStreams.at(i);
+
+		unsigned char c1, c2;
+
+		try {
+			// section 1: basic information
+			unit.moveRange = inputStream.get();
+			unit.minAttack = inputStream.get();
+			unit.maxAttack = inputStream.get();
+			unit.defense = inputStream.get();
+			unit.maxAttackRange = inputStream.get();
+			unit.minAttackRange = inputStream.get();
+			c1 = inputStream.get();
+			c2 = inputStream.get();
+			unit.price = (c1 << CHAR_BIT) + c2;
+
+			// section 2: fight animation
+			unsigned int numChars = inputStream.get();
+			unit.charPos.resize(numChars);
+			for (auto& charPos: unit.charPos) {
+				charPos.first = inputStream.get();
+				charPos.second = inputStream.get();
+			}
+
+			// section 3: properties
+			unsigned int numProperties = inputStream.get();
+			unit.properties.resize(numProperties);
+			for (auto& property: unit.properties) {
+				property = inputStream.get();
+			}
+
+			outputStream << unit << std::endl;
+		}
+		catch (const std::ifstream::failure& error) {
+			// Exception: bad data (including unexpectedly reaching the end)
+			std::cerr << "ERROR: Bad data encountered when reading file \"" << unitsBinFile << "\"" << std::endl;
+			std::cerr << "Probably unexpectedly reaching the end of file?" << std::endl;
+			std::cerr << "Currently processing: \"" << unitFilePaths.at(i) << "\"" << std::endl;
+			break;
+		}
+	}
+	std::cout << "Success: " << i << std::endl;
+	std::cout << "Failure: " << (numUnits - i) << std::endl;
 }
