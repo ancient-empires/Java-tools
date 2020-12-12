@@ -1,4 +1,4 @@
-#include <cstdio>
+#include <iostream>
 
 #include "units.hpp"
 #include "UnitProcessor.hpp"
@@ -8,7 +8,7 @@ extern "C" {
 }
 
 void help() {
-	fprintf(stderr, "Usage: ./AE2units.out <path/to/units.bin> <extract/directory>\n");
+	std::cerr << "Usage: ./AE2units.out <path/to/units.bin> <extract/directory>" << std::endl;
 }
 
 int main(int argc, char* argv[]) {
