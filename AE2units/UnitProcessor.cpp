@@ -258,6 +258,7 @@ void UnitProcessor::pack(const std::string& unitsBinFile, const std::string& pac
 					// process each CharPos line
 					unsigned int j = 0;
 					for (; j < numChars; ++j) {
+						std::string line;
 						do {
 							std::getline(inputStream, line);
 						} while (line.empty());
@@ -284,7 +285,8 @@ void UnitProcessor::pack(const std::string& unitsBinFile, const std::string& pac
 	}
 	catch (const std::ifstream::failure& error) {
 		std::cerr << error.what() << endl;
-		std::cerr << "ERROR: Bad data encouuntered when processing file \"" << unitFilePaths.at(i) << std::endl;
+		std::cerr << "ERROR: Bad data encouuntered when processing file \""
+			<< unitFilePaths.at(i) << "\"" << std::endl;
 	}
 
 	std::cout << "Success: " << i << endl;
