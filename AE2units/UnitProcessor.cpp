@@ -42,7 +42,7 @@ public:
 	std::vector<uint8_t> properties;
 
 	/* Output the unit data to a .unit file.
-		Sample format (soldier.unit):
+		Sample format (archer.unit):
 		==============================
 		MoveRange 5
 		Attack 50 55
@@ -157,6 +157,8 @@ void UnitProcessor::extract(const std::string& unitsBinFile, const std::string& 
 
 			// write out to output file
 			outputStream << unit << endl;
+			std::cout << "Successfully written to: \"" << unitFilePaths.at(i)
+				<< "\"" << endl;
 		}
 		catch (const std::ifstream::failure& error) {
 			// Exception: bad data (including unexpectedly reaching the end)
