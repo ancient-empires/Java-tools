@@ -178,12 +178,29 @@ void UnitProcessor::pack(const std::string& unitsBinFile, const std::string& pac
 	// initialize all input file streams
 	std::vector<std::string> unitFilePaths(numUnits);
 	std::vector<std::ifstream> inputStreams(numUnits);
+
+	unsigned int numErrors = 0;
 	for (unsigned int i = 0; i < numUnits; ++i) {
 		auto& unitPath = unitFilePaths.at(i);
 		unitPath = packDir + "/" + unitNames.at(i) + unitExt;
 		auto& inputStream = inputStreams.at(i);
-		inputStream.open(unitPath);
 		inputStream.exceptions(std::ifstream::badbit);
+
+		// try to open each input file and initialize streams
+		// report any errors
+		try {
+			inputStream.open(unitPath);
+			if (inputStream.fail()) {
+				throw std::ios_base::failure("Failed to open input file \"" + unitPath + "\"");
+			}
+		}
+		catch (const std::ios_base::failure& error) {
+			++numErrors;
+			std::cerr << error.what() << endl;
+		}
+	}
+	if (numErrors > 0) {
+		exit(ERROR_RW);
 	}
 
 	// initialize output stream
