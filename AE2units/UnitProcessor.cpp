@@ -3,6 +3,7 @@
 #include <iostream>
 #include <sstream>
 #include <vector>
+#include <set>
 
 #include "endl.hpp"
 #include "units.hpp"
@@ -40,7 +41,7 @@ public:
 	typedef std::pair<short, short> charpos;
 	std::vector<charpos> charPos;
 
-	std::vector<short> properties;
+	std::set<unsigned short> properties;
 
 	/* Output the unit data to a .unit file.
 		Sample format (archer.unit):
@@ -158,9 +159,10 @@ void UnitProcessor::extract(const std::string& unitsBinFile, const std::string& 
 
 			// section 3: unit properties
 			unsigned int numProperties = inputStream.get();
-			unit.properties.resize(numProperties);
-			for (auto& property: unit.properties) {
-				property = inputStream.get();
+			unit.properties.clear();
+			for (unsigned int j = 0; j < numProperties; ++j) {
+				unsigned short property = inputStream.get();
+				unit.properties.emplace(property);
 			}
 
 			// write out to output file
@@ -282,7 +284,7 @@ void UnitProcessor::pack(const std::string& unitsBinFile, const std::string& pac
 				if (key == Key::hasProperty) {
 					unsigned short property;
 					lineStream >> property;
-					unit.properties.emplace_back(property);
+					unit.properties.emplace(property);
 				}
 			}
 
