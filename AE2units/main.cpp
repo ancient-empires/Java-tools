@@ -1,5 +1,6 @@
 #include <iostream>
 
+#include "endl.hpp"
 #include "units.hpp"
 #include "UnitProcessor.hpp"
 
@@ -8,7 +9,7 @@ extern "C" {
 }
 
 void help() {
-	std::cerr << "Usage: ./AE2units.out <path/to/units.bin> <extract/directory>" << std::endl;
+	std::cerr << "Usage: ./AE2units.out <path/to/units.bin> <extract/directory>" << endl;
 }
 
 int main(int argc, char* argv[]) {
