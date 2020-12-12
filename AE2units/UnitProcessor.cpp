@@ -24,8 +24,6 @@ namespace Key {
 	static const std::string hasProperty = "HasProperty";
 };
 
-typedef std::pair<int8_t, int8_t> charpos;
-
 class UnitProcessor::UnitInfo {
 public:
 	uint8_t moveRange = 0;
@@ -40,6 +38,7 @@ public:
 
 	int16_t price = 0;
 
+	typedef std::pair<int8_t, int8_t> charpos;
 	std::vector<charpos> charPos;
 
 	std::vector<uint8_t> properties;
