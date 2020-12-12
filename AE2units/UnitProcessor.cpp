@@ -62,11 +62,14 @@ public:
 		// section 2: fight animation information
 		unsigned int numChars = unitInfo.charPos.size();
 		std::cout << std::endl;
-		std::cout << "CharCount " << numChars << std::endl << std::endl;
-		for (unsigned int i = 0; i < numChars; ++i) {
-			const auto& coord = unitInfo.charPos.at(i);
-			std::cout << "CharPos " << i << " "
-				<< coord.first << " " << coord.second << std::endl;
+		std::cout << "CharCount " << numChars << std::endl;
+		if (numChars > 0) {
+			std::cout << std::endl;
+			for (unsigned int i = 0; i < numChars; ++i) {
+				const auto& coord = unitInfo.charPos.at(i);
+				std::cout << "CharPos " << i << " "
+					<< coord.first << " " << coord.second << std::endl;
+			}
 		}
 
 		// section 3: unit properties
