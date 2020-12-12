@@ -7,7 +7,7 @@ class UnitProcessor {
 private:
 	class UnitInfo;
 public:
-	static void extract(const std::string& extractDir);
+	static void extract(const std::string& unitsBinFile, const std::string& extractDir);
 };
 
 #endif

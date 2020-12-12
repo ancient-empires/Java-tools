@@ -1,7 +1,12 @@
+#include <fstream>
 #include <vector>
 
 #include "units.hpp"
 #include "UnitProcessor.hpp"
+
+extern "C" {
+	#include "../utils/utils.h"
+}
 
 typedef std::pair<char, char> charpos;
 
@@ -24,6 +29,17 @@ public:
 	std::vector<char> properties;
 };
 
-void UnitProcessor::extract(const std::string& extractDir) {
+void UnitProcessor::extract(const std::string& unitsBinFile, const std::string& extractDir) {
+	// vector to store the information of all units
 	std::vector<UnitProcessor::UnitInfo> units(numUnits);
+
+	// initialize input file stream
+	std::ifstream inputStream;
+	inputStream.open(unitsBinFile);
+
+	// initialize all output file streams
+	std::vector<std::ofstream> outputStreams(numUnits);
+	for (unsigned int i = 0; i < numUnits; ++i) {
+		outputStreams.at(i).open(unitNames.at(i) + unitExt);
+	}
 }

@@ -26,6 +26,8 @@ static const std::vector<std::string> unitNames = {
 	"crystall", // new unit in Ancient Empires 2
 };
 
+static const std::string unitExt = ".unit";
+
 static const unsigned int numUnits = unitNames.size();
 
 #endif
