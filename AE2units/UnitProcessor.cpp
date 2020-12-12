@@ -14,8 +14,8 @@ public:
 
 	char defense = 0;
 
-	unsigned char minAttackRange = 0;
 	unsigned char maxAttackRange = 0;
+	unsigned char minAttackRange = 0;
 
 	short price = 0;
 
