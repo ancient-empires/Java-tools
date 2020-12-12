@@ -40,6 +40,7 @@ void UnitProcessor::extract(const std::string& unitsBinFile, const std::string& 
 	// initialize all output file streams
 	std::vector<std::ofstream> outputStreams(numUnits);
 	for (unsigned int i = 0; i < numUnits; ++i) {
-		outputStreams.at(i).open(unitNames.at(i) + unitExt);
+		std::string unitFilePath = extractDir + unitNames.at(i) + unitExt;
+		outputStreams.at(i).open(unitFilePath);
 	}
 }
