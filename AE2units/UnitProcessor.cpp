@@ -109,7 +109,7 @@ void UnitProcessor::extract(const std::string& unitsBinFile, const std::string& 
 
 	// initialize input file stream
 	std::ifstream inputStream;
-	inputStream.exceptions(std::ifstream::failbit | std::ifstream::badbit | std::ifstream::eofbit);
+	inputStream.exceptions(std::ifstream::failbit | std::ifstream::badbit);
 	try {
 		inputStream.open(unitsBinFile);
 	}
@@ -221,6 +221,7 @@ void UnitProcessor::pack(const std::string& unitsBinFile, const std::string& pac
 	try {
 		for (; i < numUnits; ++i) {
 			auto& unit = units.at(i);
+			unit.properties.clear();
 
 			auto& inputStream = inputStreams.at(i);
 			while (!inputStream.eof()) {
@@ -272,12 +273,17 @@ void UnitProcessor::pack(const std::string& unitsBinFile, const std::string& pac
 								>> unit.charPos.at(j).second;
 						}
 						else {
-							throw std::ifstream::failure("ERROR: Bad data encountered when processing charPos");
+							throw std::ifstream::failure("ERROR: Bad data encountered when processing " + Key::charPos);
 						}
 					}
 				}
 
 				// section 3: unit properties
+				if (key == Key::hasProperty) {
+					unsigned short property;
+					lineStream >> property;
+					unit.properties.emplace_back(property);
+				}
 			}
 
 			std::cout << unit << std::endl;
