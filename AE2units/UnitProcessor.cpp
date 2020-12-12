@@ -139,7 +139,7 @@ void UnitProcessor::extract(const std::string& unitsBinFile, const std::string& 
 			unit.minAttackRange = inputStream.get();
 			c1 = inputStream.get();
 			c2 = inputStream.get();
-			unit.price = (c1 << CHAR_BIT) + c2;
+			unit.price = static_cast<int16_t>(fourBytesToUInt32(0, 0, c1, c2));
 
 			// section 2: fight animation
 			unsigned int numChars = inputStream.get();
