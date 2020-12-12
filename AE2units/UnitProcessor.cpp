@@ -264,7 +264,7 @@ void UnitProcessor::pack(const std::string& unitsBinFile, const std::string& pac
 						std::string line;
 						do {
 							std::getline(inputStream, line);
-						} while (line.empty());
+						} while (line.empty() && !inputStream.eof());
 
 						std::istringstream lineStream(line);
 						lineStream >> key;
