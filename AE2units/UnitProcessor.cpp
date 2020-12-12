@@ -1,4 +1,5 @@
 #include <fstream>
+#include <iostream>
 #include <vector>
 
 #include "units.hpp"
@@ -27,6 +28,10 @@ public:
 	std::vector<charpos> charPos;
 
 	std::vector<char> properties;
+
+	friend std::ostream& operator<<(std::ostream& outputStream, const UnitProcessor::UnitInfo& unitInfo) {
+		return outputStream;
+	}
 };
 
 void UnitProcessor::extract(const std::string& unitsBinFile, const std::string& extractDir) {
