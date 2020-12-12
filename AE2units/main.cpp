@@ -1,5 +1,6 @@
 #include <iostream>
 
+#include "endl.hpp"
 #include "units.hpp"
 #include "UnitProcessor.hpp"
 
@@ -8,18 +9,19 @@ extern "C" {
 }
 
 void help() {
-	std::cerr << "Usage: ./AE2units.out <path/to/units.bin> <extract/directory>" << std::endl;
+	std::cerr << "Usage:" << endl;
+	std::cerr << "- Extract mode: ./AE2units.out -e <path/to/units.bin> <path/to/.units/directory>" << endl;
 }
 
 int main(int argc, char* argv[]) {
 	// check arguments
-	if (argc < 3) {
+	if (argc < 4) {
 		help();
 		exit(ERROR_ARGS);
 	}
 
-	std::string unitsBinFile = argv[1];
-	std::string extractDir = argv[2];
+	std::string unitsBinFile = argv[2];
+	std::string extractDir = argv[3];
 	UnitProcessor::extract(unitsBinFile, extractDir);
 	return 0;
 }

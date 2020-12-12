@@ -3,14 +3,13 @@
 #include <iostream>
 #include <vector>
 
+#include "endl.hpp"
 #include "units.hpp"
 #include "UnitProcessor.hpp"
 
 extern "C" {
 	#include "../utils/utils.h"
 }
-
-const std::string endl = "\n";
 
 static std::ostream& operator<<(std::ostream& outputStream, const int8_t& num) {
 	outputStream << static_cast<int>(num);
