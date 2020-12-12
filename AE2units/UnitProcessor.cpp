@@ -1,3 +1,4 @@
+#include <cstdint>
 #include <fstream>
 #include <iostream>
 #include <vector>
@@ -9,25 +10,35 @@ extern "C" {
 	#include "../utils/utils.h"
 }
 
-typedef std::pair<char, char> charpos;
+typedef std::pair<int8_t, int8_t> charpos;
+
+std::ostream& operator<<(std::ostream& outputStream, const int8_t& num) {
+	outputStream << static_cast<int>(num);
+	return outputStream;
+}
+
+std::ostream& operator<<(std::ostream& outputStream, const uint8_t& num) {
+	outputStream << static_cast<unsigned int>(num);
+	return outputStream;
+}
 
 class UnitProcessor::UnitInfo {
 public:
-	char moveRange = 0;
+	uint8_t moveRange = 0;
 
-	char minAttack = 0;
-	char maxAttack = 0;
+	int8_t minAttack = 0;
+	int8_t maxAttack = 0;
 
-	char defense = 0;
+	int8_t defense = 0;
 
-	unsigned char maxAttackRange = 0;
-	unsigned char minAttackRange = 0;
+	uint8_t maxAttackRange = 0;
+	uint8_t minAttackRange = 0;
 
-	short price = 0;
+	int16_t price = 0;
 
 	std::vector<charpos> charPos;
 
-	std::vector<char> properties;
+	std::vector<uint8_t> properties;
 
 	/* Output the unit data to a .unit file.
 		Sample format (soldier.unit):
@@ -100,4 +111,6 @@ void UnitProcessor::extract(const std::string& unitsBinFile, const std::string& 
 		std::string unitFilePath = extractDir + unitNames.at(i) + unitExt;
 		outputStreams.at(i).open(unitFilePath);
 	}
+
+	std::cout << units.at(0) << std::endl;
 }
