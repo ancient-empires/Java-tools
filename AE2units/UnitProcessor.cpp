@@ -110,8 +110,9 @@ void UnitProcessor::extract(const std::string& unitsBinFile, const std::string& 
 	std::vector<std::string> unitFilePaths(numUnits);
 	std::vector<std::ofstream> outputStreams(numUnits);
 	for (unsigned int i = 0; i < numUnits; ++i) {
-		unitFilePaths.at(i) = extractDir + unitNames.at(i) + unitExt;
-		outputStreams.at(i).open(unitFilePaths.at(i));
+		auto& unitPath = unitFilePaths.at(i);
+		unitPath = extractDir + "/" + unitNames.at(i) + unitExt;
+		outputStreams.at(i).open(unitPath);
 	}
 
 	// process all unit data
