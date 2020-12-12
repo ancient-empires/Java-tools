@@ -22,10 +22,14 @@ int main(int argc, char* argv[]) {
 
 	std::string mode = argv[1];
 	std::string unitsBinFile = argv[2];
-	std::string extractDir = argv[3];
-
+	std::string dir = argv[3];
 	if (mode == "-e") {
-		UnitProcessor::extract(unitsBinFile, extractDir);
+		UnitProcessor::extract(unitsBinFile, dir);
+	}
+	else if (mode == "-p") {
+		std::string unitsBinFile = argv[2];
+		std::string packDir = argv[3];
+		UnitProcessor::pack(unitsBinFile, dir);
 	}
 
 	return 0;

@@ -1,9 +1,11 @@
 #include <cstdint>
 #include <fstream>
 #include <iostream>
+#include <sstream>
 #include <vector>
 
 #include "endl.hpp"
+#include "int8_output.hpp"
 #include "units.hpp"
 #include "UnitProcessor.hpp"
 
@@ -11,15 +13,16 @@ extern "C" {
 	#include "../utils/utils.h"
 }
 
-static std::ostream& operator<<(std::ostream& outputStream, const int8_t& num) {
-	outputStream << static_cast<int>(num);
-	return outputStream;
-}
-
-static std::ostream& operator<<(std::ostream& outputStream, const uint8_t& num) {
-	outputStream << static_cast<unsigned int>(num);
-	return outputStream;
-}
+namespace Key {
+	static const std::string moveRange = "MoveRange";
+	static const std::string attack = "Attack";
+	static const std::string defense = "Defence";
+	static const std::string attackRange = "AttackRange";
+	static const std::string price = "Cost";
+	static const std::string charCount = "CharCount";
+	static const std::string charPos = "CharPos";
+	static const std::string hasProperty = "HasProperty";
+};
 
 typedef std::pair<int8_t, int8_t> charpos;
 
@@ -63,24 +66,24 @@ public:
 	*/
 	friend std::ostream& operator<<(std::ostream& outputStream, const UnitProcessor::UnitInfo& unitInfo) {
 		// section 1: basic information
-		outputStream << "MoveRange " << unitInfo.moveRange << endl;
-		outputStream << "Attack "
+		outputStream << Key::moveRange << " " << unitInfo.moveRange << endl;
+		outputStream << Key::attack << " "
 			<< unitInfo.minAttack << " " << unitInfo.maxAttack << endl;
-		outputStream << "Defence " << unitInfo.defense << endl;
-		outputStream << "AttackRange "
+		outputStream << Key::defense << " " << unitInfo.defense << endl;
+		outputStream << Key::attackRange << " "
 			<< unitInfo.maxAttackRange << " "
 			<< unitInfo.minAttackRange << endl;
-		outputStream << "Cost " << unitInfo.price << endl;
+		outputStream << Key::price << " " << unitInfo.price << endl;
 
 		// section 2: fight animation information
 		unsigned int numChars = unitInfo.charPos.size();
 		outputStream << endl;
-		outputStream << "CharCount " << numChars << endl;
+		outputStream << Key::charCount << " " << numChars << endl;
 		if (numChars > 0) {
 			outputStream << endl;
 			for (unsigned int i = 0; i < numChars; ++i) {
 				const auto& coord = unitInfo.charPos.at(i);
-				outputStream << "CharPos " << i << " "
+				outputStream << Key::charPos << " " << i << " "
 					<< coord.first << " " << coord.second << endl;
 			}
 		}
@@ -148,7 +151,7 @@ void UnitProcessor::extract(const std::string& unitsBinFile, const std::string& 
 				charPos.second = inputStream.get();
 			}
 
-			// section 3: properties
+			// section 3: unit properties
 			unsigned int numProperties = inputStream.get();
 			unit.properties.resize(numProperties);
 			for (auto& property: unit.properties) {
@@ -170,4 +173,41 @@ void UnitProcessor::extract(const std::string& unitsBinFile, const std::string& 
 	}
 	std::cout << "Success: " << i << endl;
 	std::cout << "Failure: " << (numUnits - i) << endl;
+}
+
+void UnitProcessor::pack(const std::string& unitsBinFile, const std::string& packDir) {
+	// initialize all input file streams
+	std::vector<std::string> unitFilePaths(numUnits);
+	std::vector<std::ifstream> inputStreams(numUnits);
+	for (unsigned int i = 0; i < numUnits; ++i) {
+		auto& unitPath = unitFilePaths.at(i);
+		unitPath = packDir + "/" + unitNames.at(i) + unitExt;
+		auto& inputStream = inputStreams.at(i);
+		inputStream.open(unitPath);
+		inputStream.exceptions(std::ifstream::badbit);
+	}
+
+	// initialize output stream
+	std::ofstream outputStream;
+	outputStream.open(unitsBinFile);
+
+	// process all unit data
+	unsigned int i = 0;
+	for (; i < numUnits; ++i) {
+		auto& inputStream = inputStreams.at(i);
+		while (!inputStream.eof()) {
+			// get line and key
+			std::string line, key;
+			std::getline(inputStream, line);
+			std::istringstream lineStream(line);
+			lineStream >> key;
+
+			// section 1:
+			std::cout << key << endl;
+
+			// section 2: fight animation
+
+			// section 3: unit properties
+		}
+	}
 }

@@ -4,10 +4,11 @@
 #include <string>
 
 class UnitProcessor {
-private:
+public:
 	class UnitInfo;
 public:
 	static void extract(const std::string& unitsBinFile, const std::string& extractDir);
+	static void pack(const std::string& unitsBinFile, const std::string& packDir);
 };
 
 #endif
