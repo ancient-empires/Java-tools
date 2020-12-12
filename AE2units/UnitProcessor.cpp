@@ -157,6 +157,8 @@ void UnitProcessor::extract(const std::string& unitsBinFile, const std::string& 
 
 			// write out to output file
 			outputStream << unit << endl;
+			std::cout << "Successfully written to: \"" << unitFilePaths.at(i)
+				<< "\"" << endl;
 		}
 		catch (const std::ifstream::failure& error) {
 			// Exception: bad data (including unexpectedly reaching the end)

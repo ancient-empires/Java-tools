@@ -20,8 +20,13 @@ int main(int argc, char* argv[]) {
 		exit(ERROR_ARGS);
 	}
 
+	std::string mode = argv[1];
 	std::string unitsBinFile = argv[2];
 	std::string extractDir = argv[3];
-	UnitProcessor::extract(unitsBinFile, extractDir);
+
+	if (mode == "-e") {
+		UnitProcessor::extract(unitsBinFile, extractDir);
+	}
+
 	return 0;
 }
