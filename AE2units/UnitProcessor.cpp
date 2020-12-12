@@ -42,7 +42,7 @@ public:
 	std::vector<uint8_t> properties;
 
 	/* Output the unit data to a .unit file.
-		Sample format (soldier.unit):
+		Sample format (archer.unit):
 		==============================
 		MoveRange 5
 		Attack 50 55
