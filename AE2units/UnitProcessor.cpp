@@ -233,6 +233,20 @@ void UnitProcessor::pack(const std::string& unitsBinFile, const std::string& pac
 			if (key == Key::moveRange) {
 				lineStream >> unit.moveRange;
 			}
+			else if (key == Key::attack) {
+				lineStream >> unit.minAttack;
+				lineStream >> unit.maxAttack;
+			}
+			else if (key == Key::defense) {
+				lineStream >> unit.defense;
+			}
+			else if (key == Key::attackRange) {
+				lineStream >> unit.maxAttackRange;
+				lineStream >> unit.minAttackRange;
+			}
+			else if (key == Key::price) {
+				lineStream >> unit.price;
+			}
 
 			// section 2: fight animation
 
