@@ -1,7 +1,7 @@
-#include <string>
-
 #ifndef UNITPROCESSOR_H
 #define UNITPROCESSOR_H
+
+#include <string>
 
 class UnitProcessor {
 private:
