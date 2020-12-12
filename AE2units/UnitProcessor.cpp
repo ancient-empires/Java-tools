@@ -10,7 +10,7 @@ extern "C" {
 	#include "../utils/utils.h"
 }
 
-const std::string endl = "\r\n";
+const std::string endl = "\n";
 
 static std::ostream& operator<<(std::ostream& outputStream, const int8_t& num) {
 	outputStream << static_cast<int>(num);
