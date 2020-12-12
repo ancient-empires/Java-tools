@@ -5,7 +5,6 @@
 #include <vector>
 
 #include "endl.hpp"
-#include "int8_output.hpp"
 #include "units.hpp"
 #include "UnitProcessor.hpp"
 
@@ -26,22 +25,22 @@ namespace Key {
 
 class UnitProcessor::UnitInfo {
 public:
-	uint8_t moveRange = 0;
+	unsigned short moveRange = 0;
 
-	int8_t minAttack = 0;
-	int8_t maxAttack = 0;
+	short minAttack = 0;
+	short maxAttack = 0;
 
-	int8_t defense = 0;
+	short defense = 0;
 
-	uint8_t maxAttackRange = 0;
-	uint8_t minAttackRange = 0;
+	unsigned short maxAttackRange = 0;
+	unsigned short minAttackRange = 0;
 
-	int16_t price = 0;
+	short price = 0;
 
-	typedef std::pair<int8_t, int8_t> charpos;
+	typedef std::pair<short, short> charpos;
 	std::vector<charpos> charPos;
 
-	std::vector<uint8_t> properties;
+	std::vector<short> properties;
 
 	/* Output the unit data to a .unit file.
 		Sample format (archer.unit):
@@ -110,8 +109,15 @@ void UnitProcessor::extract(const std::string& unitsBinFile, const std::string& 
 
 	// initialize input file stream
 	std::ifstream inputStream;
-	inputStream.open(unitsBinFile);
 	inputStream.exceptions(std::ifstream::failbit | std::ifstream::badbit | std::ifstream::eofbit);
+	try {
+		inputStream.open(unitsBinFile);
+	}
+	catch (const std::ifstream::failure& error) {
+		std::cerr << error.what() << endl;
+		std::cerr << "ERROR: Failed to open input file \"" << unitsBinFile << "\"" << endl;
+		exit(ERROR_RW);
+	}
 
 	// initialize all output file streams
 	std::vector<std::string> unitFilePaths(numUnits);
@@ -140,7 +146,7 @@ void UnitProcessor::extract(const std::string& unitsBinFile, const std::string& 
 			unit.minAttackRange = inputStream.get();
 			c1 = inputStream.get();
 			c2 = inputStream.get();
-			unit.price = static_cast<int16_t>(fourBytesToUInt32(0, 0, c1, c2));
+			unit.price = static_cast<short>(fourBytesToUInt32(0, 0, c1, c2));
 
 			// section 2: fight animation
 			unsigned int numChars = inputStream.get();
@@ -175,6 +181,9 @@ void UnitProcessor::extract(const std::string& unitsBinFile, const std::string& 
 }
 
 void UnitProcessor::pack(const std::string& unitsBinFile, const std::string& packDir) {
+	// initialize all units
+	std::vector<UnitProcessor::UnitInfo> units(numUnits);
+
 	// initialize all input file streams
 	std::vector<std::string> unitFilePaths(numUnits);
 	std::vector<std::ifstream> inputStreams(numUnits);
@@ -191,7 +200,7 @@ void UnitProcessor::pack(const std::string& unitsBinFile, const std::string& pac
 		try {
 			inputStream.open(unitPath);
 			if (inputStream.fail()) {
-				throw std::ios_base::failure("Failed to open input file \"" + unitPath + "\"");
+				throw std::ios_base::failure("ERROR: Failed to open input file \"" + unitPath + "\"");
 			}
 		}
 		catch (const std::ios_base::failure& error) {
@@ -210,6 +219,8 @@ void UnitProcessor::pack(const std::string& unitsBinFile, const std::string& pac
 	// process all unit data
 	unsigned int i = 0;
 	for (; i < numUnits; ++i) {
+		auto& unit = units.at(i);
+
 		auto& inputStream = inputStreams.at(i);
 		while (!inputStream.eof()) {
 			// get line and key
@@ -218,12 +229,16 @@ void UnitProcessor::pack(const std::string& unitsBinFile, const std::string& pac
 			std::istringstream lineStream(line);
 			lineStream >> key;
 
-			// section 1:
-			std::cout << key << endl;
+			// section 1: basic information
+			if (key == Key::moveRange) {
+				lineStream >> unit.moveRange;
+			}
 
 			// section 2: fight animation
 
 			// section 3: unit properties
 		}
+
+		std::cout << unit << std::endl;
 	}
 }
