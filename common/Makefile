@@ -2,7 +2,7 @@
 
 # set compile flags
 CFLAGS := -g -Wall -Werror
-CXXFAGS := -g -Wall -Werror
+CXXFLAGS := -g -Wall -Werror
 
 # set linking flags (use gcc command to compile and link C++)
 LDFLAGS := -lstdc++
