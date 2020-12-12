@@ -47,6 +47,7 @@ public:
 		CharPos 4 8 41
 
 		HasProperty 6
+
 		==============================
 	*/
 	friend std::ostream& operator<<(std::ostream& outputStream, const UnitProcessor::UnitInfo& unitInfo) {
