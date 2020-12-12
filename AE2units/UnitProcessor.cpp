@@ -10,7 +10,7 @@ extern "C" {
 	#include "../utils/utils.h"
 }
 
-typedef std::pair<int8_t, int8_t> charpos;
+const std::string endl = "\r\n";
 
 static std::ostream& operator<<(std::ostream& outputStream, const int8_t& num) {
 	outputStream << static_cast<int>(num);
@@ -21,6 +21,8 @@ static std::ostream& operator<<(std::ostream& outputStream, const uint8_t& num) 
 	outputStream << static_cast<unsigned int>(num);
 	return outputStream;
 }
+
+typedef std::pair<int8_t, int8_t> charpos;
 
 class UnitProcessor::UnitInfo {
 public:
@@ -63,33 +65,38 @@ public:
 	*/
 	friend std::ostream& operator<<(std::ostream& outputStream, const UnitProcessor::UnitInfo& unitInfo) {
 		// section 1: basic information
-		outputStream << "MoveRange " << unitInfo.moveRange << std::endl;
+		outputStream << "MoveRange " << unitInfo.moveRange << endl;
 		outputStream << "Attack "
-			<< unitInfo.minAttack << " " << unitInfo.maxAttack << std::endl;
-		outputStream << "Defence " << unitInfo.defense << std::endl;
+			<< unitInfo.minAttack << " " << unitInfo.maxAttack << endl;
+		outputStream << "Defence " << unitInfo.defense << endl;
 		outputStream << "AttackRange "
 			<< unitInfo.maxAttackRange << " "
-			<< unitInfo.minAttackRange << std::endl;
-		outputStream << "Cost " << unitInfo.price << std::endl;
+			<< unitInfo.minAttackRange << endl;
+		outputStream << "Cost " << unitInfo.price << endl;
 
 		// section 2: fight animation information
 		unsigned int numChars = unitInfo.charPos.size();
-		outputStream << std::endl;
-		outputStream << "CharCount " << numChars << std::endl;
+		outputStream << endl;
+		outputStream << "CharCount " << numChars << endl;
 		if (numChars > 0) {
-			outputStream << std::endl;
+			outputStream << endl;
 			for (unsigned int i = 0; i < numChars; ++i) {
 				const auto& coord = unitInfo.charPos.at(i);
 				outputStream << "CharPos " << i << " "
-					<< coord.first << " " << coord.second << std::endl;
+					<< coord.first << " " << coord.second << endl;
 			}
 		}
 
 		// section 3: unit properties
 		if (!unitInfo.properties.empty()) {
-			outputStream << std::endl;
+			outputStream << endl;
+			unsigned int i = 0;
 			for (const auto& property: unitInfo.properties) {
-				outputStream << "HasProperty " << property << std::endl;
+				outputStream << "HasProperty " << property;
+				if (i < unitInfo.properties.size() - 1) {
+					outputStream << endl;
+				}
+				++i;
 			}
 		}
 
@@ -151,16 +158,16 @@ void UnitProcessor::extract(const std::string& unitsBinFile, const std::string& 
 			}
 
 			// write out to output file
-			outputStream << unit << std::endl;
+			outputStream << unit << endl;
 		}
 		catch (const std::ifstream::failure& error) {
 			// Exception: bad data (including unexpectedly reaching the end)
-			std::cerr << "ERROR: Bad data encountered when reading file \"" << unitsBinFile << "\"" << std::endl;
-			std::cerr << "Probably unexpectedly reaching the end of file?" << std::endl;
-			std::cerr << "Currently processing: \"" << unitFilePaths.at(i) << "\"" << std::endl;
+			std::cerr << "ERROR: Bad data encountered when reading file \"" << unitsBinFile << "\"" << endl;
+			std::cerr << "Probably unexpectedly reaching the end of file?" << endl;
+			std::cerr << "Currently processing: \"" << unitFilePaths.at(i) << "\"" << endl;
 			break;
 		}
 	}
-	std::cout << "Success: " << i << std::endl;
-	std::cout << "Failure: " << (numUnits - i) << std::endl;
+	std::cout << "Success: " << i << endl;
+	std::cout << "Failure: " << (numUnits - i) << endl;
 }
