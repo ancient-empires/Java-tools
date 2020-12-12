@@ -8,7 +8,7 @@ objs := $(src:.c=.o)
 .PHONY: all
 all: $(TARGET).out
 
-# common parts
+# common compile options
 common := ../common/Makefile
 -include $(common)
 
