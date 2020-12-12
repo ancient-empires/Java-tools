@@ -149,6 +149,7 @@ void UnitProcessor::extract(const std::string& unitsBinFile, const std::string& 
 				property = inputStream.get();
 			}
 
+			// write out to output file
 			outputStream << unit << std::endl;
 		}
 		catch (const std::ifstream::failure& error) {
