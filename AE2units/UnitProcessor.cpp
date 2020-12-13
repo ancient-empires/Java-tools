@@ -22,7 +22,7 @@ void UnitProcessor::extract(const std::string& unitsBinFile, const std::string& 
 	std::ifstream inputStream;
 	inputStream.exceptions(std::ifstream::failbit | std::ifstream::badbit);
 	try {
-		inputStream.open(unitsBinFile);
+		inputStream.open(unitsBinFile, std::ios_base::binary);
 	}
 	catch (const std::ifstream::failure& error) {
 		std::cerr << error.what() << endl;
@@ -46,7 +46,7 @@ void UnitProcessor::extract(const std::string& unitsBinFile, const std::string& 
 			outputStream.open(unitPath);
 		}
 		catch (const std::ifstream::failure& error) {
-			std::cout << "ERROR: Failed to open output file \""
+			std::cerr << "ERROR: Failed to open output file \""
 				<< unitPath << "\"" << endl;
 			++numOutputErrors;
 		}
@@ -142,7 +142,15 @@ void UnitProcessor::pack(const std::string& unitsBinFile, const std::string& pac
 
 	// initialize output stream
 	std::ofstream outputStream;
-	outputStream.open(unitsBinFile);
+	outputStream.exceptions(std::ofstream::failbit);
+	try {
+		outputStream.open(unitsBinFile, std::ios_base::binary);
+	}
+	catch (const std::ofstream::failure& error) {
+		std::cerr << "ERROR: Failed to open output file \""
+			<< unitsBinFile << "\"" << endl;
+		exit(ERROR_RW);
+	}
 
 	// process all unit data
 	unsigned int i = 0;
