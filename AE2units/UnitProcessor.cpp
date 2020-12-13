@@ -269,10 +269,9 @@ void UnitProcessor::pack(const std::string& unitsBinFile, const std::string& pac
 						std::istringstream lineStream(line);
 						lineStream >> key;
 						if (key == Key::charPos) {
+							auto& charPos = unit.charPos.at(j);
 							short n;
-							lineStream >> n;
-							lineStream >> unit.charPos.at(j).first
-								>> unit.charPos.at(j).second;
+							lineStream >> n >> charPos.first >> charPos.second;
 						}
 						else {
 							throw std::ifstream::failure("ERROR: Bad data encountered when processing " + Key::charPos);
