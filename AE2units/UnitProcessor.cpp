@@ -36,8 +36,10 @@ void UnitProcessor::extract(const std::string& unitsBinFile, const std::string& 
 	std::vector<std::ofstream> outputStreams(numUnits);
 	unsigned int numOutputErrors = 0;
 	for (unsigned int i = 0; i < numUnits; ++i) {
+		// get unit path
 		auto& unitPath = unitFilePaths.at(i);
 		unitPath = extractDir + "/" + unitNames.at(i) + unitExt;
+		// setup output stream, check if any errors exist
 		auto& outputStream = outputStreams.at(i);
 		outputStream.exceptions(std::ifstream::failbit | std::ifstream::badbit);
 		try {
