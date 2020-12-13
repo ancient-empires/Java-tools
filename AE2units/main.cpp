@@ -10,7 +10,15 @@ extern "C" {
 
 void help() {
 	std::cerr << "Usage:" << endl;
-	std::cerr << "- Extract mode: ./AE2units.out -e <path/to/units.bin> <path/to/.units/directory>" << endl;
+	std::cerr << "- Extract mode: ./AE2units.out -e <path/to/units.bin> <extract/directory>" << endl;
+	std::cerr << "- Pack mode: ./AE2units.out -e <path/to/units.bin> <pack/directory>" << endl << endl;
+
+	std::cerr << "The directory of " << unitExt
+		<< " files must contain exactly these "
+		<< numUnits << " files for packing:" << endl;
+	for (const auto& unitName: unitNames) {
+		std::cerr << "- " << unitName << unitExt << endl;
+	}
 }
 
 int main(int argc, char* argv[]) {
