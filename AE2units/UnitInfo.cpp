@@ -3,7 +3,11 @@
 #include "endl.hpp"
 #include "UnitInfo.hpp"
 
-/* Output the unit data to a .unit file.
+extern "C" {
+	#include "../utils/utils.h"
+}
+
+/* Print the unit data to a .unit file.
 	Sample format (archer.unit):
 	==============================
 	MoveRange 5
@@ -58,6 +62,38 @@ std::ostream& operator<<(std::ostream& outputStream, const UnitInfo& unitInfo) {
 			}
 			++i;
 		}
+	}
+
+	return outputStream;
+}
+
+// write unit data to a .bin file.
+std::ofstream& UnitInfo::write_bin(std::ofstream& outputStream) const {
+
+	unsigned char c1, c2, c3, c4;
+
+	// section 1: basic info
+	outputStream.put(static_cast<char>(this->moveRange));
+	outputStream.put(static_cast<char>(this->minAttack));
+	outputStream.put(static_cast<char>(this->maxAttack));
+	outputStream.put(static_cast<char>(this->defense));
+	outputStream.put(static_cast<char>(this->maxAttackRange));
+	outputStream.put(static_cast<char>(this->minAttackRange));
+	uInt32ToFourBytes(static_cast<unsigned short>(this->price), &c1, &c2, &c3, &c4);
+	outputStream.put(c3);
+	outputStream.put(c4);
+
+	// section 2: fight animation
+	outputStream.put(static_cast<char>(this->charPos.size()));
+	for (const auto& charPos: this->charPos) {
+		outputStream.put(static_cast<char>(charPos.first));
+		outputStream.put(static_cast<char>(charPos.second));
+	}
+
+	// section 3: unit properties
+	outputStream.put(static_cast<char>(this->properties.size()));
+	for (const auto& property: this->properties) {
+		outputStream.put(property);
 	}
 
 	return outputStream;

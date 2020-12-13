@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #include <string>
 #include <vector>
 #include <set>
@@ -39,8 +40,11 @@ public:
 
 	std::set<unsigned short> properties;
 
-	// output the data to a .unit file
+	// print the data to a .unit file
 	friend std::ostream& operator<<(std::ostream& outputStream, const UnitInfo& unitInfo);
+
+	// write data to a .bin file
+	std::ofstream& write_bin(std::ofstream& outputStream) const;
 };
 
 #endif

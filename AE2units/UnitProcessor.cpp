@@ -197,7 +197,7 @@ void UnitProcessor::pack(const std::string& unitsBinFile, const std::string& pac
 				}
 			}
 
-			std::cout << unit << std::endl;
+			unit.write_bin(outputStream);
 		}
 	}
 	catch (const std::ifstream::failure& error) {
