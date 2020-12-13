@@ -126,14 +126,14 @@ void UnitProcessor::pack(const std::string& unitsBinFile, const std::string& pac
 		// try to open each input file and initialize streams
 		// report any errors
 		try {
+			inputStream.exceptions(inputStream.exceptions() | std::ifstream::failbit);
 			inputStream.open(unitPath);
-			if (inputStream.fail()) {
-				throw std::ifstream::failure("ERROR: Failed to open input file \"" + unitPath + "\"");
-			}
+			inputStream.exceptions(inputStream.exceptions() & (~std::ifstream::failbit));
 		}
 		catch (const std::ifstream::failure& error) {
 			++numInputErrors;
-			std::cerr << error.what() << endl;
+			std::cerr << "ERROR: Failed to open input file \""
+				<< unitPath << "\"" << endl;
 		}
 	}
 	if (numInputErrors > 0) {
