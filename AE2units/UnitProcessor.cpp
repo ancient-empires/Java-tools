@@ -8,105 +8,15 @@
 #include "endl.hpp"
 #include "units.hpp"
 #include "UnitProcessor.hpp"
+#include "UnitInfo.hpp"
 
 extern "C" {
 	#include "../utils/utils.h"
 }
 
-namespace Key {
-	static const std::string moveRange = "MoveRange";
-	static const std::string attack = "Attack";
-	static const std::string defense = "Defence";
-	static const std::string attackRange = "AttackRange";
-	static const std::string price = "Cost";
-	static const std::string charCount = "CharCount";
-	static const std::string charPos = "CharPos";
-	static const std::string hasProperty = "HasProperty";
-};
-
-class UnitProcessor::UnitInfo {
-public:
-	unsigned short moveRange = 0;
-
-	short minAttack = 0;
-	short maxAttack = 0;
-
-	short defense = 0;
-
-	unsigned short maxAttackRange = 0;
-	unsigned short minAttackRange = 0;
-
-	short price = 0;
-
-	typedef std::pair<short, short> charpos;
-	std::vector<charpos> charPos;
-
-	std::set<unsigned short> properties;
-
-	/* Output the unit data to a .unit file.
-		Sample format (archer.unit):
-		==============================
-		MoveRange 5
-		Attack 50 55
-		Defence 5
-		AttackRange 2 1
-		Cost 250
-
-		CharCount 5
-
-		CharPos 0 30 63
-		CharPos 1 30 101
-		CharPos 2 8 80
-		CharPos 3 8 121
-		CharPos 4 8 41
-
-		HasProperty 6
-		==============================
-	*/
-	friend std::ostream& operator<<(std::ostream& outputStream, const UnitProcessor::UnitInfo& unitInfo) {
-		// section 1: basic information
-		outputStream << Key::moveRange << " " << unitInfo.moveRange << endl;
-		outputStream << Key::attack << " "
-			<< unitInfo.minAttack << " " << unitInfo.maxAttack << endl;
-		outputStream << Key::defense << " " << unitInfo.defense << endl;
-		outputStream << Key::attackRange << " "
-			<< unitInfo.maxAttackRange << " "
-			<< unitInfo.minAttackRange << endl;
-		outputStream << Key::price << " " << unitInfo.price << endl;
-
-		// section 2: fight animation information
-		unsigned int numChars = unitInfo.charPos.size();
-		outputStream << endl;
-		outputStream << Key::charCount << " " << numChars << endl;
-		if (numChars > 0) {
-			outputStream << endl;
-			for (unsigned int i = 0; i < numChars; ++i) {
-				const auto& coord = unitInfo.charPos.at(i);
-				outputStream << Key::charPos << " " << i << " "
-					<< coord.first << " " << coord.second << endl;
-			}
-		}
-
-		// section 3: unit properties
-		if (!unitInfo.properties.empty()) {
-			outputStream << endl;
-			unsigned int i = 0;
-			for (const auto& property: unitInfo.properties) {
-				outputStream << "HasProperty " << property;
-				if (i < unitInfo.properties.size() - 1) {
-					outputStream << endl;
-				}
-				++i;
-			}
-		}
-
-		return outputStream;
-	}
-};
-
 void UnitProcessor::extract(const std::string& unitsBinFile, const std::string& extractDir) {
 	// vector to store the information of all units
-	std::vector<UnitProcessor::UnitInfo> units(numUnits);
+	std::vector<UnitInfo> units(numUnits);
 
 	// initialize input file stream
 	std::ifstream inputStream;
@@ -184,7 +94,7 @@ void UnitProcessor::extract(const std::string& unitsBinFile, const std::string& 
 
 void UnitProcessor::pack(const std::string& unitsBinFile, const std::string& packDir) {
 	// initialize all units
-	std::vector<UnitProcessor::UnitInfo> units(numUnits);
+	std::vector<UnitInfo> units(numUnits);
 
 	// initialize all input file streams
 	std::vector<std::string> unitFilePaths(numUnits);

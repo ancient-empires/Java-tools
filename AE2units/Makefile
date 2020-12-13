@@ -1,6 +1,6 @@
 target := AE2units.out
 
-src_cpp := main.cpp UnitProcessor.cpp
+src_cpp := main.cpp UnitProcessor.cpp UnitInfo.cpp
 src_c := ../utils/utils.c
 
 objs = $(objs_c) $(objs_cpp)
