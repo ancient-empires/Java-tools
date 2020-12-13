@@ -1,11 +1,11 @@
+#ifndef UNITINFO_HPP
+#define UNITINFO_HPP
+
 #include <iostream>
 #include <fstream>
 #include <string>
 #include <vector>
 #include <set>
-
-#ifndef UNITINFO_HPP
-#define UNITINFO_HPP
 
 namespace Key {
 	static const std::string moveRange = "MoveRange";

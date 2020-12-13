@@ -1,8 +1,8 @@
-#include <string>
-#include <vector>
-
 #ifndef UNITS_HPP
 #define UNITS_HPP
+
+#include <string>
+#include <vector>
 
 /*
 	Header file to contain the unit information in Ancient Empires 2.
