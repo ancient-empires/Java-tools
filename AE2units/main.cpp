@@ -11,7 +11,7 @@ extern "C" {
 void help() {
 	std::cerr << "Usage:" << endl;
 	std::cerr << "- Extract mode: ./AE2units.out -e <path/to/units.bin> <extract/directory>" << endl;
-	std::cerr << "- Pack mode: ./AE2units.out -e <path/to/units.bin> <pack/directory>" << endl << endl;
+	std::cerr << "- Pack mode:    ./AE2units.out -p <path/to/units.bin> <pack/directory>" << endl << endl;
 
 	std::cerr << "The directory of " << unitExt
 		<< " files must contain exactly these "
@@ -35,8 +35,6 @@ int main(int argc, char* argv[]) {
 		UnitProcessor::extract(unitsBinFile, dir);
 	}
 	else if (mode == "-p") {
-		std::string unitsBinFile = argv[2];
-		std::string packDir = argv[3];
 		UnitProcessor::pack(unitsBinFile, dir);
 	}
 
