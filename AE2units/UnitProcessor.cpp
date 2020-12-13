@@ -31,12 +31,26 @@ void UnitProcessor::extract(const std::string& unitsBinFile, const std::string& 
 	}
 
 	// initialize all output file streams
+	// check if any stream failed to open
 	std::vector<std::string> unitFilePaths(numUnits);
 	std::vector<std::ofstream> outputStreams(numUnits);
+	unsigned int numOutputErrors = 0;
 	for (unsigned int i = 0; i < numUnits; ++i) {
 		auto& unitPath = unitFilePaths.at(i);
 		unitPath = extractDir + "/" + unitNames.at(i) + unitExt;
-		outputStreams.at(i).open(unitPath);
+		auto& outputStream = outputStreams.at(i);
+		outputStream.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+		try {
+			outputStream.open(unitPath);
+		}
+		catch (const std::ifstream::failure& error) {
+			std::cout << "ERROR: Failed to open output file \""
+				<< unitPath << "\"" << endl;
+			++numOutputErrors;
+		}
+	}
+	if (numOutputErrors > 0) {
+		exit(ERROR_RW);
 	}
 
 	// process all unit data
@@ -100,7 +114,7 @@ void UnitProcessor::pack(const std::string& unitsBinFile, const std::string& pac
 	std::vector<std::string> unitFilePaths(numUnits);
 	std::vector<std::ifstream> inputStreams(numUnits);
 
-	unsigned int numErrors = 0;
+	unsigned int numInputErrors = 0;
 	for (unsigned int i = 0; i < numUnits; ++i) {
 		// initialize each input stream
 		auto& unitPath = unitFilePaths.at(i);
@@ -112,15 +126,15 @@ void UnitProcessor::pack(const std::string& unitsBinFile, const std::string& pac
 		try {
 			inputStream.open(unitPath);
 			if (inputStream.fail()) {
-				throw std::ios_base::failure("ERROR: Failed to open input file \"" + unitPath + "\"");
+				throw std::ifstream::failure("ERROR: Failed to open input file \"" + unitPath + "\"");
 			}
 		}
-		catch (const std::ios_base::failure& error) {
-			++numErrors;
+		catch (const std::ifstream::failure& error) {
+			++numInputErrors;
 			std::cerr << error.what() << endl;
 		}
 	}
-	if (numErrors > 0) {
+	if (numInputErrors > 0) {
 		exit(ERROR_RW);
 	}
 
