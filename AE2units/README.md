@@ -4,6 +4,8 @@ This tool is for extracting / packing the `units.bin` file in Ancient Empires 2.
 
 Extracted files are stored as text format with `.unit` extension.
 
+[Ancient Empires 2 Revolution Mod](https://web.archive.org/web/20201214010840/http://projectd8.org/Ancient_Empires_II_RM) currently uses the `*.unit` file format. Note that the unit names are taken from Ancient Empires 1 for compatibility issues.
+
 ## How to use
 
 ### Compile
