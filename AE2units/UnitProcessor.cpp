@@ -168,26 +168,26 @@ void UnitProcessor::pack(const std::string& unitsBinFile, const std::string& pac
 				lineStream >> key;
 
 				// section 1: basic information
-				if (key == Key::moveRange) {
+				if (key == UnitKey::moveRange) {
 					lineStream >> unit.moveRange;
 				}
-				else if (key == Key::attack) {
+				else if (key == UnitKey::attack) {
 					lineStream >> unit.minAttack;
 					lineStream >> unit.maxAttack;
 				}
-				else if (key == Key::defense) {
+				else if (key == UnitKey::defense) {
 					lineStream >> unit.defense;
 				}
-				else if (key == Key::attackRange) {
+				else if (key == UnitKey::attackRange) {
 					lineStream >> unit.maxAttackRange;
 					lineStream >> unit.minAttackRange;
 				}
-				else if (key == Key::price) {
+				else if (key == UnitKey::price) {
 					lineStream >> unit.price;
 				}
 
 				// section 2: fight animation
-				if (key == Key::charCount) {
+				if (key == UnitKey::charCount) {
 					unsigned int numChars = 0;
 					lineStream >> numChars;
 					unit.charPos.resize(numChars);
@@ -202,19 +202,19 @@ void UnitProcessor::pack(const std::string& unitsBinFile, const std::string& pac
 
 						std::istringstream lineStream(line);
 						lineStream >> key;
-						if (key == Key::charPos) {
+						if (key == UnitKey::charPos) {
 							auto& charPos = unit.charPos.at(j);
 							short n;
 							lineStream >> n >> charPos.first >> charPos.second;
 						}
 						else {
-							throw std::ifstream::failure("ERROR: Bad data encountered when processing " + Key::charPos);
+							throw std::ifstream::failure("ERROR: Bad data encountered when processing " + UnitKey::charPos);
 						}
 					}
 				}
 
 				// section 3: unit properties
-				if (key == Key::hasProperty) {
+				if (key == UnitKey::hasProperty) {
 					unsigned short property;
 					lineStream >> property;
 					unit.properties.emplace(property);

@@ -7,7 +7,7 @@
 #include <vector>
 #include <set>
 
-namespace Key {
+namespace UnitKey {
 	static const std::string moveRange = "MoveRange";
 	static const std::string attack = "Attack";
 	static const std::string defense = "Defence";

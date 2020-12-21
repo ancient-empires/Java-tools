@@ -29,24 +29,24 @@ extern "C" {
 */
 std::ostream& operator<<(std::ostream& outputStream, const UnitInfo& unitInfo) {
 	// section 1: basic information
-	outputStream << Key::moveRange << " " << unitInfo.moveRange << endl;
-	outputStream << Key::attack << " "
+	outputStream << UnitKey::moveRange << " " << unitInfo.moveRange << endl;
+	outputStream << UnitKey::attack << " "
 		<< unitInfo.minAttack << " " << unitInfo.maxAttack << endl;
-	outputStream << Key::defense << " " << unitInfo.defense << endl;
-	outputStream << Key::attackRange << " "
+	outputStream << UnitKey::defense << " " << unitInfo.defense << endl;
+	outputStream << UnitKey::attackRange << " "
 		<< unitInfo.maxAttackRange << " "
 		<< unitInfo.minAttackRange << endl;
-	outputStream << Key::price << " " << unitInfo.price << endl;
+	outputStream << UnitKey::price << " " << unitInfo.price << endl;
 
 	// section 2: fight animation information
 	unsigned int numChars = unitInfo.charPos.size();
 	outputStream << endl;
-	outputStream << Key::charCount << " " << numChars << endl;
+	outputStream << UnitKey::charCount << " " << numChars << endl;
 	if (numChars > 0) {
 		outputStream << endl;
 		for (unsigned int i = 0; i < numChars; ++i) {
 			const auto& coord = unitInfo.charPos.at(i);
-			outputStream << Key::charPos << " " << i << " "
+			outputStream << UnitKey::charPos << " " << i << " "
 				<< coord.first << " " << coord.second << endl;
 		}
 	}
