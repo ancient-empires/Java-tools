@@ -132,10 +132,10 @@ std::ostream& operator<<(std::ostream& outputStream, const UnitInfo& unit) {
 	// section 3: unit properties
 	if (!impl->properties.empty()) {
 		outputStream << endl;
-		unsigned int i = 0;
+		unsigned int i = 0, numProperties = impl->properties.size();
 		for (const auto& property: impl->properties) {
-			outputStream << "HasProperty " << property;
-			if (i < impl->properties.size() - 1) {
+			outputStream << UnitKey::hasProperty << " " << property;
+			if (i < numProperties - 1) {
 				outputStream << endl;
 			}
 			++i;
