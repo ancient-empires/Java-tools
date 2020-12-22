@@ -4,8 +4,6 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-#include <vector>
-#include <set>
 #include <memory>
 
 namespace UnitKey {

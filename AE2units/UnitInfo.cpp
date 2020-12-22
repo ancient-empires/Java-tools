@@ -1,6 +1,9 @@
 #include <iostream>
 #include <sstream>
 #include <string>
+#include <utility>
+#include <vector>
+#include <set>
 
 #include "endl.hpp"
 #include "UnitInfo.hpp"
