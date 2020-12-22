@@ -7,6 +7,40 @@ extern "C" {
 	#include "../utils/utils.h"
 }
 
+// read unit data from a .bin file
+std::ifstream& UnitInfo::read_bin(std::ifstream& inputStream) {
+	unsigned char c1, c2;
+
+	// section 1: basic information
+	this->moveRange = inputStream.get();
+	this->minAttack = inputStream.get();
+	this->maxAttack = inputStream.get();
+	this->defense = inputStream.get();
+	this->maxAttackRange = inputStream.get();
+	this->minAttackRange = inputStream.get();
+	c1 = inputStream.get();
+	c2 = inputStream.get();
+	this->price = static_cast<short>(fourBytesToUInt32(0, 0, c1, c2));
+
+	// section 2: fight animation
+	unsigned int numChars = inputStream.get();
+	this->charPos.resize(numChars);
+	for (auto& charPos: this->charPos) {
+		charPos.first = inputStream.get();
+		charPos.second = inputStream.get();
+	}
+
+	// section 3: unit properties
+	unsigned int numProperties = inputStream.get();
+	this->properties.clear();
+	for (unsigned int j = 0; j < numProperties; ++j) {
+		unsigned short property = inputStream.get();
+		this->properties.emplace(property);
+	}
+
+	return inputStream;
+}
+
 /* Print the unit data to a .unit file.
 	Sample format (archer.unit):
 	==============================
@@ -67,7 +101,7 @@ std::ostream& operator<<(std::ostream& outputStream, const UnitInfo& unitInfo) {
 	return outputStream;
 }
 
-// write unit data to a .bin file.
+// write unit data to a .bin file
 std::ofstream& UnitInfo::write_bin(std::ofstream& outputStream) const {
 
 	unsigned char c1, c2, c3, c4;

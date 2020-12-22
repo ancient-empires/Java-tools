@@ -61,37 +61,11 @@ void UnitProcessor::extract(const std::string& unitsBinFile, const std::string& 
 		auto& unit = units.at(i);
 		auto& outputStream = outputStreams.at(i);
 
-		unsigned char c1, c2;
-
 		try {
-			// section 1: basic information
-			unit.moveRange = inputStream.get();
-			unit.minAttack = inputStream.get();
-			unit.maxAttack = inputStream.get();
-			unit.defense = inputStream.get();
-			unit.maxAttackRange = inputStream.get();
-			unit.minAttackRange = inputStream.get();
-			c1 = inputStream.get();
-			c2 = inputStream.get();
-			unit.price = static_cast<short>(fourBytesToUInt32(0, 0, c1, c2));
+			// read unit data from the .bin file
+			unit.read_bin(inputStream);
 
-			// section 2: fight animation
-			unsigned int numChars = inputStream.get();
-			unit.charPos.resize(numChars);
-			for (auto& charPos: unit.charPos) {
-				charPos.first = inputStream.get();
-				charPos.second = inputStream.get();
-			}
-
-			// section 3: unit properties
-			unsigned int numProperties = inputStream.get();
-			unit.properties.clear();
-			for (unsigned int j = 0; j < numProperties; ++j) {
-				unsigned short property = inputStream.get();
-				unit.properties.emplace(property);
-			}
-
-			// write out to output file
+			// write to the output .unit file
 			outputStream << unit << endl;
 			std::cout << "Successfully written to: \"" << unitFilePaths.at(i)
 				<< "\"" << endl;
