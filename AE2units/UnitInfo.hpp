@@ -19,7 +19,7 @@ namespace UnitKey {
 };
 
 class UnitInfo {
-public:
+private:
 	// unit attributes
 
 	unsigned short moveRange = 0;
@@ -39,6 +39,7 @@ public:
 
 	std::set<unsigned short> properties;
 
+public:
 	// read unit data from a .bin file
 	std::ifstream& read_bin(std::ifstream& inputStream);
 
