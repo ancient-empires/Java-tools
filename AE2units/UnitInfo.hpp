@@ -6,6 +6,7 @@
 #include <string>
 #include <vector>
 #include <set>
+#include <memory>
 
 namespace UnitKey {
 	static const std::string moveRange = "MoveRange";
@@ -20,26 +21,14 @@ namespace UnitKey {
 
 class UnitInfo {
 private:
-	// unit attributes
-
-	unsigned short moveRange = 0;
-
-	short minAttack = 0;
-	short maxAttack = 0;
-
-	short defense = 0;
-
-	unsigned short maxAttackRange = 0;
-	unsigned short minAttackRange = 0;
-
-	short price = 0;
-
-	typedef std::pair<short, short> charpos;
-	std::vector<charpos> charPos;
-
-	std::set<unsigned short> properties;
+	// using PIMPL
+	class Impl;
+	std::unique_ptr<Impl> impl;
 
 public:
+	UnitInfo();
+	~UnitInfo();
+
 	// read unit data from a .bin file
 	std::ifstream& read_bin(std::ifstream& inputStream);
 

@@ -9,35 +9,61 @@ extern "C" {
 	#include "../utils/utils.h"
 }
 
+class UnitInfo::Impl {
+public:
+	unsigned short moveRange = 0;
+
+	short minAttack = 0;
+	short maxAttack = 0;
+
+	short defense = 0;
+
+	unsigned short maxAttackRange = 0;
+	unsigned short minAttackRange = 0;
+
+	short price = 0;
+
+	typedef std::pair<short, short> charpos;
+	std::vector<charpos> charPos;
+
+	std::set<unsigned short> properties;
+};
+
+UnitInfo::UnitInfo(): impl(std::make_unique<Impl>()) {
+}
+
+UnitInfo::~UnitInfo() {
+}
+
 // read unit data from a .bin file
 std::ifstream& UnitInfo::read_bin(std::ifstream& inputStream) {
 	unsigned char c1, c2;
 
 	// section 1: basic information
-	this->moveRange = inputStream.get();
-	this->minAttack = inputStream.get();
-	this->maxAttack = inputStream.get();
-	this->defense = inputStream.get();
-	this->maxAttackRange = inputStream.get();
-	this->minAttackRange = inputStream.get();
+	impl->moveRange = inputStream.get();
+	impl->minAttack = inputStream.get();
+	impl->maxAttack = inputStream.get();
+	impl->defense = inputStream.get();
+	impl->maxAttackRange = inputStream.get();
+	impl->minAttackRange = inputStream.get();
 	c1 = inputStream.get();
 	c2 = inputStream.get();
-	this->price = static_cast<short>(fourBytesToUInt32(0, 0, c1, c2));
+	impl->price = static_cast<short>(fourBytesToUInt32(0, 0, c1, c2));
 
 	// section 2: fight animation
 	unsigned int numChars = inputStream.get();
-	this->charPos.resize(numChars);
-	for (auto& charPos: this->charPos) {
+	impl->charPos.resize(numChars);
+	for (auto& charPos: impl->charPos) {
 		charPos.first = inputStream.get();
 		charPos.second = inputStream.get();
 	}
 
 	// section 3: unit properties
 	unsigned int numProperties = inputStream.get();
-	this->properties.clear();
+	impl->properties.clear();
 	for (unsigned int j = 0; j < numProperties; ++j) {
 		unsigned short property = inputStream.get();
-		this->properties.emplace(property);
+		impl->properties.emplace(property);
 	}
 
 	return inputStream;
@@ -63,37 +89,37 @@ std::ifstream& UnitInfo::read_bin(std::ifstream& inputStream) {
 	HasProperty 6
 	==============================
 */
-std::ostream& operator<<(std::ostream& outputStream, const UnitInfo& unitInfo) {
+std::ostream& operator<<(std::ostream& outputStream, const UnitInfo& unit) {
 	// section 1: basic information
-	outputStream << UnitKey::moveRange << " " << unitInfo.moveRange << endl;
+	outputStream << UnitKey::moveRange << " " << unit.impl->moveRange << endl;
 	outputStream << UnitKey::attack << " "
-		<< unitInfo.minAttack << " " << unitInfo.maxAttack << endl;
-	outputStream << UnitKey::defense << " " << unitInfo.defense << endl;
+		<< unit.impl->minAttack << " " << unit.impl->maxAttack << endl;
+	outputStream << UnitKey::defense << " " << unit.impl->defense << endl;
 	outputStream << UnitKey::attackRange << " "
-		<< unitInfo.maxAttackRange << " "
-		<< unitInfo.minAttackRange << endl;
-	outputStream << UnitKey::price << " " << unitInfo.price << endl;
+		<< unit.impl->maxAttackRange << " "
+		<< unit.impl->minAttackRange << endl;
+	outputStream << UnitKey::price << " " << unit.impl->price << endl;
 
 	// section 2: fight animation information
-	unsigned int numChars = unitInfo.charPos.size();
+	unsigned int numChars = unit.impl->charPos.size();
 	outputStream << endl;
 	outputStream << UnitKey::charCount << " " << numChars << endl;
 	if (numChars > 0) {
 		outputStream << endl;
 		for (unsigned int i = 0; i < numChars; ++i) {
-			const auto& coord = unitInfo.charPos.at(i);
+			const auto& coord = unit.impl->charPos.at(i);
 			outputStream << UnitKey::charPos << " " << i << " "
 				<< coord.first << " " << coord.second << endl;
 		}
 	}
 
 	// section 3: unit properties
-	if (!unitInfo.properties.empty()) {
+	if (!unit.impl->properties.empty()) {
 		outputStream << endl;
 		unsigned int i = 0;
-		for (const auto& property: unitInfo.properties) {
+		for (const auto& property: unit.impl->properties) {
 			outputStream << "HasProperty " << property;
-			if (i < unitInfo.properties.size() - 1) {
+			if (i < unit.impl->properties.size() - 1) {
 				outputStream << endl;
 			}
 			++i;
@@ -107,7 +133,7 @@ std::ostream& operator<<(std::ostream& outputStream, const UnitInfo& unitInfo) {
 // see the comments before operator<< overloading for the file structure
 std::istream& operator>>(std::istream& inputStream, UnitInfo& unit) {
 
-	unit.properties.clear();
+	unit.impl->properties.clear();
 
 	while (!inputStream.eof()) {
 		// get line and key
@@ -118,28 +144,28 @@ std::istream& operator>>(std::istream& inputStream, UnitInfo& unit) {
 
 		// section 1: basic information
 		if (key == UnitKey::moveRange) {
-			lineStream >> unit.moveRange;
+			lineStream >> unit.impl->moveRange;
 		}
 		else if (key == UnitKey::attack) {
-			lineStream >> unit.minAttack;
-			lineStream >> unit.maxAttack;
+			lineStream >> unit.impl->minAttack;
+			lineStream >> unit.impl->maxAttack;
 		}
 		else if (key == UnitKey::defense) {
-			lineStream >> unit.defense;
+			lineStream >> unit.impl->defense;
 		}
 		else if (key == UnitKey::attackRange) {
-			lineStream >> unit.maxAttackRange;
-			lineStream >> unit.minAttackRange;
+			lineStream >> unit.impl->maxAttackRange;
+			lineStream >> unit.impl->minAttackRange;
 		}
 		else if (key == UnitKey::price) {
-			lineStream >> unit.price;
+			lineStream >> unit.impl->price;
 		}
 
 		// section 2: fight animation
 		if (key == UnitKey::charCount) {
 			unsigned int numChars = 0;
 			lineStream >> numChars;
-			unit.charPos.resize(numChars);
+			unit.impl->charPos.resize(numChars);
 
 			// process each CharPos line
 			unsigned int j = 0;
@@ -152,7 +178,7 @@ std::istream& operator>>(std::istream& inputStream, UnitInfo& unit) {
 				std::istringstream lineStream(line);
 				lineStream >> key;
 				if (key == UnitKey::charPos) {
-					auto& charPos = unit.charPos.at(j);
+					auto& charPos = unit.impl->charPos.at(j);
 					short n;
 					lineStream >> n >> charPos.first >> charPos.second;
 				}
@@ -166,7 +192,7 @@ std::istream& operator>>(std::istream& inputStream, UnitInfo& unit) {
 		if (key == UnitKey::hasProperty) {
 			unsigned short property;
 			lineStream >> property;
-			unit.properties.emplace(property);
+			unit.impl->properties.emplace(property);
 		}
 	}
 
@@ -179,26 +205,26 @@ std::ofstream& UnitInfo::write_bin(std::ofstream& outputStream) const {
 	unsigned char c1, c2, c3, c4;
 
 	// section 1: basic info
-	outputStream.put(static_cast<char>(this->moveRange));
-	outputStream.put(static_cast<char>(this->minAttack));
-	outputStream.put(static_cast<char>(this->maxAttack));
-	outputStream.put(static_cast<char>(this->defense));
-	outputStream.put(static_cast<char>(this->maxAttackRange));
-	outputStream.put(static_cast<char>(this->minAttackRange));
-	uInt32ToFourBytes(static_cast<unsigned short>(this->price), &c1, &c2, &c3, &c4);
+	outputStream.put(static_cast<char>(impl->moveRange));
+	outputStream.put(static_cast<char>(impl->minAttack));
+	outputStream.put(static_cast<char>(impl->maxAttack));
+	outputStream.put(static_cast<char>(impl->defense));
+	outputStream.put(static_cast<char>(impl->maxAttackRange));
+	outputStream.put(static_cast<char>(impl->minAttackRange));
+	uInt32ToFourBytes(static_cast<unsigned short>(impl->price), &c1, &c2, &c3, &c4);
 	outputStream.put(c3);
 	outputStream.put(c4);
 
 	// section 2: fight animation
-	outputStream.put(static_cast<char>(this->charPos.size()));
-	for (const auto& charPos: this->charPos) {
+	outputStream.put(static_cast<char>(impl->charPos.size()));
+	for (const auto& charPos: impl->charPos) {
 		outputStream.put(static_cast<char>(charPos.first));
 		outputStream.put(static_cast<char>(charPos.second));
 	}
 
 	// section 3: unit properties
-	outputStream.put(static_cast<char>(this->properties.size()));
-	for (const auto& property: this->properties) {
+	outputStream.put(static_cast<char>(impl->properties.size()));
+	for (const auto& property: impl->properties) {
 		outputStream.put(property);
 	}
 
