@@ -37,6 +37,10 @@ int main(int argc, char* argv[]) {
 	else if (mode == "-p") {
 		UnitProcessor::pack(unitsBinFile, dir);
 	}
+	else {
+		help();
+		exit(ERROR_ARGS);
+	}
 
 	return 0;
 }
