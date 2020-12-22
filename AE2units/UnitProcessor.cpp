@@ -130,11 +130,13 @@ void UnitProcessor::pack(const std::string& unitsBinFile, const std::string& pac
 			auto& inputStream = inputStreams.at(i);
 			// read unit data from the .unit file
 			inputStream >> unit;
+			std::cout << "Successfully read from: \"" << unitFilePaths.at(i)
+				<< "\"" << endl;
 			// write to the .bin file
 			unit.write_bin(outputStream);
-			std::cout << "Successfully written to: \"" << unitFilePaths.at(i)
-				<< "\"" << endl;
 		}
+		std::cout << "Successfully written to: \"" << unitsBinFile
+			<< "\"" << endl;
 	}
 	catch (const std::ifstream::failure& error) {
 		std::cerr << error.what() << endl;
