@@ -11,7 +11,7 @@
 */
 
 // Unit names are taken from Ancient Empires 1, for compatibility purposes.
-static const std::vector<std::string> unitNames = {
+static const std::vector<std::string> UNIT_NAMES = {
 	"soldier",
 	"archer",
 	"lizard",   // Elemental
@@ -26,8 +26,8 @@ static const std::vector<std::string> unitNames = {
 	"crystall", // new unit in Ancient Empires 2
 };
 
-static const std::string unitExt = ".unit";
+static const std::string UNIT_EXT = ".unit";
 
-static const unsigned int numUnits = unitNames.size();
+static const unsigned int NUM_UNITS = UNIT_NAMES.size();
 
 #endif

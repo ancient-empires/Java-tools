@@ -13,11 +13,11 @@ void help() {
 	std::cerr << "- Extract mode: ./AE2units.out -e <path/to/units.bin> <extract/directory>" << endl;
 	std::cerr << "- Pack mode:    ./AE2units.out -p <path/to/units.bin> <pack/directory>" << endl << endl;
 
-	std::cerr << "The directory of " << unitExt
+	std::cerr << "The directory of " << UNIT_EXT
 		<< " files must contain exactly these "
-		<< numUnits << " files for packing:" << endl;
-	for (const auto& unitName: unitNames) {
-		std::cerr << "- " << unitName << unitExt << endl;
+		<< NUM_UNITS << " files for packing:" << endl;
+	for (const auto& unitName: UNIT_NAMES) {
+		std::cerr << "- " << unitName << UNIT_EXT << endl;
 	}
 }
 

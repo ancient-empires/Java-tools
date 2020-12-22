@@ -13,7 +13,7 @@ extern "C" {
 
 void UnitProcessor::extract(const std::string& unitsBinFile, const std::string& extractDir) {
 	// vector to store the information of all units
-	std::vector<UnitInfo> units(numUnits);
+	std::vector<UnitInfo> units(NUM_UNITS);
 
 	// initialize input file stream
 	std::ifstream inputStream;
@@ -29,13 +29,13 @@ void UnitProcessor::extract(const std::string& unitsBinFile, const std::string& 
 
 	// initialize all output file streams
 	// check if any stream failed to open
-	std::vector<std::string> unitFilePaths(numUnits);
-	std::vector<std::ofstream> outputStreams(numUnits);
+	std::vector<std::string> unitFilePaths(NUM_UNITS);
+	std::vector<std::ofstream> outputStreams(NUM_UNITS);
 	unsigned int numOutputErrors = 0;
-	for (unsigned int i = 0; i < numUnits; ++i) {
+	for (unsigned int i = 0; i < NUM_UNITS; ++i) {
 		// get unit path
 		auto& unitPath = unitFilePaths.at(i);
-		unitPath = extractDir + "/" + unitNames.at(i) + unitExt;
+		unitPath = extractDir + "/" + UNIT_NAMES.at(i) + UNIT_EXT;
 		// setup output stream, check if any errors exist
 		auto& outputStream = outputStreams.at(i);
 		outputStream.exceptions(std::ifstream::failbit | std::ifstream::badbit);
@@ -54,7 +54,7 @@ void UnitProcessor::extract(const std::string& unitsBinFile, const std::string& 
 
 	// process all unit data
 	unsigned int i = 0;
-	for (; i < numUnits; ++i) {
+	for (; i < NUM_UNITS; ++i) {
 		auto& unit = units.at(i);
 		auto& outputStream = outputStreams.at(i);
 
@@ -75,22 +75,22 @@ void UnitProcessor::extract(const std::string& unitsBinFile, const std::string& 
 		}
 	}
 	std::cout << "Success: " << i << endl;
-	std::cout << "Failure: " << (numUnits - i) << endl;
+	std::cout << "Failure: " << (NUM_UNITS - i) << endl;
 }
 
 void UnitProcessor::pack(const std::string& unitsBinFile, const std::string& packDir) {
 	// initialize all units
-	std::vector<UnitInfo> units(numUnits);
+	std::vector<UnitInfo> units(NUM_UNITS);
 
 	// initialize all input file streams
-	std::vector<std::string> unitFilePaths(numUnits);
-	std::vector<std::ifstream> inputStreams(numUnits);
+	std::vector<std::string> unitFilePaths(NUM_UNITS);
+	std::vector<std::ifstream> inputStreams(NUM_UNITS);
 
 	unsigned int numInputErrors = 0;
-	for (unsigned int i = 0; i < numUnits; ++i) {
+	for (unsigned int i = 0; i < NUM_UNITS; ++i) {
 		// initialize each input stream
 		auto& unitPath = unitFilePaths.at(i);
-		unitPath = packDir + "/" + unitNames.at(i) + unitExt;
+		unitPath = packDir + "/" + UNIT_NAMES.at(i) + UNIT_EXT;
 		auto& inputStream = inputStreams.at(i);
 		inputStream.exceptions(std::ifstream::badbit);
 		// try to open each input file and initialize streams
@@ -125,7 +125,7 @@ void UnitProcessor::pack(const std::string& unitsBinFile, const std::string& pac
 	// process all unit data
 	unsigned int i = 0;
 	try {
-		for (; i < numUnits; ++i) {
+		for (; i < NUM_UNITS; ++i) {
 			auto& unit = units.at(i);
 			auto& inputStream = inputStreams.at(i);
 			// read unit data from the .unit file
@@ -145,5 +145,5 @@ void UnitProcessor::pack(const std::string& unitsBinFile, const std::string& pac
 	}
 
 	std::cout << "Success: " << i << endl;
-	std::cout << "Failure: " << (numUnits - i) << endl;
+	std::cout << "Failure: " << (NUM_UNITS - i) << endl;
 }
