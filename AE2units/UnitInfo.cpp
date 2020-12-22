@@ -104,36 +104,38 @@ std::ifstream& UnitInfo::read_bin(std::ifstream& inputStream) {
 	==============================
 */
 std::ostream& operator<<(std::ostream& outputStream, const UnitInfo& unit) {
+	auto& impl = unit.impl;
+
 	// section 1: basic information
-	outputStream << UnitKey::moveRange << " " << unit.impl->moveRange << endl;
+	outputStream << UnitKey::moveRange << " " << impl->moveRange << endl;
 	outputStream << UnitKey::attack << " "
-		<< unit.impl->minAttack << " " << unit.impl->maxAttack << endl;
-	outputStream << UnitKey::defense << " " << unit.impl->defense << endl;
+		<< impl->minAttack << " " << impl->maxAttack << endl;
+	outputStream << UnitKey::defense << " " << impl->defense << endl;
 	outputStream << UnitKey::attackRange << " "
-		<< unit.impl->maxAttackRange << " "
-		<< unit.impl->minAttackRange << endl;
-	outputStream << UnitKey::price << " " << unit.impl->price << endl;
+		<< impl->maxAttackRange << " "
+		<< impl->minAttackRange << endl;
+	outputStream << UnitKey::price << " " << impl->price << endl;
 
 	// section 2: fight animation information
-	unsigned int numChars = unit.impl->charPos.size();
+	unsigned int numChars = impl->charPos.size();
 	outputStream << endl;
 	outputStream << UnitKey::charCount << " " << numChars << endl;
 	if (numChars > 0) {
 		outputStream << endl;
 		for (unsigned int i = 0; i < numChars; ++i) {
-			const auto& coord = unit.impl->charPos.at(i);
+			const auto& coord = impl->charPos.at(i);
 			outputStream << UnitKey::charPos << " " << i << " "
 				<< coord.first << " " << coord.second << endl;
 		}
 	}
 
 	// section 3: unit properties
-	if (!unit.impl->properties.empty()) {
+	if (!impl->properties.empty()) {
 		outputStream << endl;
 		unsigned int i = 0;
-		for (const auto& property: unit.impl->properties) {
+		for (const auto& property: impl->properties) {
 			outputStream << "HasProperty " << property;
-			if (i < unit.impl->properties.size() - 1) {
+			if (i < impl->properties.size() - 1) {
 				outputStream << endl;
 			}
 			++i;
@@ -147,7 +149,9 @@ std::ostream& operator<<(std::ostream& outputStream, const UnitInfo& unit) {
 // see the comments before operator<< overloading for the file structure
 std::istream& operator>>(std::istream& inputStream, UnitInfo& unit) {
 
-	unit.impl->properties.clear();
+	auto& impl = unit.impl;
+
+	impl->properties.clear();
 
 	while (!inputStream.eof()) {
 		// get line and key
@@ -158,28 +162,28 @@ std::istream& operator>>(std::istream& inputStream, UnitInfo& unit) {
 
 		// section 1: basic information
 		if (key == UnitKey::moveRange) {
-			lineStream >> unit.impl->moveRange;
+			lineStream >> impl->moveRange;
 		}
 		else if (key == UnitKey::attack) {
-			lineStream >> unit.impl->minAttack;
-			lineStream >> unit.impl->maxAttack;
+			lineStream >> impl->minAttack;
+			lineStream >> impl->maxAttack;
 		}
 		else if (key == UnitKey::defense) {
-			lineStream >> unit.impl->defense;
+			lineStream >> impl->defense;
 		}
 		else if (key == UnitKey::attackRange) {
-			lineStream >> unit.impl->maxAttackRange;
-			lineStream >> unit.impl->minAttackRange;
+			lineStream >> impl->maxAttackRange;
+			lineStream >> impl->minAttackRange;
 		}
 		else if (key == UnitKey::price) {
-			lineStream >> unit.impl->price;
+			lineStream >> impl->price;
 		}
 
 		// section 2: fight animation
 		if (key == UnitKey::charCount) {
 			unsigned int numChars = 0;
 			lineStream >> numChars;
-			unit.impl->charPos.resize(numChars);
+			impl->charPos.resize(numChars);
 
 			// process each CharPos line
 			unsigned int j = 0;
@@ -192,7 +196,7 @@ std::istream& operator>>(std::istream& inputStream, UnitInfo& unit) {
 				std::istringstream lineStream(line);
 				lineStream >> key;
 				if (key == UnitKey::charPos) {
-					auto& charPos = unit.impl->charPos.at(j);
+					auto& charPos = impl->charPos.at(j);
 					short n;
 					lineStream >> n >> charPos.first >> charPos.second;
 				}
@@ -206,7 +210,7 @@ std::istream& operator>>(std::istream& inputStream, UnitInfo& unit) {
 		if (key == UnitKey::hasProperty) {
 			unsigned short property;
 			lineStream >> property;
-			unit.impl->properties.emplace(property);
+			impl->properties.emplace(property);
 		}
 	}
 
