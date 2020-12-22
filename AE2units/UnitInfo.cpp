@@ -32,6 +32,17 @@ public:
 	std::set<unsigned short> properties;
 };
 
+namespace UnitKey {
+	static const std::string moveRange = "MoveRange";
+	static const std::string attack = "Attack";
+	static const std::string defense = "Defence";
+	static const std::string attackRange = "AttackRange";
+	static const std::string price = "Cost";
+	static const std::string charCount = "CharCount";
+	static const std::string charPos = "CharPos";
+	static const std::string hasProperty = "HasProperty";
+};
+
 UnitInfo::UnitInfo(): impl(std::make_unique<Impl>()) {
 }
 
