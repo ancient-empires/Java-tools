@@ -186,8 +186,7 @@ std::istream& operator>>(std::istream& inputStream, UnitInfo& unit) {
 			impl->charPos.resize(numChars);
 
 			// process each CharPos line
-			unsigned int j = 0;
-			for (; j < numChars; ++j) {
+			for (unsigned int j = 0; j < numChars; ++j) {
 				std::string line;
 				do {
 					std::getline(inputStream, line);
