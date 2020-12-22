@@ -1,9 +1,6 @@
-#include <cstdint>
-#include <fstream>
 #include <iostream>
-#include <sstream>
+#include <fstream>
 #include <vector>
-#include <set>
 
 #include "endl.hpp"
 #include "units.hpp"
@@ -64,7 +61,6 @@ void UnitProcessor::extract(const std::string& unitsBinFile, const std::string& 
 		try {
 			// read unit data from the .bin file
 			unit.read_bin(inputStream);
-
 			// write to the output .unit file
 			outputStream << unit << endl;
 			std::cout << "Successfully written to: \"" << unitFilePaths.at(i)
@@ -131,71 +127,13 @@ void UnitProcessor::pack(const std::string& unitsBinFile, const std::string& pac
 	try {
 		for (; i < numUnits; ++i) {
 			auto& unit = units.at(i);
-			unit.properties.clear();
-
 			auto& inputStream = inputStreams.at(i);
-			while (!inputStream.eof()) {
-				// get line and key
-				std::string line, key;
-				std::getline(inputStream, line);
-				std::istringstream lineStream(line);
-				lineStream >> key;
-
-				// section 1: basic information
-				if (key == UnitKey::moveRange) {
-					lineStream >> unit.moveRange;
-				}
-				else if (key == UnitKey::attack) {
-					lineStream >> unit.minAttack;
-					lineStream >> unit.maxAttack;
-				}
-				else if (key == UnitKey::defense) {
-					lineStream >> unit.defense;
-				}
-				else if (key == UnitKey::attackRange) {
-					lineStream >> unit.maxAttackRange;
-					lineStream >> unit.minAttackRange;
-				}
-				else if (key == UnitKey::price) {
-					lineStream >> unit.price;
-				}
-
-				// section 2: fight animation
-				if (key == UnitKey::charCount) {
-					unsigned int numChars = 0;
-					lineStream >> numChars;
-					unit.charPos.resize(numChars);
-
-					// process each CharPos line
-					unsigned int j = 0;
-					for (; j < numChars; ++j) {
-						std::string line;
-						do {
-							std::getline(inputStream, line);
-						} while (line.empty() && !inputStream.eof());
-
-						std::istringstream lineStream(line);
-						lineStream >> key;
-						if (key == UnitKey::charPos) {
-							auto& charPos = unit.charPos.at(j);
-							short n;
-							lineStream >> n >> charPos.first >> charPos.second;
-						}
-						else {
-							throw std::ifstream::failure("ERROR: Bad data encountered when processing " + UnitKey::charPos);
-						}
-					}
-				}
-
-				// section 3: unit properties
-				if (key == UnitKey::hasProperty) {
-					unsigned short property;
-					lineStream >> property;
-					unit.properties.emplace(property);
-				}
-			}
-
+			// read unit data from the .unit file
+			inputStream >> unit;
+			// write to the .bin file
 			unit.write_bin(outputStream);
+			std::cout << "Successfully written to: \"" << unitFilePaths.at(i)
+				<< "\"" << endl;
 		}
 	}
 	catch (const std::ifstream::failure& error) {

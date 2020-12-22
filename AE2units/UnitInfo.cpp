@@ -1,4 +1,6 @@
 #include <iostream>
+#include <sstream>
+#include <string>
 
 #include "endl.hpp"
 #include "UnitInfo.hpp"
@@ -99,6 +101,76 @@ std::ostream& operator<<(std::ostream& outputStream, const UnitInfo& unitInfo) {
 	}
 
 	return outputStream;
+}
+
+// read unit data from a .unit file
+// see the comments before operator<< overloading for the file structure
+std::istream& operator>>(std::istream& inputStream, UnitInfo& unit) {
+
+	unit.properties.clear();
+
+	while (!inputStream.eof()) {
+		// get line and key
+		std::string line, key;
+		std::getline(inputStream, line);
+		std::istringstream lineStream(line);
+		lineStream >> key;
+
+		// section 1: basic information
+		if (key == UnitKey::moveRange) {
+			lineStream >> unit.moveRange;
+		}
+		else if (key == UnitKey::attack) {
+			lineStream >> unit.minAttack;
+			lineStream >> unit.maxAttack;
+		}
+		else if (key == UnitKey::defense) {
+			lineStream >> unit.defense;
+		}
+		else if (key == UnitKey::attackRange) {
+			lineStream >> unit.maxAttackRange;
+			lineStream >> unit.minAttackRange;
+		}
+		else if (key == UnitKey::price) {
+			lineStream >> unit.price;
+		}
+
+		// section 2: fight animation
+		if (key == UnitKey::charCount) {
+			unsigned int numChars = 0;
+			lineStream >> numChars;
+			unit.charPos.resize(numChars);
+
+			// process each CharPos line
+			unsigned int j = 0;
+			for (; j < numChars; ++j) {
+				std::string line;
+				do {
+					std::getline(inputStream, line);
+				} while (line.empty() && !inputStream.eof());
+
+				std::istringstream lineStream(line);
+				lineStream >> key;
+				if (key == UnitKey::charPos) {
+					auto& charPos = unit.charPos.at(j);
+					short n;
+					lineStream >> n >> charPos.first >> charPos.second;
+				}
+				else {
+					throw std::ifstream::failure("ERROR: Bad data encountered when processing " + UnitKey::charPos);
+				}
+			}
+		}
+
+		// section 3: unit properties
+		if (key == UnitKey::hasProperty) {
+			unsigned short property;
+			lineStream >> property;
+			unit.properties.emplace(property);
+		}
+	}
+
+	return inputStream;
 }
 
 // write unit data to a .bin file

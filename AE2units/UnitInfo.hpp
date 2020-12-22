@@ -45,6 +45,9 @@ public:
 	// print the data to a .unit file
 	friend std::ostream& operator<<(std::ostream& outputStream, const UnitInfo& unitInfo);
 
+	// read unit data from a .unit file
+	friend std::istream& operator>>(std::istream& inputStream, UnitInfo& unitInfo);
+
 	// write unit data to a .bin file
 	std::ofstream& write_bin(std::ofstream& outputStream) const;
 };
