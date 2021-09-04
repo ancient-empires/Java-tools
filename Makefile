@@ -3,13 +3,7 @@
 # - Compile AE2lang tool, which is used to convert and edit the language files for AE1 and AE2.
 # - Compile AE2pak tool, which is used to convert and edit the resource files for AE1 and AE2.
 
-TARGETS = $(AE1MAP) $(AE2MAP) $(AE2LANG) $(AE2PAK)
-AE1MAP := AE1map
-AE2MAP := AE2map
-AE2LANG := AE2lang
-AE2PAK := AE2pak
-
-UTILS := utils
+TARGETS := AE1map AE2map AE2lang AE2pak AE2units
 
 AE1MAP_zip := AE1map20090913.zip
 AE2MAP_zip := AE2map081111.zip
@@ -18,25 +12,30 @@ AE2MAP_test := AE2testmap.zip
 .PHONY: all
 all: $(TARGETS)
 
-.PHONY: $(AE1MAP)
-$(AE1MAP): $(AE1MAP_zip)
+.PHONY: AE1map
+AE1map: $(AE1MAP_zip)
 	unzip -o $<
 
-.PHONY: $(AE2MAP)
-$(AE2MAP): $(AE2MAP_zip) $(AE2MAP_test)
+.PHONY: AE2map
+AE2map: $(AE2MAP_zip) $(AE2MAP_test)
 	unzip -o $<
-	unzip -o $(word 2,$^) -d $(AE2MAP)
+	unzip -o $(word 2,$^) -d "$@"
 
-.PHONY: $(AE2LANG)
-$(AE2LANG):
+.PHONY: AE2lang
+AE2lang:
 	$(MAKE) -C $@/
 
-.PHONY: $(AE2PAK)
-$(AE2PAK):
+.PHONY: AE2pak
+AE2pak:
+	$(MAKE) -C $@/
+
+.PHONY: AE2units
+AE2units:
 	$(MAKE) -C $@/
 
 .PHONY: clean
 clean:
-	$(MAKE) -C $(AE2LANG)/ $@
-	$(MAKE) -C $(AE2PAK)/ $@
-	$(MAKE) -C $(UTILS)/ $@
+	$(MAKE) -C AE2lang $@
+	$(MAKE) -C AE2pak $@
+	$(MAKE) -C AE2units
+	$(MAKE) -C utils $@
