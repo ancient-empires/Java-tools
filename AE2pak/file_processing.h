@@ -11,11 +11,11 @@
 // 4. file size (2 bytes)
 
 typedef struct fileinfo {
-	uint16_t filenameLen;
-	char* filePath;
-	char* filename;
-	uint32_t fileDataStartOffset;
-	uint16_t fileSize;
+    uint16_t filenameLen;
+    char* filePath;
+    char* filename;
+    uint32_t fileDataStartOffset;
+    uint16_t fileSize;
 } fileinfo_t;
 
 // Get the size of the file at specified path.

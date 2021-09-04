@@ -79,7 +79,7 @@ char* getFileInfoStr(const fileinfo_t* pFileInfo, unsigned int* pFileInfoLen) {
 	// save filename length
 	unsigned int filenameLen = pFileInfo->filenameLen;
 	uInt32ToFourBytes(filenameLen, &c1, &c2, &c3, &c4);
-	char filenameLenStr[FILENAME_LEN_BYTES] = {c3, c4};
+	char filenameLenStr[FILENAME_LEN_BYTES] = { c3, c4 };
 	memcpy(pos, filenameLenStr, FILENAME_LEN_BYTES);
 	pos += FILENAME_LEN_BYTES;
 
@@ -91,14 +91,14 @@ char* getFileInfoStr(const fileinfo_t* pFileInfo, unsigned int* pFileInfoLen) {
 	// save file data start offset
 	unsigned int fileDataStartOffset = pFileInfo->fileDataStartOffset;
 	uInt32ToFourBytes(fileDataStartOffset, &c1, &c2, &c3, &c4);
-	char fileDataStartOffsetStr[FILE_DATA_START_OFFSET_BYTES] = {c1, c2, c3, c4};
+	char fileDataStartOffsetStr[FILE_DATA_START_OFFSET_BYTES] = { c1, c2, c3, c4 };
 	memcpy(pos, fileDataStartOffsetStr, FILE_DATA_START_OFFSET_BYTES);
 	pos += FILE_DATA_START_OFFSET_BYTES;
 
 	// save file size
 	unsigned int fileSize = pFileInfo->fileSize;
 	uInt32ToFourBytes(fileSize, &c1, &c2, &c3, &c4);
-	char fileSizeStr[FILE_SIZE_BYTES] = {c3, c4};
+	char fileSizeStr[FILE_SIZE_BYTES] = { c3, c4 };
 	memcpy(pos, fileSizeStr, FILE_SIZE_BYTES);
 	pos += FILE_SIZE_BYTES;
 

@@ -25,8 +25,8 @@ public:
 
     short price = 0;
 
-    typedef std::pair<short, short> charpos;
-    std::vector<charpos> charPos;
+    typedef std::pair<short, short> charpos_t;
+    std::vector<charpos_t> charPos;
 
     std::set<unsigned short> properties;
 };
