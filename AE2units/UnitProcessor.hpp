@@ -5,8 +5,8 @@
 
 class UnitProcessor {
 public:
-	static void extract(const std::string& unitsBinFile, const std::string& extractDir);
-	static void pack(const std::string& unitsBinFile, const std::string& packDir);
+    static void extract(const std::string& unitsBinFile, const std::string& extractDir);
+    static void pack(const std::string& unitsBinFile, const std::string& packDir);
 };
 
 #endif

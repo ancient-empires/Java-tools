@@ -12,18 +12,18 @@
 
 // Unit names are taken from Ancient Empires 1, for compatibility purposes.
 static const std::vector<std::string> unitNames = {
-  "soldier",
-  "archer",
-  "lizard",    // Elemental
-  "wizard",    // Sorceress
-  "wisp",
-  "spider",    // Dire Wolf
-  "golem",
-  "catapult",
-  "wyvern",    // Dragon
-  "king",      // Galamar / Valadorn / Demon Lord / Saeth
-  "skeleton",
-  "crystall",  // new unit in Ancient Empires 2
+    "soldier",
+    "archer",
+    "lizard",    // Elemental
+    "wizard",    // Sorceress
+    "wisp",
+    "spider",    // Dire Wolf
+    "golem",
+    "catapult",
+    "wyvern",    // Dragon
+    "king",      // Galamar / Valadorn / Demon Lord / Saeth
+    "skeleton",
+    "crystall",  // new unit in Ancient Empires 2
 };
 
 static const std::string UNIT_EXT = ".unit";
