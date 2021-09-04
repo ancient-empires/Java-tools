@@ -2,13 +2,12 @@
 #include <fstream>
 #include <vector>
 
-#include "endl.hpp"
 #include "units.hpp"
 #include "UnitProcessor.hpp"
 #include "UnitInfo.hpp"
 
 extern "C" {
-	#include "../utils/utils.h"
+#include "../utils/utils.h"
 }
 
 void UnitProcessor::extract(const std::string& unitsBinFile, const std::string& extractDir) {
@@ -22,8 +21,8 @@ void UnitProcessor::extract(const std::string& unitsBinFile, const std::string& 
 		inputStream.open(unitsBinFile, std::ios_base::binary);
 	}
 	catch (const std::ifstream::failure& error) {
-		std::cerr << error.what() << endl;
-		std::cerr << "ERROR: Failed to open input file \"" << unitsBinFile << "\"" << endl;
+		std::cerr << error.what() << "\n";
+		std::cerr << "ERROR: Failed to open input file \"" << unitsBinFile << "\"" << "\n";
 		exit(ERROR_RW);
 	}
 
@@ -35,7 +34,7 @@ void UnitProcessor::extract(const std::string& unitsBinFile, const std::string& 
 	for (unsigned int i = 0; i < NUM_UNITS; ++i) {
 		// get unit path
 		auto& unitPath = unitFilePaths.at(i);
-		unitPath = extractDir + "/" + UNIT_NAMES.at(i) + UNIT_EXT;
+		unitPath = extractDir + "/" + unitNames.at(i) + UNIT_EXT;
 		// setup output stream, check if any errors exist
 		auto& outputStream = outputStreams.at(i);
 		outputStream.exceptions(std::ifstream::failbit | std::ifstream::badbit);
@@ -44,7 +43,7 @@ void UnitProcessor::extract(const std::string& unitsBinFile, const std::string& 
 		}
 		catch (const std::ifstream::failure& error) {
 			std::cerr << "ERROR: Failed to open output file \""
-				<< unitPath << "\"" << endl;
+				<< unitPath << "\"" << "\n";
 			++numOutputErrors;
 		}
 	}
@@ -62,20 +61,20 @@ void UnitProcessor::extract(const std::string& unitsBinFile, const std::string& 
 			// read unit data from the .bin file
 			unit.read_bin(inputStream);
 			// write to the output .unit file
-			outputStream << unit << endl;
+			outputStream << unit << "\n";
 			std::cout << "Successfully written to: \"" << unitFilePaths.at(i)
-				<< "\"" << endl;
+				<< "\"" << "\n";
 		}
 		catch (const std::ifstream::failure& error) {
 			// Exception: bad data (including unexpectedly reaching the end)
-			std::cerr << "ERROR: Bad data encountered when reading file \"" << unitsBinFile << "\"" << endl;
-			std::cerr << "Probably unexpectedly reaching the end of file?" << endl;
-			std::cerr << "Currently processing: \"" << unitFilePaths.at(i) << "\"" << endl;
+			std::cerr << "ERROR: Bad data encountered when reading file \"" << unitsBinFile << "\"" << "\n";
+			std::cerr << "Probably unexpectedly reaching the end of file?" << "\n";
+			std::cerr << "Currently processing: \"" << unitFilePaths.at(i) << "\"" << "\n";
 			break;
 		}
 	}
-	std::cout << "Success: " << i << endl;
-	std::cout << "Failure: " << (NUM_UNITS - i) << endl;
+	std::cout << "Success: " << i << "\n";
+	std::cout << "Failure: " << (NUM_UNITS - i) << "\n";
 }
 
 void UnitProcessor::pack(const std::string& unitsBinFile, const std::string& packDir) {
@@ -90,7 +89,7 @@ void UnitProcessor::pack(const std::string& unitsBinFile, const std::string& pac
 	for (unsigned int i = 0; i < NUM_UNITS; ++i) {
 		// initialize each input stream
 		auto& unitPath = unitFilePaths.at(i);
-		unitPath = packDir + "/" + UNIT_NAMES.at(i) + UNIT_EXT;
+		unitPath = packDir + "/" + unitNames.at(i) + UNIT_EXT;
 		auto& inputStream = inputStreams.at(i);
 		inputStream.exceptions(std::ifstream::badbit);
 		// try to open each input file and initialize streams
@@ -103,7 +102,7 @@ void UnitProcessor::pack(const std::string& unitsBinFile, const std::string& pac
 		catch (const std::ifstream::failure& error) {
 			++numInputErrors;
 			std::cerr << "ERROR: Failed to open input file \""
-				<< unitPath << "\"" << endl;
+				<< unitPath << "\"" << "\n";
 		}
 	}
 	if (numInputErrors > 0) {
@@ -118,7 +117,7 @@ void UnitProcessor::pack(const std::string& unitsBinFile, const std::string& pac
 	}
 	catch (const std::ofstream::failure& error) {
 		std::cerr << "ERROR: Failed to open output file \""
-			<< unitsBinFile << "\"" << endl;
+			<< unitsBinFile << "\"" << "\n";
 		exit(ERROR_RW);
 	}
 
@@ -131,19 +130,19 @@ void UnitProcessor::pack(const std::string& unitsBinFile, const std::string& pac
 			// read unit data from the .unit file
 			inputStream >> unit;
 			std::cout << "Successfully read from: \"" << unitFilePaths.at(i)
-				<< "\"" << endl;
+				<< "\"" << "\n";
 			// write to the .bin file
 			unit.write_bin(outputStream);
 		}
 		std::cout << "Successfully written to: \"" << unitsBinFile
-			<< "\"" << endl;
+			<< "\"" << "\n";
 	}
 	catch (const std::ifstream::failure& error) {
-		std::cerr << error.what() << endl;
-		std::cerr << "ERROR: Bad data encouuntered when processing file \""
-			<< unitFilePaths.at(i) << "\"" << std::endl;
+		std::cerr << error.what() << "\n";
+		std::cerr << "ERROR: Bad data encountered when processing file \""
+			<< unitFilePaths.at(i) << "\"\n";
 	}
 
-	std::cout << "Success: " << i << endl;
-	std::cout << "Failure: " << (NUM_UNITS - i) << endl;
+	std::cout << "Success: " << i << "\n";
+	std::cout << "Failure: " << (NUM_UNITS - i) << "\n";
 }
