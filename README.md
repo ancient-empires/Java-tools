@@ -24,4 +24,4 @@ This repository provides essential tools to extract and manipulate the resources
     * [Download from Byblo (zip)](http://users.skynet.be/fb119101/ae2/tools/AE2pak011b.zip) [[Archive](https://bit.ly/ae2pak-download)]
 
 ## Unit data handlers
-* **AE2unit**: extract `units.bin` to `*.unit` files, or pack `*.unit` files together back to the `units.bin` file.
+* **AE2units**: extract `units.bin` to `*.unit` files, or pack `*.unit` files together back to the `units.bin` file.
