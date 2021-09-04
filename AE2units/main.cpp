@@ -16,7 +16,7 @@ void help() {
     << " files must contain exactly these "
     << NUM_UNITS << " files for packing:"
     << "\n";
-  for (const auto& unitName : unitNames) {
+  for (const auto& unitName : UNIT_NAMES) {
     std::cerr << "- " << unitName << UNIT_EXT << "\n";
   }
 }
