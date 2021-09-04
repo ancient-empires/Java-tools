@@ -10,8 +10,8 @@ extern "C" {
 }
 
 void UnitProcessor::extract(const std::string& unitsBinFile, const std::string& extractDir) {
-    const UnitInfo::unit_names_vector& UNIT_NAMES = UnitInfo::unitNames();
-    const size_t NUM_UNITS = UnitInfo::numUnits();
+    const std::vector<std::string>& UNIT_NAMES = UnitInfo::UNIT_NAMES;
+    const size_t NUM_UNITS = UnitInfo::NUM_UNITS;
 
     // vector to store the information of all units
     std::vector<UnitInfo> units(NUM_UNITS);
@@ -50,6 +50,7 @@ void UnitProcessor::extract(const std::string& unitsBinFile, const std::string& 
         }
     }
     if (numOutputErrors > 0) {
+        std::cout << "Failure: " << numOutputErrors << "\n";
         exit(ERROR_RW);
     }
 
@@ -80,8 +81,8 @@ void UnitProcessor::extract(const std::string& unitsBinFile, const std::string& 
 }
 
 void UnitProcessor::pack(const std::string& unitsBinFile, const std::string& packDir) {
-    const UnitInfo::unit_names_vector& UNIT_NAMES = UnitInfo::unitNames();
-    const size_t NUM_UNITS = UnitInfo::numUnits();
+    const std::vector<std::string>& UNIT_NAMES = UnitInfo::UNIT_NAMES;
+    const size_t NUM_UNITS = UnitInfo::NUM_UNITS;
 
     // initialize all units
     std::vector<UnitInfo> units(NUM_UNITS);
@@ -111,6 +112,7 @@ void UnitProcessor::pack(const std::string& unitsBinFile, const std::string& pac
         }
     }
     if (numInputErrors > 0) {
+        std::cout << "Failure: " << numInputErrors << "\n";
         exit(ERROR_RW);
     }
 

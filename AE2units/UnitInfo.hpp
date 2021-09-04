@@ -1,7 +1,6 @@
 /*
   Header file to read and write properties of all units.
-  In the original game the unit information is hard-coded.
-  Hence it is impossible to add or remove units from the game.
+  Note: In the original game the unit information is hard-coded. Hence it is impossible to add or remove units from the game.
 */
 
 #ifndef UNITINFO_HPP
@@ -23,14 +22,14 @@ public:
     UnitInfo();
     ~UnitInfo();
 
-    typedef std::vector<std::string> unit_names_vector;
 
     // get the names of all units
-    static const unit_names_vector& unitNames();
+    static const std::vector<std::string> UNIT_NAMES;
 
-    // get number of all units
-    static const size_t numUnits();
+    // number of all units
+    static const size_t NUM_UNITS;
 
+    // extension of unit files
     static const std::string UNIT_EXT;
 
     // read unit data from a .bin file
