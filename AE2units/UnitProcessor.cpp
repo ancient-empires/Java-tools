@@ -10,7 +10,7 @@ extern "C" {
 }
 
 void UnitProcessor::extract(const std::string& unitsBinFile, const std::string& extractDir) {
-    const UnitInfo::units_vector& UNIT_NAMES = UnitInfo::unitNames();
+    const UnitInfo::unit_names_vector& UNIT_NAMES = UnitInfo::unitNames();
     const size_t NUM_UNITS = UnitInfo::numUnits();
 
     // vector to store the information of all units
@@ -80,7 +80,7 @@ void UnitProcessor::extract(const std::string& unitsBinFile, const std::string& 
 }
 
 void UnitProcessor::pack(const std::string& unitsBinFile, const std::string& packDir) {
-    const UnitInfo::units_vector& UNIT_NAMES = UnitInfo::unitNames();
+    const UnitInfo::unit_names_vector& UNIT_NAMES = UnitInfo::unitNames();
     const size_t NUM_UNITS = UnitInfo::numUnits();
 
     // initialize all units

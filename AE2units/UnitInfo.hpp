@@ -23,10 +23,10 @@ public:
     UnitInfo();
     ~UnitInfo();
 
-    typedef std::vector<std::string> units_vector;
+    typedef std::vector<std::string> unit_names_vector;
 
     // get the names of all units
-    static const units_vector& unitNames();
+    static const unit_names_vector& unitNames();
 
     // get number of all units
     static const size_t numUnits();

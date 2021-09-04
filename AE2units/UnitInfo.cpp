@@ -68,7 +68,7 @@ UnitInfo::~UnitInfo() {
 }
 
 // get a vector of all units in AE2
-const UnitInfo::units_vector& UnitInfo::unitNames() {
+const UnitInfo::unit_names_vector& UnitInfo::unitNames() {
     return UnitInfo::Impl::unitNames;
 }
 
