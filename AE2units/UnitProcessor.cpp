@@ -2,7 +2,6 @@
 #include <fstream>
 #include <vector>
 
-#include "units.hpp"
 #include "UnitProcessor.hpp"
 #include "UnitInfo.hpp"
 
@@ -11,6 +10,9 @@ extern "C" {
 }
 
 void UnitProcessor::extract(const std::string& unitsBinFile, const std::string& extractDir) {
+    const UnitInfo::units_vector& UNIT_NAMES = UnitInfo::unitNames();
+    const size_t NUM_UNITS = UnitInfo::numUnits();
+
     // vector to store the information of all units
     std::vector<UnitInfo> units(NUM_UNITS);
 
@@ -34,7 +36,7 @@ void UnitProcessor::extract(const std::string& unitsBinFile, const std::string& 
     for (unsigned int i = 0; i < NUM_UNITS; ++i) {
         // get unit path
         auto& unitPath = unitFilePaths.at(i);
-        unitPath = extractDir + "/" + UNIT_NAMES.at(i) + UNIT_EXT;
+        unitPath = extractDir + "/" + UNIT_NAMES.at(i) + UnitInfo::UNIT_EXT;
         // setup output stream, check if any errors exist
         auto& outputStream = outputStreams.at(i);
         outputStream.exceptions(std::ifstream::failbit | std::ifstream::badbit);
@@ -78,6 +80,9 @@ void UnitProcessor::extract(const std::string& unitsBinFile, const std::string& 
 }
 
 void UnitProcessor::pack(const std::string& unitsBinFile, const std::string& packDir) {
+    const UnitInfo::units_vector& UNIT_NAMES = UnitInfo::unitNames();
+    const size_t NUM_UNITS = UnitInfo::numUnits();
+
     // initialize all units
     std::vector<UnitInfo> units(NUM_UNITS);
 
@@ -89,7 +94,7 @@ void UnitProcessor::pack(const std::string& unitsBinFile, const std::string& pac
     for (unsigned int i = 0; i < NUM_UNITS; ++i) {
         // initialize each input stream
         auto& unitPath = unitFilePaths.at(i);
-        unitPath = packDir + "/" + UNIT_NAMES.at(i) + UNIT_EXT;
+        unitPath = packDir + "/" + UNIT_NAMES.at(i) + UnitInfo::UNIT_EXT;
         auto& inputStream = inputStreams.at(i);
         inputStream.exceptions(std::ifstream::badbit);
         // try to open each input file and initialize streams

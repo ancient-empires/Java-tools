@@ -13,6 +13,9 @@ extern "C" {
 
 class UnitInfo::Impl {
 public:
+    // Unit names are taken from Ancient Empires 1, for compatibility purposes.
+    static const std::vector<std::string> unitNames;
+
     unsigned short moveRange = 0;
 
     short minAttack = 0;
@@ -31,6 +34,22 @@ public:
     std::set<unsigned short> properties;
 };
 
+// Unit names are taken from Ancient Empires 1, for compatibility purposes.
+const std::vector<std::string> UnitInfo::Impl::unitNames = std::vector<std::string>({
+        "soldier",
+        "archer",
+        "lizard",    // Elemental
+        "wizard",    // Sorceress
+        "wisp",
+        "spider",    // Dire Wolf
+        "golem",
+        "catapult",
+        "wyvern",    // Dragon
+        "king",      // Galamar / Valadorn / Demon Lord / Saeth
+        "skeleton",
+        "crystall",  // new unit in Ancient Empires 2
+    });
+
 namespace unit_key {
     static const std::string moveRange = "MoveRange";
     static const std::string attack = "Attack";
@@ -47,6 +66,19 @@ UnitInfo::UnitInfo() : impl(std::make_unique<Impl>()) {
 
 UnitInfo::~UnitInfo() {
 }
+
+// get a vector of all units in AE2
+const UnitInfo::units_vector& UnitInfo::unitNames() {
+    return UnitInfo::Impl::unitNames;
+}
+
+// get the number of all units in AE2
+const size_t UnitInfo::numUnits() {
+    return UnitInfo::unitNames().size();
+}
+
+// unit file extension
+const std::string UnitInfo::UNIT_EXT = ".unit";
 
 // read unit data from a .bin file
 std::ifstream& UnitInfo::read_bin(std::ifstream& inputStream) {

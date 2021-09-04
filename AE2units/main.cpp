@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "units.hpp"
+#include "UnitInfo.hpp"
 #include "UnitProcessor.hpp"
 
 extern "C" {
@@ -12,12 +12,12 @@ void help() {
   std::cerr << "- Extract mode: ./AE2units.out -e <path/to/units.bin> <extract/directory>" << "\n";
   std::cerr << "- Pack mode:    ./AE2units.out -p <path/to/units.bin> <pack/directory>" << "\n" << "\n";
 
-  std::cerr << "The directory of " << UNIT_EXT
+  std::cerr << "The directory of " << UnitInfo::UNIT_EXT
     << " files must contain exactly these "
-    << NUM_UNITS << " files for packing:"
+    << UnitInfo::numUnits() << " files for packing:"
     << "\n";
-  for (const auto& unitName : UNIT_NAMES) {
-    std::cerr << "- " << unitName << UNIT_EXT << "\n";
+  for (const auto& unitName : UnitInfo::unitNames()) {
+    std::cerr << "- " << unitName << UnitInfo::UNIT_EXT << "\n";
   }
 }
 

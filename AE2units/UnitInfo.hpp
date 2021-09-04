@@ -1,9 +1,16 @@
+/*
+  Header file to read and write properties of all units.
+  In the original game the unit information is hard-coded.
+  Hence it is impossible to add or remove units from the game.
+*/
+
 #ifndef UNITINFO_HPP
 #define UNITINFO_HPP
 
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <vector>
 #include <memory>
 
 class UnitInfo {
@@ -15,6 +22,16 @@ private:
 public:
     UnitInfo();
     ~UnitInfo();
+
+    typedef std::vector<std::string> units_vector;
+
+    // get the names of all units
+    static const units_vector& unitNames();
+
+    // get number of all units
+    static const size_t numUnits();
+
+    static const std::string UNIT_EXT;
 
     // read unit data from a .bin file
     std::ifstream& read_bin(std::ifstream& inputStream);
