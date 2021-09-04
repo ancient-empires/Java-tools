@@ -35,6 +35,8 @@ AE2units:
 
 .PHONY: clean
 clean:
+	-rm -rf AE1map
+	-rm -rf AE2map
 	$(MAKE) -C AE2lang $@
 	$(MAKE) -C AE2pak $@
 	$(MAKE) -C AE2units
