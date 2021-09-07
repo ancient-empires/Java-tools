@@ -8,13 +8,13 @@ objs := $(src:.c=.o)
 .PHONY: all
 all: $(TARGET).out
 
-# common compile options
-common := ../common/Makefile
--include $(common)
-
 # executable file
 $(TARGET).out: $(objs)
 	$(CC) $^ -o "$@"
+
+# common compile options
+common := ../common/Makefile
+-include $(common)
 
 # automatic prerequisite generation
 deps := $(src:.c=.d)
@@ -29,7 +29,7 @@ clean:
 	rm -rfv $(objs) $(deps)
 
 
-# Convesions
+# Conversions
 
 AE1lang_dir := data/AE1
 AE1lang_dat := $(AE1lang_dir)/lang.dat
@@ -45,7 +45,6 @@ define CHECK_ARGS =
 $(if $(dat),,$(error $(ERROR_MSG)))
 $(if $(txt),,$(error $(ERROR_MSG)))
 endef
-
 
 # .dat to .txt
 

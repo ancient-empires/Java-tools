@@ -8,13 +8,12 @@ objs := $(src:.c=.o)
 .PHONY: all
 all: $(TARGET).out
 
+# executable file
+$(TARGET).out: $(objs)
+
 # common compile options
 common := ../common/Makefile
 -include $(common)
-
-# executable file
-$(TARGET).out: $(objs)
-	$(CC) $^ -o "$@"
 
 # automatic prerequisite generation
 deps := $(src:.c=.d)
