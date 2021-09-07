@@ -10,6 +10,9 @@ objs_cpp := $(src_cpp:.cpp=.o)
 .PHONY: all
 all: $(target)
 
+# all executables
+$(target): $(objs)
+
 # common compile options
 common := ../common/Makefile
 -include $(common)
@@ -17,8 +20,6 @@ common := ../common/Makefile
 # automatic dependency tracking
 deps = $(objs:.o=.d)
 -include $(deps)
-
-$(target): $(objs)
 
 %.o: %.cpp
 	$(CXX_WRITE_DEP)
