@@ -4,8 +4,8 @@
 CFLAGS := -g -Wall -Werror
 CXXFLAGS := -g -Wall -Werror
 
-# set linking flags (use gcc command to compile and link C++)
-LDFLAGS := -lstdc++
+# set library flags
+LDLIBS := -lstdc++ # use gcc to link to Standard C++ libraries
 
 # automatic prerequisite generation
 # source: http://web.archive.org/web/20210820223028/http://make.mad-scientist.net/papers/advanced-auto-dependency-generation/

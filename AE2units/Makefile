@@ -19,7 +19,6 @@ deps = $(objs:.o=.d)
 -include $(deps)
 
 $(target): $(objs)
-	$(CXX) $(CXXFLAGS) $^ -o "$@"
 
 %.o: %.cpp
 	$(CXX_WRITE_DEP)
