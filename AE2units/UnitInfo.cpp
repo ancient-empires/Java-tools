@@ -13,9 +13,6 @@ extern "C" {
 
 class UnitInfo::Impl {
 public:
-    // Unit names are taken from Ancient Empires 1, for compatibility purposes.
-    static const std::vector<std::string> unitNames;
-
     unsigned short moveRange = 0;
 
     short minAttack = 0;
@@ -51,8 +48,9 @@ UnitInfo::UnitInfo() : impl(std::make_unique<Impl>()) {
 UnitInfo::~UnitInfo() {
 }
 
-// all unit names in AE2
+// names of all units in AE2
 // Unit names are taken from Ancient Empires 1, for compatibility purposes.
+// These names are hard-coded in the original game. They shall NOT be changed, or the program will break.
 const std::vector<std::string> UnitInfo::UNIT_NAMES({
         "soldier",
         "archer",

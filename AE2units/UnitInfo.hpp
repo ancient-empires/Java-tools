@@ -22,8 +22,9 @@ public:
     UnitInfo();
     ~UnitInfo();
 
-
-    // get the names of all units
+    // names of all units in AE2
+    // Unit names are taken from Ancient Empires 1, for compatibility purposes.
+    // These names are hard-coded in the original game. They shall NOT be changed, or the program will break.
     static const std::vector<std::string> UNIT_NAMES;
 
     // number of all units
