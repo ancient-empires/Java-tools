@@ -8,6 +8,7 @@ CXXFLAGS := -g -Wall -Werror
 LDFLAGS := -lstdc++
 
 # automatic prerequisite generation
+# source: http://web.archive.org/web/20210820223028/http://make.mad-scientist.net/papers/advanced-auto-dependency-generation/
 DEPFLAGS = -MT "$@" -MMD -MP -MF "$(@:.o=.d)"
 CC_WRITE_DEP = $(CC) $(CFLAGS) -c "$<" -o "$@" $(DEPFLAGS)
 CXX_WRITE_DEP = $(CXX) $(CXXFLAGS) -c "$<" -o "$@" $(DEPFLAGS)
