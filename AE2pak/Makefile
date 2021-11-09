@@ -2,7 +2,9 @@
 
 TARGET := AE2pak
 
-src := main.c ../utils/utils.c path_processing.c file_processing.c extract.c pack.c
+src := $(shell ls *.c | sed -e s/.*backup.*//g)
+src += ../utils/utils.c
+
 objs := $(src:.c=.o)
 
 .PHONY: all
@@ -10,6 +12,7 @@ all: $(TARGET).out
 
 # executable file
 $(TARGET).out: $(objs)
+	$(CC) $(CFLAGS) $^ -o $@
 
 # common compile options
 common := ../common/Makefile
