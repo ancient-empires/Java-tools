@@ -36,14 +36,14 @@ public:
     // read unit data from a .bin file
     std::ifstream& read_bin(std::ifstream& inputStream);
 
-    // print the data to a .unit file
-    friend std::ostream& operator<<(std::ostream& outputStream, const UnitInfo& unitInfo);
+    // write unit data to a .bin file
+    std::ofstream& write_bin(std::ofstream& outputStream) const;
 
     // read unit data from a .unit file
     friend std::istream& operator>>(std::istream& inputStream, UnitInfo& unitInfo);
 
-    // write unit data to a .bin file
-    std::ofstream& write_bin(std::ofstream& outputStream) const;
+    // write the data to a .unit file
+    friend std::ostream& operator<<(std::ostream& outputStream, const UnitInfo& unitInfo);
 };
 
 #endif
