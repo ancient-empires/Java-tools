@@ -39,5 +39,5 @@ clean:
 	-rm -rf AE2map
 	$(MAKE) -C AE2lang $@
 	$(MAKE) -C AE2pak $@
-	$(MAKE) -C AE2units
+	$(MAKE) -C AE2units $@
 	$(MAKE) -C utils $@
