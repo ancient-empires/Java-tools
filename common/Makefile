@@ -14,4 +14,4 @@ CC_WRITE_DEP = $(CC) $(CFLAGS) -c "$<" -o "$@" $(DEPFLAGS)
 CXX_WRITE_DEP = $(CXX) $(CXXFLAGS) -c "$<" -o "$@" $(DEPFLAGS)
 
 # clean up
-CLEAN := -rm -rf *.o *.d *.out *.gch
+CLEAN := -rm -rfv *.o *.d *.out *.gch
