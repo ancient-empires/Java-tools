@@ -29,4 +29,5 @@ deps = $(objs:.o=.d)
 
 .PHONY: clean
 clean:
-	-rm -rf *.o *.out
+	$(CLEAN)
+	rm -rfv $(objs) $(deps)
