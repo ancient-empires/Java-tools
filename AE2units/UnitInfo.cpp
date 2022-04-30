@@ -31,15 +31,15 @@ public:
     std::set<unsigned short> properties;
 };
 
-namespace unit_key {
-    static const std::string moveRange = "MoveRange";
-    static const std::string attack = "Attack";
-    static const std::string defense = "Defence";
-    static const std::string attackRange = "AttackRange";
-    static const std::string price = "Cost";
-    static const std::string charCount = "CharCount";
-    static const std::string charPos = "CharPos";
-    static const std::string hasProperty = "HasProperty";
+namespace unit_keys {
+    static const std::string MOVE_RANGE = "MoveRange";
+    static const std::string ATTACK = "Attack";
+    static const std::string DEFENSE = "Defence";
+    static const std::string ATTACK_RANGE = "AttackRange";
+    static const std::string PRICE = "Cost";
+    static const std::string CHAR_COUNT = "CharCount";
+    static const std::string CHAR_POS = "CharPos";
+    static const std::string HAS_PROPERTY = "HasProperty";
 };
 
 UnitInfo::UnitInfo() : impl(std::make_unique<Impl>()) {
@@ -130,23 +130,23 @@ std::ostream& operator<<(std::ostream& outputStream, const UnitInfo& unit) {
     auto& impl = unit.impl;
 
     // section 1: basic information
-    outputStream << unit_key::moveRange << " " << impl->moveRange << "\n";
-    outputStream << unit_key::attack << " "
+    outputStream << unit_keys::MOVE_RANGE << " " << impl->moveRange << "\n";
+    outputStream << unit_keys::ATTACK << " "
         << impl->minAttack << " " << impl->maxAttack << "\n";
-    outputStream << unit_key::defense << " " << impl->defense << "\n";
-    outputStream << unit_key::attackRange << " "
+    outputStream << unit_keys::DEFENSE << " " << impl->defense << "\n";
+    outputStream << unit_keys::ATTACK_RANGE << " "
         << impl->maxAttackRange << " "
         << impl->minAttackRange << "\n";
-    outputStream << unit_key::price << " " << impl->price << "\n";
+    outputStream << unit_keys::PRICE << " " << impl->price << "\n";
 
     // section 2: fight animation information
     unsigned int numChars = impl->charPos.size();
-    outputStream << "\n" << unit_key::charCount << " " << numChars << "\n";
+    outputStream << "\n" << unit_keys::CHAR_COUNT << " " << numChars << "\n";
     if (numChars > 0) {
         outputStream << "\n";
         for (unsigned int i = 0; i < numChars; ++i) {
             const auto& coord = impl->charPos.at(i);
-            outputStream << unit_key::charPos << " " << i << " "
+            outputStream << unit_keys::CHAR_POS << " " << i << " "
                 << coord.first << " " << coord.second << "\n";
         }
     }
@@ -156,7 +156,7 @@ std::ostream& operator<<(std::ostream& outputStream, const UnitInfo& unit) {
         outputStream << "\n";
         unsigned int i = 0, numProperties = impl->properties.size();
         for (const auto& property : impl->properties) {
-            outputStream << unit_key::hasProperty << " " << property;
+            outputStream << unit_keys::HAS_PROPERTY << " " << property;
             if (i < numProperties - 1) {
                 outputStream << "\n";
             }
@@ -183,26 +183,26 @@ std::istream& operator>>(std::istream& inputStream, UnitInfo& unit) {
         lineStream >> key;
 
         // section 1: basic information
-        if (key == unit_key::moveRange) {
+        if (key == unit_keys::MOVE_RANGE) {
             lineStream >> impl->moveRange;
         }
-        else if (key == unit_key::attack) {
+        else if (key == unit_keys::ATTACK) {
             lineStream >> impl->minAttack;
             lineStream >> impl->maxAttack;
         }
-        else if (key == unit_key::defense) {
+        else if (key == unit_keys::DEFENSE) {
             lineStream >> impl->defense;
         }
-        else if (key == unit_key::attackRange) {
+        else if (key == unit_keys::ATTACK_RANGE) {
             lineStream >> impl->maxAttackRange;
             lineStream >> impl->minAttackRange;
         }
-        else if (key == unit_key::price) {
+        else if (key == unit_keys::PRICE) {
             lineStream >> impl->price;
         }
 
         // section 2: fight animation
-        if (key == unit_key::charCount) {
+        if (key == unit_keys::CHAR_COUNT) {
             unsigned int numChars = 0;
             lineStream >> numChars;
             impl->charPos.resize(numChars);
@@ -216,19 +216,19 @@ std::istream& operator>>(std::istream& inputStream, UnitInfo& unit) {
 
                 std::istringstream lineStream(line);
                 lineStream >> key;
-                if (key == unit_key::charPos) {
+                if (key == unit_keys::CHAR_POS) {
                     auto& charPos = impl->charPos.at(j);
                     short n;
                     lineStream >> n >> charPos.first >> charPos.second;
                 }
                 else {
-                    throw std::ifstream::failure("ERROR: Bad data encountered when processing " + unit_key::charPos);
+                    throw std::ifstream::failure("ERROR: Bad data encountered when processing " + unit_keys::CHAR_POS);
                 }
             }
         }
 
         // section 3: unit properties
-        if (key == unit_key::hasProperty) {
+        if (key == unit_keys::HAS_PROPERTY) {
             unsigned short property;
             lineStream >> property;
             impl->properties.emplace(property);
