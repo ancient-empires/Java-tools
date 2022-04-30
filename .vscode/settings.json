@@ -1,1 +1,7 @@
-{}
+{
+    "files.associations": {
+        "*.kml": "xml",
+        "*.geojson": "json",
+        "fstream": "cpp"
+    }
+}
