@@ -3,5 +3,6 @@
         "*.kml": "xml",
         "*.geojson": "json",
         "fstream": "cpp"
-    }
+    },
+    "C_Cpp.default.intelliSenseMode": "linux-gcc-x64"
 }
