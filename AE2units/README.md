@@ -19,18 +19,18 @@ make
 
 The generated files are (according to how the units are ordered in the `units.bin` file):
 
-1. `soldier.unit`
-2. `archer.unit`
-3. `lizard.unit`
-4. `wizard.unit`
-5. `wisp.unit`
-6. `spider.unit`
-7. `golem.unit`
-8. `catapult.unit`
-9. `wyvern.unit`
-10. `king.unit`
-11. `skeleton.unit`
-12. `crystall.unit`
+0. `soldier.unit`
+1. `archer.unit`
+2. `lizard.unit`
+3. `wizard.unit`
+4. `wisp.unit`
+5. `spider.unit`
+6. `golem.unit`
+7. `catapult.unit`
+8. `wyvern.unit`
+9. `king.unit`
+10. `skeleton.unit`
+11. `crystall.unit`
 
 ## Pack `*.unit` files into `units.bin`
 ```bash
