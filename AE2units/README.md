@@ -11,13 +11,11 @@ make
 ```
 
 ## Extract `units.bin` to `*.unit` files
+Running
 ```bash
-./AE2units.out -e <path/to/units.bin> <extract/directory>
+make extract
 ```
-
-**In the original game the number of unit types was hard-coded to 12.** Hence it is impossible to add or remove units from this game.
-
-The generated files are (according to how the units are ordered in the `units.bin` file):
+will extract the `data/units.bin` file into 12 `*.unit` files, which will be put in the `data` directory. The generated files are:
 
 0. `soldier.unit`
 1. `archer.unit`
@@ -32,12 +30,16 @@ The generated files are (according to how the units are ordered in the `units.bi
 10. `skeleton.unit`
 11. `crystall.unit`
 
-## Pack `*.unit` files into `units.bin`
-```bash
-./AE2units.out -p <path/to/units.bin> <pack/directory>
-```
+**Note:** *In the original game the number of unit types was hard-coded to 12.* Hence it is impossible to add or remove units from this game.
 
-The program will look in the packing directory for the 12 `*.unit` files with filenames *exactly equal to* the names listed above. **Missing any of the text files will cause a runtime error.**
+## Pack `*.unit` files into `units.bin`
+After you modify the .unit files in the `data` directory, run
+```bash
+make pack
+```
+to pack them up into `data/units.bin`.
+
+The program will look in the `data` directory for the 12 `*.unit` files with filenames *exactly equal to* the names listed above. **Missing any of the text files will cause a runtime error.**
 
 ## Clean up
 ```bash
