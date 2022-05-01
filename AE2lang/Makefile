@@ -17,11 +17,6 @@ $(TARGET): $(objs)
 common := ../common/Makefile
 -include $(common)
 
-.PHONY: clean
-clean:
-	$(CLEAN)
-	rm -rfv $(objs) $(deps)
-
 # Conversions
 # AE1
 AE1lang_dir := data/AE1
