@@ -9,7 +9,7 @@
 
 // Extract single file (internal use only)
 // Return true if successfully extracted; otherwise return false.
-static bool extractFile(const char* pakFile, const char* resourceFile, unsigned int fileDataPos, unsigned int fileSize) {
+static bool extractFile(const char* pakFile, const char* resourceFile, uint32_t fileDataPos, uint16_t fileSize) {
 
     // open .pak file for reading
     FILE* pakFileDesc = fopen(pakFile, "rb");
@@ -28,15 +28,15 @@ static bool extractFile(const char* pakFile, const char* resourceFile, unsigned 
     }
 
     // copy bytes from .pak to target file
-    for (unsigned int i = 0; i < fileSize; ++i) {
-        unsigned char c = fgetc(pakFileDesc);
+    for (size_t i = 0; i < fileSize; ++i) {
+        unsigned char ch = fgetc(pakFileDesc);
         if (feof(pakFileDesc)) {
             fprintf(stderr, "ERROR: EOF reached in .pak file \"%s\" when extracting! Please check your file!\n\n", pakFile);
             fclose(pakFileDesc);
             fclose(resourceFileDesc);
             return false;
         }
-        fputc(c, resourceFileDesc);
+        fputc(ch, resourceFileDesc);
     }
 
     fclose(pakFileDesc);
@@ -73,13 +73,13 @@ void extract(const char* pakFile, const char* extractDir, const char* fileListLO
     rewind(pakFileDesc);
     c1 = fgetc(pakFileDesc);
     c2 = fgetc(pakFileDesc);
-    unsigned int fileDataStartPos = fourBytesToUInt32(0, 0, c1, c2);
+    uint16_t fileDataStartPos = fourBytesToUInt32(0, 0, c1, c2);
     printf("File data start at byte: %u\n", fileDataStartPos);
 
     // get number of total files (next 2 bytes)
     c1 = fgetc(pakFileDesc);
     c2 = fgetc(pakFileDesc);
-    unsigned int totalFiles = fourBytesToUInt32(0, 0, c1, c2);
+    uint16_t totalFiles = fourBytesToUInt32(0, 0, c1, c2);
     printf("Total Files announced: %u\n", totalFiles);
 
     // check unexpected ending of .pak file
@@ -92,19 +92,16 @@ void extract(const char* pakFile, const char* extractDir, const char* fileListLO
     }
 
     // process all files
-
-    unsigned int totalExtracted = 0, totalErrors = 0;
-
-    for (unsigned int i = 0; i < totalFiles; ++i) {
+    size_t totalExtracted = 0, totalErrors = 0;
+    for (size_t i = 0; i < totalFiles; ++i) {
         // get filename length (2 bytes)
         c1 = fgetc(pakFileDesc);
         c2 = fgetc(pakFileDesc);
-        unsigned int filenameLen = fourBytesToUInt32(0, 0, c1, c2);
+        size_t filenameLen = fourBytesToUInt32(0, 0, c1, c2);
 
         // get filename
-        unsigned int j = 0;
         char* filename = calloc(filenameLen + 1, sizeof(char));
-        for (; j < filenameLen; ++j) {
+        for (size_t j = 0; j < filenameLen; ++j) {
             filename[j] = fgetc(pakFileDesc);
         }
 
@@ -113,12 +110,12 @@ void extract(const char* pakFile, const char* extractDir, const char* fileListLO
         c2 = fgetc(pakFileDesc);
         c3 = fgetc(pakFileDesc);
         c4 = fgetc(pakFileDesc);
-        unsigned int fileDataPos = fourBytesToUInt32(c1, c2, c3, c4) + fileDataStartPos;
+        uint32_t fileDataPos = fourBytesToUInt32(c1, c2, c3, c4) + fileDataStartPos;
 
         // get file size (2 bytes)
         c1 = fgetc(pakFileDesc);
         c2 = fgetc(pakFileDesc);
-        unsigned int fileSize = fourBytesToUInt32(0, 0, c1, c2);
+        uint16_t fileSize = fourBytesToUInt32(0, 0, c1, c2);
 
         // get the path of the extracted file, relative to current working directory
         // write to file list (.log file)
@@ -158,6 +155,6 @@ void extract(const char* pakFile, const char* extractDir, const char* fileListLO
     printf("Extracted to: \"%s\"\n", extractDir);
     printf("Written file list .log to: \"%s\"\n", fileListLOG);
     printf("Total files: %u\n", totalFiles);
-    printf("Total extracted: %u\n", totalExtracted);
-    printf("Total errors: %u\n\n", totalErrors);
+    printf("Total extracted: %lu\n", totalExtracted);
+    printf("Total errors: %lu\n\n", totalErrors);
 }
