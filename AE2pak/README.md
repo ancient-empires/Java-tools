@@ -7,46 +7,46 @@ This is a remaster of the **AE2pak** utility initially published on [byblo](http
 ## How to use
 
 ### Compile
-```
-$ make
+```bash
+make
 ```
 
 ### Extract .pak archive
-```
-$ make extract pak=<path/to/pak.pak> dir=<path/to/extract/dir>
+```bash
+make extract pak=<path/to/pak.pak> dir=<path/to/extract/dir>
 ```
 
 #### Shortcut: Extract .pak files for AE1 and AE2
-```
-$ make extract_ae1 # extract for AE1
-$ make extract_ae2 # extract for AE2
-$ make extract_all # extract for both series, which will call the two commands above automatically
+```bash
+make extract_ae1 # extract for AE1
+make extract_ae2 # extract for AE2
+make extract_all # extract for both series, which will call the two commands above automatically
 ```
 
 **NOTE: The output directory must be created beforehand. Otherwise, you will be unable to obtain the extracted files.**
 
 ### Pack .pak archive from the file list .log file
-```
-$ make pack pak=<path/to/pak.pak> dir=<path/to/resource/dir> filelist=<path/to/file/list.log>
+```bash
+make pack pak=<path/to/pak.pak> dir=<path/to/resource/dir> filelist=<path/to/file/list.log>
 ```
 
 #### Shortcut: Pack .pak files for AE1 and AE2
-```
-$ make pack_ae1 # pack for AE1
-$ make pack_ae2 # pack for AE2
-$ make pack_all # pack for both series, which will call the two commands above automatically
+```bash
+make pack_ae1 # pack for AE1
+make pack_ae2 # pack for AE2
+make pack_all # pack for both series, which will call the two commands above automatically
 ```
 
 ### Clean up
 
 #### Clean up extracted files
-```
-$ make clean_ae1 # clean up for AE1
-$ make clean_ae2 # clean up for AE2
-$ make clean_all_extracted # clean up for both series, which will call the two commands above automatically
+```bash
+make clean_ae1 # clean up for AE1
+make clean_ae2 # clean up for AE2
+make clean_all_extracted # clean up for both series, which will call the two commands above automatically
 ```
 
 #### Clean up executable files and object files
-```
-$ make clean
+```bash
+make clean
 ```

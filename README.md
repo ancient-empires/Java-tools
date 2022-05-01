@@ -3,12 +3,12 @@
 This repository provides essential tools to extract and manipulate the resources for Ancient Empires (Java version). These tools were originally provided on the [Byblo forum](https://byblo.proboards.com).
 
 ## Extract and compile all tools
-```shell
+```bash
 make
 ```
 
 ## Clean up
-```shell
+```bash
 make clean
 ```
 
