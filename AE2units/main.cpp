@@ -15,8 +15,10 @@ void help() {
     std::cerr << "The directory of " << UnitInfo::UNIT_EXT
         << " files must contain exactly these "
         << UnitInfo::NUM_UNITS << " files for packing:\n";
+    size_t i = 0;
     for (const auto& unitName : UnitInfo::UNIT_NAMES) {
-        std::cerr << "- " << unitName << UnitInfo::UNIT_EXT << "\n";
+        std::cerr << i << ". " << unitName << UnitInfo::UNIT_EXT << "\n";
+        ++i;
     }
 }
 
