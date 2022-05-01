@@ -1,6 +1,6 @@
 # Compile and link
 
-TARGET := AE2pak
+TARGET := AE2pak.out
 
 src := $(shell ls *.c | sed -e s/.*backup.*//g)
 src += ../utils/utils.c
@@ -8,10 +8,10 @@ src += ../utils/utils.c
 objs := $(src:.c=.o)
 
 .PHONY: all
-all: $(TARGET).out
+all: $(TARGET)
 
 # executable file
-$(TARGET).out: $(objs)
+$(TARGET): $(objs)
 	$(CC) $(CFLAGS) $^ -o $@
 
 # common compile options

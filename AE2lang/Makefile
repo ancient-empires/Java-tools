@@ -1,15 +1,15 @@
 # Compile and link
 
-TARGET := AE2lang
+TARGET := AE2lang.out
 
 src := main.c ../utils/utils.c dat2txt.c txt2dat.c
 objs := $(src:.c=.o)
 
 .PHONY: all
-all: $(TARGET).out
+all: $(TARGET)
 
 # executable file
-$(TARGET).out: $(objs)
+$(TARGET): $(objs)
 	$(CC) $^ -o "$@"
 
 # common compile options
