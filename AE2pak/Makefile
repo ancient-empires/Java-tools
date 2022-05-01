@@ -2,7 +2,7 @@
 
 TARGET := AE2pak.out
 
-src := $(shell ls *.c | sed -e s/.*backup.*//g)
+src := $(shell find -name "*.c" ! \( -path "./backup/*" \))
 src += ../utils/utils.c
 
 objs := $(src:.c=.o)
