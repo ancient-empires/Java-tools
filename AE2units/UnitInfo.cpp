@@ -96,9 +96,9 @@ std::ifstream& UnitInfo::read_bin(std::ifstream& inputStream) {
     }
 
     // section 3: unit properties
-    unsigned int numProperties = inputStream.get();
+    size_t numProperties = inputStream.get();
     impl->properties.clear();
-    for (unsigned int j = 0; j < numProperties; ++j) {
+    for (size_t i = 0; i < numProperties; ++i) {
         unsigned short property = inputStream.get();
         impl->properties.emplace(property);
     }
@@ -140,11 +140,11 @@ std::ostream& operator<<(std::ostream& outputStream, const UnitInfo& unit) {
     outputStream << unit_keys::PRICE << " " << impl->price << "\n";
 
     // section 2: fight animation information
-    unsigned int numChars = impl->charPos.size();
+    size_t numChars = impl->charPos.size();
     outputStream << "\n" << unit_keys::CHAR_COUNT << " " << numChars << "\n";
     if (numChars > 0) {
         outputStream << "\n";
-        for (unsigned int i = 0; i < numChars; ++i) {
+        for (size_t i = 0; i < numChars; ++i) {
             const auto& coord = impl->charPos.at(i);
             outputStream << unit_keys::CHAR_POS << " " << i << " "
                 << coord.first << " " << coord.second << "\n";
@@ -154,7 +154,7 @@ std::ostream& operator<<(std::ostream& outputStream, const UnitInfo& unit) {
     // section 3: unit properties
     if (!impl->properties.empty()) {
         outputStream << "\n";
-        unsigned int i = 0, numProperties = impl->properties.size();
+        size_t i = 0, numProperties = impl->properties.size();
         for (const auto& property : impl->properties) {
             outputStream << unit_keys::HAS_PROPERTY << " " << property;
             if (i < numProperties - 1) {
@@ -203,12 +203,12 @@ std::istream& operator>>(std::istream& inputStream, UnitInfo& unit) {
 
         // section 2: fight animation
         if (key == unit_keys::CHAR_COUNT) {
-            unsigned int numChars = 0;
+            size_t numChars = 0;
             lineStream >> numChars;
             impl->charPos.resize(numChars);
 
             // process each CharPos line
-            for (unsigned int j = 0; j < numChars; ++j) {
+            for (size_t i = 0; i < numChars; ++i) {
                 std::string line;
                 do {
                     std::getline(inputStream, line);
@@ -217,7 +217,7 @@ std::istream& operator>>(std::istream& inputStream, UnitInfo& unit) {
                 std::istringstream lineStream(line);
                 lineStream >> key;
                 if (key == unit_keys::CHAR_POS) {
-                    auto& charPos = impl->charPos.at(j);
+                    auto& charPos = impl->charPos.at(i);
                     short n;
                     lineStream >> n >> charPos.first >> charPos.second;
                 }
