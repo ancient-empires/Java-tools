@@ -1,6 +1,6 @@
 target := AE2units.out
 
-src_cpp := main.cpp UnitProcessor.cpp UnitInfo.cpp
+src_cpp := $(shell find -name "*.cpp")
 src_c := ../utils/utils.c
 
 objs = $(objs_c) $(objs_cpp)
@@ -12,6 +12,7 @@ all: $(target)
 
 # all executables
 $(target): $(objs)
+	$(CXX) $(CXXFLAGS) $^ -o $@
 
 # common compile options
 common := ../common/Makefile
