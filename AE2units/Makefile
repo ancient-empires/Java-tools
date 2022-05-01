@@ -1,4 +1,4 @@
-target := AE2units.out
+TARGET := AE2units.out
 
 src_cpp := $(shell find -name "*.cpp")
 src_c := ../utils/utils.c
@@ -8,10 +8,10 @@ objs_c := $(src_c:.c=.o)
 objs_cpp := $(src_cpp:.cpp=.o)
 
 .PHONY: all
-all: $(target)
+all: $(TARGET)
 
 # all executables
-$(target): $(objs)
+$(TARGET): $(objs)
 	$(CXX) $(CXXFLAGS) $^ -o $@
 
 # common compile options
