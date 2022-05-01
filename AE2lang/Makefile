@@ -2,7 +2,8 @@
 
 TARGET := AE2lang.out
 
-src := main.c ../utils/utils.c dat2txt.c txt2dat.c
+src := $(shell find -name "*.c" ! \( -path "./backup/*" \))
+src += ../utils/utils.c
 objs := $(src:.c=.o)
 
 .PHONY: all
@@ -16,25 +17,17 @@ $(TARGET): $(objs)
 common := ../common/Makefile
 -include $(common)
 
-# automatic prerequisite generation
-deps := $(src:.c=.d)
--include $(deps)
-
-%.o: %.c
-	$(CC_WRITE_DEP)
-
 .PHONY: clean
 clean:
 	$(CLEAN)
 	rm -rfv $(objs) $(deps)
 
-
 # Conversions
-
+# AE1
 AE1lang_dir := data/AE1
 AE1lang_dat := $(AE1lang_dir)/lang.dat
 AE1lang_txt := $(AE1lang_dir)/lang.txt
-
+# AE2
 AE2lang_dir := data/AE2
 AE2lang_dat := $(AE2lang_dir)/lang.dat
 AE2lang_txt := $(AE2lang_dir)/lang.txt
@@ -47,7 +40,6 @@ $(if $(txt),,$(error $(ERROR_MSG)))
 endef
 
 # .dat to .txt
-
 .PHONY: dat2txt
 dat2txt: all
 	$(call CHECK_ARGS)
@@ -66,7 +58,6 @@ dat2txt_ae2:
 
 
 # .txt to .dat
-
 .PHONY: txt2dat
 txt2dat: all
 	$(call CHECK_ARGS)

@@ -17,18 +17,3 @@ $(TARGET): $(objs)
 # common compile options
 common := ../common/Makefile
 -include $(common)
-
-# automatic dependency tracking
-deps = $(objs:.o=.d)
--include $(deps)
-
-%.o: %.cpp
-	$(CXX_WRITE_DEP)
-
-%.o: %.c
-	$(CC_WRITE_DEP)
-
-.PHONY: clean
-clean:
-	$(CLEAN)
-	rm -rfv $(objs) $(deps)

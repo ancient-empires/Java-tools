@@ -25,11 +25,6 @@ deps := $(src:.c=.d)
 %.o: %.c
 	$(CC_WRITE_DEP)
 
-.PHONY: clean
-clean:
-	$(CLEAN)
-	rm -rfv $(objs) $(deps)
-
 
 # Extract .pak
 

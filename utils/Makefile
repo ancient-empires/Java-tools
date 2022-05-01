@@ -1,22 +1,9 @@
-TARGET := utils
-
-src := $(TARGET).c
+src := $(shell find -name "*.c")
 objs := $(src:.c=.o)
 
 .PHONY: all
-all: $(TARGET).o
+all: $(objs)
 
 # common parts
 common := ../common/Makefile
 -include $(common)
-
-# automatic prerequisite generation
-deps := $(src:.c=.d)
--include $(deps)
-
-%.o: %.c
-	$(CC_WRITE_DEP)
-
-.PHONY: clean
-clean:
-	$(CLEAN)
