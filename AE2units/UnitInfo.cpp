@@ -245,21 +245,26 @@ std::ostream& operator<<(std::ostream& outputStream, const UnitInfo& unit) {
 
     // section 2: fight animation information
     const size_t numChars = impl->charPos.size();
-    outputStream << "\n" << unit_keys::CHAR_COUNT << " " << numChars << "\n";
+    outputStream << "\n" << unit_keys::CHAR_COUNT << " " << numChars;
     if (numChars > 0) {
-        outputStream << "\n";
+        outputStream << "\n\n";
         for (size_t i = 0; i < numChars; ++i) {
             const auto& coord = impl->charPos.at(i);
             outputStream << unit_keys::CHAR_POS << " " << i << " "
                 << static_cast<int>(coord.first) << " "
-                << static_cast<int>(coord.second) << "\n";
+                << static_cast<int>(coord.second);
+            if (i < numChars - 1) {
+                outputStream << "\n";
+            }
         }
     }
 
     // section 3: unit properties
     if (!impl->properties.empty()) {
         outputStream << "\n";
-        size_t i = 0, numProperties = impl->properties.size();
+
+        const size_t numProperties = impl->properties.size();
+        size_t i = 0;
         for (const auto& property : impl->properties) {
             outputStream << unit_keys::HAS_PROPERTY << " " << static_cast<int>(property);
             if (i < numProperties - 1) {
