@@ -38,7 +38,7 @@ endef
 .PHONY: dat2txt
 dat2txt: all
 	$(call CHECK_ARGS)
-	./$(TARGET).out $(dat) $(txt)
+	./$(TARGET) $(dat) $(txt)
 
 .PHONY: dat2txt_all
 dat2txt_all: dat2txt_ae1 dat2txt_ae2
@@ -56,7 +56,7 @@ dat2txt_ae2:
 .PHONY: txt2dat
 txt2dat: all
 	$(call CHECK_ARGS)
-	./$(TARGET).out $(txt) $(dat)
+	./$(TARGET) $(txt) $(dat)
 
 .PHONY: txt2dat_all
 txt2dat_all: txt2dat_ae1 txt2dat_ae2

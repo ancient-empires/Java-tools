@@ -53,7 +53,7 @@ check_extract_error:
 .PHONY: extract
 extract: all check_extract_error
 	mkdir -vp $(dir)
-	./$(TARGET).out $(pak) -e $(dir) $(filelist)
+	./$(TARGET) $(pak) -e $(dir) $(filelist)
 
 .PHONY: extract_all
 extract_all: extract_ae1 extract_ae2
@@ -93,7 +93,7 @@ endef
 .PHONY: pack
 pack: all
 	$(call CHECK_PACK_ERROR)
-	./$(TARGET).out $(pak) -p $(filelist)
+	./$(TARGET) $(pak) -p $(filelist)
 
 pack_check_exec := pack_check.sh
 
