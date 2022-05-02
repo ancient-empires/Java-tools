@@ -106,62 +106,33 @@ std::ifstream& UnitInfo::read_bin(std::ifstream& inputStream) {
     return inputStream;
 }
 
-/* Print the unit data to a .unit file.
-  Sample format (archer.unit):
-  ==============================
-  MoveRange 5
-  Attack 50 55
-  Defence 5
-  AttackRange 2 1
-  Cost 250
+// write unit data to a .bin file
+std::ofstream& UnitInfo::write_bin(std::ofstream& outputStream) const {
 
-  CharCount 5
+    unsigned char c1, c2, c3, c4;
 
-  CharPos 0 30 63
-  CharPos 1 30 101
-  CharPos 2 8 80
-  CharPos 3 8 121
-  CharPos 4 8 41
+    // section 1: basic info
+    outputStream.put(static_cast<char>(impl->moveRange));
+    outputStream.put(static_cast<char>(impl->minAttack));
+    outputStream.put(static_cast<char>(impl->maxAttack));
+    outputStream.put(static_cast<char>(impl->defense));
+    outputStream.put(static_cast<char>(impl->maxAttackRange));
+    outputStream.put(static_cast<char>(impl->minAttackRange));
+    uInt32ToFourBytes(static_cast<unsigned short>(impl->price), &c1, &c2, &c3, &c4);
+    outputStream.put(c3);
+    outputStream.put(c4);
 
-  HasProperty 6
-  ==============================
-*/
-std::ostream& operator<<(std::ostream& outputStream, const UnitInfo& unit) {
-    auto& impl = unit.impl;
-
-    // section 1: basic information
-    outputStream << unit_keys::MOVE_RANGE << " " << impl->moveRange << "\n";
-    outputStream << unit_keys::ATTACK << " "
-        << impl->minAttack << " " << impl->maxAttack << "\n";
-    outputStream << unit_keys::DEFENSE << " " << impl->defense << "\n";
-    outputStream << unit_keys::ATTACK_RANGE << " "
-        << impl->maxAttackRange << " "
-        << impl->minAttackRange << "\n";
-    outputStream << unit_keys::PRICE << " " << impl->price << "\n";
-
-    // section 2: fight animation information
-    size_t numChars = impl->charPos.size();
-    outputStream << "\n" << unit_keys::CHAR_COUNT << " " << numChars << "\n";
-    if (numChars > 0) {
-        outputStream << "\n";
-        for (size_t i = 0; i < numChars; ++i) {
-            const auto& coord = impl->charPos.at(i);
-            outputStream << unit_keys::CHAR_POS << " " << i << " "
-                << coord.first << " " << coord.second << "\n";
-        }
+    // section 2: fight animation
+    outputStream.put(static_cast<char>(impl->charPos.size()));
+    for (const auto& charPos : impl->charPos) {
+        outputStream.put(static_cast<char>(charPos.first));
+        outputStream.put(static_cast<char>(charPos.second));
     }
 
     // section 3: unit properties
-    if (!impl->properties.empty()) {
-        outputStream << "\n";
-        size_t i = 0, numProperties = impl->properties.size();
-        for (const auto& property : impl->properties) {
-            outputStream << unit_keys::HAS_PROPERTY << " " << property;
-            if (i < numProperties - 1) {
-                outputStream << "\n";
-            }
-            ++i;
-        }
+    outputStream.put(static_cast<char>(impl->properties.size()));
+    for (const auto& property : impl->properties) {
+        outputStream.put(property);
     }
 
     return outputStream;
@@ -238,33 +209,62 @@ std::istream& operator>>(std::istream& inputStream, UnitInfo& unit) {
     return inputStream;
 }
 
-// write unit data to a .bin file
-std::ofstream& UnitInfo::write_bin(std::ofstream& outputStream) const {
+/* Write the unit data to a .unit file.
+  Sample format (archer.unit):
+  ==============================
+  MoveRange 5
+  Attack 50 55
+  Defence 5
+  AttackRange 2 1
+  Cost 250
 
-    unsigned char c1, c2, c3, c4;
+  CharCount 5
 
-    // section 1: basic info
-    outputStream.put(static_cast<char>(impl->moveRange));
-    outputStream.put(static_cast<char>(impl->minAttack));
-    outputStream.put(static_cast<char>(impl->maxAttack));
-    outputStream.put(static_cast<char>(impl->defense));
-    outputStream.put(static_cast<char>(impl->maxAttackRange));
-    outputStream.put(static_cast<char>(impl->minAttackRange));
-    uInt32ToFourBytes(static_cast<unsigned short>(impl->price), &c1, &c2, &c3, &c4);
-    outputStream.put(c3);
-    outputStream.put(c4);
+  CharPos 0 30 63
+  CharPos 1 30 101
+  CharPos 2 8 80
+  CharPos 3 8 121
+  CharPos 4 8 41
 
-    // section 2: fight animation
-    outputStream.put(static_cast<char>(impl->charPos.size()));
-    for (const auto& charPos : impl->charPos) {
-        outputStream.put(static_cast<char>(charPos.first));
-        outputStream.put(static_cast<char>(charPos.second));
+  HasProperty 6
+  ==============================
+*/
+std::ostream& operator<<(std::ostream& outputStream, const UnitInfo& unit) {
+    auto& impl = unit.impl;
+
+    // section 1: basic information
+    outputStream << unit_keys::MOVE_RANGE << " " << impl->moveRange << "\n";
+    outputStream << unit_keys::ATTACK << " "
+        << impl->minAttack << " " << impl->maxAttack << "\n";
+    outputStream << unit_keys::DEFENSE << " " << impl->defense << "\n";
+    outputStream << unit_keys::ATTACK_RANGE << " "
+        << impl->maxAttackRange << " "
+        << impl->minAttackRange << "\n";
+    outputStream << unit_keys::PRICE << " " << impl->price << "\n";
+
+    // section 2: fight animation information
+    size_t numChars = impl->charPos.size();
+    outputStream << "\n" << unit_keys::CHAR_COUNT << " " << numChars << "\n";
+    if (numChars > 0) {
+        outputStream << "\n";
+        for (size_t i = 0; i < numChars; ++i) {
+            const auto& coord = impl->charPos.at(i);
+            outputStream << unit_keys::CHAR_POS << " " << i << " "
+                << coord.first << " " << coord.second << "\n";
+        }
     }
 
     // section 3: unit properties
-    outputStream.put(static_cast<char>(impl->properties.size()));
-    for (const auto& property : impl->properties) {
-        outputStream.put(property);
+    if (!impl->properties.empty()) {
+        outputStream << "\n";
+        size_t i = 0, numProperties = impl->properties.size();
+        for (const auto& property : impl->properties) {
+            outputStream << unit_keys::HAS_PROPERTY << " " << property;
+            if (i < numProperties - 1) {
+                outputStream << "\n";
+            }
+            ++i;
+        }
     }
 
     return outputStream;
