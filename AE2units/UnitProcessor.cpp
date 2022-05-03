@@ -28,7 +28,7 @@ void UnitProcessor::extract(const std::string& unitsBinFilePath, const std::stri
         exit(ERROR_RW);
     }
 
-    // initialize all output file streams
+    // initialize an output stream for each unit, output to a .unit file
     // check if any stream failed to open
     std::vector<std::string> unitFilePaths(NUM_UNITS);
     std::vector<std::ofstream> outputStreams(NUM_UNITS);
@@ -54,7 +54,7 @@ void UnitProcessor::extract(const std::string& unitsBinFilePath, const std::stri
         exit(ERROR_RW);
     }
 
-    // process all unit data
+    // process all unit data, output to .unit files
     unsigned int i = 0;
     for (; i < NUM_UNITS; ++i) {
         auto& unit = units.at(i);
@@ -91,6 +91,7 @@ void UnitProcessor::pack(const std::string& unitsBinFile, const std::string& pac
     std::vector<std::string> unitFilePaths(NUM_UNITS);
     std::vector<std::ifstream> inputStreams(NUM_UNITS);
 
+    // for each .unit file, initialize an input stream from it
     unsigned int numInputErrors = 0;
     for (unsigned int i = 0; i < NUM_UNITS; ++i) {
         // initialize each input stream
@@ -128,7 +129,7 @@ void UnitProcessor::pack(const std::string& unitsBinFile, const std::string& pac
         exit(ERROR_RW);
     }
 
-    // process all unit data
+    // process all unit data, output to the .bin file
     unsigned int i = 0;
     try {
         for (; i < NUM_UNITS; ++i) {
