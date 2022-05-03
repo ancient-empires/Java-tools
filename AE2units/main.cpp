@@ -7,7 +7,7 @@ extern "C" {
 #include "../utils/utils.h"
 }
 
-void help() {
+static void help() {
     std::cerr << "Usage:" << std::endl;
     std::cerr << "- Extract mode: ./AE2units.out -e <path/to/units.bin> <extract/directory>" << std::endl;
     std::cerr << "- Pack mode:    ./AE2units.out -p <path/to/units.bin> <pack/directory>" << std::endl << std::endl;
