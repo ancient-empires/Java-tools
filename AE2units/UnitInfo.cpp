@@ -230,7 +230,7 @@ std::istream& operator>>(std::istream& inputStream, UnitInfo& unit) {
   ==============================
 */
 std::ostream& operator<<(std::ostream& outputStream, const UnitInfo& unit) {
-    auto& impl = unit.impl;
+    const auto& impl = unit.impl;
 
     // section 1: basic information
     outputStream << unit_keys::MOVE_RANGE << " " << static_cast<int>(impl->moveRange) << "\n";
