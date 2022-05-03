@@ -147,8 +147,6 @@ std::istream& operator>>(std::istream& inputStream, UnitInfo& unit) {
     impl->properties.clear();
 
     while (!inputStream.eof()) {
-        short num = 0;
-
         // get line and key
         std::string line, key;
         std::getline(inputStream, line);
@@ -157,30 +155,23 @@ std::istream& operator>>(std::istream& inputStream, UnitInfo& unit) {
 
         // section 1: basic information
         if (key == unit_keys::MOVE_RANGE) {
-            lineStream >> num;
-            impl->moveRange = num;
+            lineStream >> reinterpret_cast<uint16_t&>(impl->moveRange);
         }
         else if (key == unit_keys::ATTACK) {
-            lineStream >> num;
-            impl->minAttack = num;
-
-            lineStream >> num;
-            impl->maxAttack = num;
+            lineStream
+                >> reinterpret_cast<int16_t&>(impl->minAttack)
+                >> reinterpret_cast<int16_t&>(impl->maxAttack);
         }
         else if (key == unit_keys::DEFENSE) {
-            lineStream >> num;
-            impl->defense = num;
+            lineStream >> reinterpret_cast<int16_t&>(impl->defense);
         }
         else if (key == unit_keys::ATTACK_RANGE) {
-            lineStream >> num;
-            impl->maxAttackRange = num;
-
-            lineStream >> num;
-            impl->minAttackRange = num;
+            lineStream
+                >> reinterpret_cast<uint16_t&>(impl->maxAttackRange)
+                >> reinterpret_cast<uint16_t&>(impl->minAttackRange);
         }
         else if (key == unit_keys::PRICE) {
-            lineStream >> num;
-            impl->price = num;
+            lineStream >> impl->price;
         }
 
         // section 2: fight animation
@@ -200,14 +191,10 @@ std::istream& operator>>(std::istream& inputStream, UnitInfo& unit) {
                 lineStream >> key;
                 if (key == unit_keys::CHAR_POS) {
                     auto& charPos = impl->charPos.at(i);
-                    short j = 0;
-                    lineStream >> j;
-
-                    lineStream >> num;
-                    charPos.first = num;
-
-                    lineStream >> num;
-                    charPos.second = num;
+                    uint16_t j = 0;
+                    lineStream >> j
+                        >> reinterpret_cast<uint16_t&>(charPos.first)
+                        >> reinterpret_cast<uint16_t&>(charPos.second);
                 }
                 else {
                     throw std::ifstream::failure("ERROR: Bad data encountered when processing " + unit_keys::CHAR_POS);
@@ -217,8 +204,8 @@ std::istream& operator>>(std::istream& inputStream, UnitInfo& unit) {
 
         // section 3: unit properties
         if (key == unit_keys::HAS_PROPERTY) {
-            unsigned short property;
-            lineStream >> property;
+            uint8_t property;
+            lineStream >> reinterpret_cast<uint16_t&>(property);
             impl->properties.emplace(property);
         }
     }
@@ -250,15 +237,15 @@ std::ostream& operator<<(std::ostream& outputStream, const UnitInfo& unit) {
     const auto& impl = unit.impl;
 
     // section 1: basic information
-    outputStream << unit_keys::MOVE_RANGE << " " << static_cast<int>(impl->moveRange) << "\n";
+    outputStream << unit_keys::MOVE_RANGE << " " << static_cast<uint16_t>(impl->moveRange) << "\n";
     outputStream << unit_keys::ATTACK << " "
-        << static_cast<int>(impl->minAttack) << " "
-        << static_cast<int>(impl->maxAttack) << "\n";
-    outputStream << unit_keys::DEFENSE << " " << static_cast<int>(impl->defense) << "\n";
+        << static_cast<int16_t>(impl->minAttack) << " "
+        << static_cast<int16_t>(impl->maxAttack) << "\n";
+    outputStream << unit_keys::DEFENSE << " " << static_cast<int16_t>(impl->defense) << "\n";
     outputStream << unit_keys::ATTACK_RANGE << " "
-        << static_cast<int>(impl->maxAttackRange) << " "
-        << static_cast<int>(impl->minAttackRange) << "\n";
-    outputStream << unit_keys::PRICE << " " << static_cast<int>(impl->price) << "\n";
+        << static_cast<uint16_t>(impl->maxAttackRange) << " "
+        << static_cast<uint16_t>(impl->minAttackRange) << "\n";
+    outputStream << unit_keys::PRICE << " " << impl->price << "\n";
 
     // section 2: fight animation information
     const size_t numChars = impl->charPos.size();
@@ -268,8 +255,8 @@ std::ostream& operator<<(std::ostream& outputStream, const UnitInfo& unit) {
         for (size_t i = 0; i < numChars; ++i) {
             const auto& coord = impl->charPos.at(i);
             outputStream << unit_keys::CHAR_POS << " " << i << " "
-                << static_cast<int>(coord.first) << " "
-                << static_cast<int>(coord.second);
+                << static_cast<uint16_t>(coord.first) << " "
+                << static_cast<uint16_t>(coord.second);
             if (i < numChars - 1) {
                 outputStream << "\n";
             }
@@ -283,7 +270,7 @@ std::ostream& operator<<(std::ostream& outputStream, const UnitInfo& unit) {
         const size_t numProperties = impl->properties.size();
         size_t i = 0;
         for (const auto& property : impl->properties) {
-            outputStream << unit_keys::HAS_PROPERTY << " " << static_cast<int>(property);
+            outputStream << unit_keys::HAS_PROPERTY << " " << static_cast<uint16_t>(property);
             if (i < numProperties - 1) {
                 outputStream << "\n";
             }
