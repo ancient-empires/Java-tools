@@ -1,7 +1,3 @@
 {
-    "C_Cpp.default.intelliSenseMode": "linux-gcc-x64",
-    "files.associations": {
-        "*.kml": "xml",
-        "*.geojson": "json"
-    }
+    "C_Cpp.default.intelliSenseMode": "linux-gcc-x64"
 }
