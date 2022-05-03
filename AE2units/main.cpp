@@ -8,16 +8,16 @@ extern "C" {
 }
 
 void help() {
-    std::cerr << "Usage:\n";
-    std::cerr << "- Extract mode: ./AE2units.out -e <path/to/units.bin> <extract/directory>\n";
-    std::cerr << "- Pack mode:    ./AE2units.out -p <path/to/units.bin> <pack/directory>\n\n";
+    std::cerr << "Usage:" << std::endl;
+    std::cerr << "- Extract mode: ./AE2units.out -e <path/to/units.bin> <extract/directory>" << std::endl;
+    std::cerr << "- Pack mode:    ./AE2units.out -p <path/to/units.bin> <pack/directory>" << std::endl << std::endl;
 
     std::cerr << "The directory of " << UnitInfo::UNIT_EXT
         << " files must contain exactly these "
-        << UnitInfo::NUM_UNITS << " files for packing:\n";
+        << UnitInfo::NUM_UNITS << " files for packing:" << std::endl;
     size_t i = 0;
     for (const auto& unitName : UnitInfo::UNIT_NAMES) {
-        std::cerr << i << ". " << unitName << UnitInfo::UNIT_EXT << "\n";
+        std::cerr << i << ". " << unitName << UnitInfo::UNIT_EXT << std::endl;
         ++i;
     }
 }
