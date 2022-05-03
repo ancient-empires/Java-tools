@@ -9,7 +9,7 @@ extern "C" {
 #include "../utils/utils.h"
 }
 
-void UnitProcessor::extract(const std::string& unitsBinFile, const std::string& extractDir) {
+void UnitProcessor::extract(const std::string& unitsBinFilePath, const std::string& extractDir) {
     const std::vector<std::string>& UNIT_NAMES = UnitInfo::UNIT_NAMES;
     const size_t& NUM_UNITS = UnitInfo::NUM_UNITS;
 
@@ -20,11 +20,11 @@ void UnitProcessor::extract(const std::string& unitsBinFile, const std::string& 
     std::ifstream inputStream;
     inputStream.exceptions(std::ifstream::failbit | std::ifstream::badbit);
     try {
-        inputStream.open(unitsBinFile, std::ios_base::binary);
+        inputStream.open(unitsBinFilePath, std::ios_base::binary);
     }
     catch (const std::ifstream::failure& error) {
         std::cerr << error.what() << "\n";
-        std::cerr << "ERROR: Failed to open input file \"" << unitsBinFile << "\"\n";
+        std::cerr << "ERROR: Failed to open input file \"" << unitsBinFilePath << "\"\n";
         exit(ERROR_RW);
     }
 
@@ -70,7 +70,7 @@ void UnitProcessor::extract(const std::string& unitsBinFile, const std::string& 
         }
         catch (const std::ifstream::failure& error) {
             // Exception: bad data (including unexpectedly reaching the end)
-            std::cerr << "ERROR: Bad data encountered when reading file \"" << unitsBinFile << "\"\n";
+            std::cerr << "ERROR: Bad data encountered when reading file \"" << unitsBinFilePath << "\"\n";
             std::cerr << "Probably unexpectedly reaching the end of file?\n";
             std::cerr << "Currently processing: \"" << unitFilePaths.at(i) << "\"\n";
             break;
