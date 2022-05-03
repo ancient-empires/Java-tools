@@ -147,6 +147,8 @@ std::istream& operator>>(std::istream& inputStream, UnitInfo& unit) {
     impl->properties.clear();
 
     while (!inputStream.eof()) {
+        short num = 0;
+
         // get line and key
         std::string line, key;
         std::getline(inputStream, line);
@@ -155,21 +157,30 @@ std::istream& operator>>(std::istream& inputStream, UnitInfo& unit) {
 
         // section 1: basic information
         if (key == unit_keys::MOVE_RANGE) {
-            lineStream >> impl->moveRange;
+            lineStream >> num;
+            impl->moveRange = num;
         }
         else if (key == unit_keys::ATTACK) {
-            lineStream >> impl->minAttack;
-            lineStream >> impl->maxAttack;
+            lineStream >> num;
+            impl->minAttack = num;
+
+            lineStream >> num;
+            impl->maxAttack = num;
         }
         else if (key == unit_keys::DEFENSE) {
-            lineStream >> impl->defense;
+            lineStream >> num;
+            impl->defense = num;
         }
         else if (key == unit_keys::ATTACK_RANGE) {
-            lineStream >> impl->maxAttackRange;
-            lineStream >> impl->minAttackRange;
+            lineStream >> num;
+            impl->maxAttackRange = num;
+
+            lineStream >> num;
+            impl->minAttackRange = num;
         }
         else if (key == unit_keys::PRICE) {
-            lineStream >> impl->price;
+            lineStream >> num;
+            impl->price = num;
         }
 
         // section 2: fight animation
@@ -189,8 +200,14 @@ std::istream& operator>>(std::istream& inputStream, UnitInfo& unit) {
                 lineStream >> key;
                 if (key == unit_keys::CHAR_POS) {
                     auto& charPos = impl->charPos.at(i);
-                    short n;
-                    lineStream >> n >> charPos.first >> charPos.second;
+                    short j = 0;
+                    lineStream >> j;
+
+                    lineStream >> num;
+                    charPos.first = num;
+
+                    lineStream >> num;
+                    charPos.second = num;
                 }
                 else {
                     throw std::ifstream::failure("ERROR: Bad data encountered when processing " + unit_keys::CHAR_POS);
