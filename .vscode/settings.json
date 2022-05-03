@@ -2,9 +2,6 @@
     "C_Cpp.default.intelliSenseMode": "linux-gcc-x64",
     "files.associations": {
         "*.kml": "xml",
-        "*.geojson": "json",
-        "climits": "cpp",
-        "clocale": "cpp",
-        "type_traits": "cpp"
+        "*.geojson": "json"
     }
 }
